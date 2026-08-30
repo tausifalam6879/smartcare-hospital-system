@@ -1,0 +1,26 @@
+# IDE and operating system
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Secrets and local overrides
+.env
+*.local
+
+# Java
+backend/target/
+*.log
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Runtime data
+data/
+uploads/
+
+# Private runtime medical documents
+backend/var/

@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:raahmediq;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+
+raahmediq:
+  jwt:
+    issuer: raahmediq-test
+    secret: test-only-signing-secret-that-is-at-least-thirty-two-bytes
+    access-token-ttl: 15m
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+  payment:
+    provider: DEVELOPMENT
+    webhook-secret: test-only-payment-webhook-secret-at-least-thirty-two-bytes
+    intent-ttl: 10m
+  check-in:
+    opens-before: 24h
+    closes-after: 24h
+  notifications:
+    channels:
+      - IN_APP
+  documents:
+    storage-path: ./target/test-private-documents
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
