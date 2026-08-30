@@ -26,6 +26,7 @@ import { useAuth } from '../context/AuthContext'
 import { indiaFacilities, type IndiaFacility } from '../data/indiaFacilities'
 import { projectDoctors } from '../data/projectDoctorProfiles'
 import { api, messageFromError } from '../services/api'
+import { isStaticDemo } from '../config/runtime'
 import {
   appointmentStatusLabel,
   cancelAppointment,
@@ -204,6 +205,7 @@ export function QueueBookingPage() {
     .find((item) => item.value === hospitalSelection)
 
   useEffect(() => {
+    if (isStaticDemo) return
     Promise.all([
       api.get<Hospital[]>('/api/v1/hospitals'),
       api.get<Page<Doctor>>('/api/v1/doctors', { params: { size: 100 } }),

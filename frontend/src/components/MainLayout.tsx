@@ -2,6 +2,7 @@ import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Drople
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { isStaticDemo } from '../config/runtime'
 import { getUnreadCount } from '../services/notifications'
 import { BrandMark } from './BrandMark'
 
@@ -44,6 +45,7 @@ export function MainLayout() {
   const [unread, setUnread] = useState(0)
   const isStaff = Boolean(session?.user.roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)))
   useEffect(() => {
+    if (isStaticDemo) { setUnread(0); return }
     if (!session) { setUnread(0); return }
     let active = true
     const refresh = () => getUnreadCount().then((count) => { if (active) setUnread(count) }).catch(() => undefined)
@@ -90,6 +92,7 @@ export function MainLayout() {
         </div>
       </header>
 
+      {isStaticDemo && <div className="border-y border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs font-bold text-amber-950">Public portfolio prototype · Sample browser data only · Backend-only medical workflows are not active on GitHub Pages.</div>}
       <main className="safe-bottom md:pb-0"><Outlet /></main>
 
       <footer className="bg-[#071b35] text-white">
@@ -105,7 +108,7 @@ export function MainLayout() {
           </div>
           <div>
             <h2 className="text-sm font-black">Care journey</h2>
-            <div className="mt-5 space-y-3 text-sm text-blue-100/70"><a href="/#services" className="block hover:text-white">Services</a><a href="/#journey" className="block hover:text-white">How it works</a><NavLink to="/notifications" className="block hover:text-white">Live queue · Available</NavLink><NavLink to="/navigate" className="block hover:text-white">QR hospital map · Available</NavLink><NavLink to="/diagnostics" className="block hover:text-white">Verified diagnostics · Available</NavLink><NavLink to="/blood-support" className="block hover:text-white">Verified blood support · Available</NavLink><NavLink to="/ambulance" className="block hover:text-white">Ambulance workflow · Available</NavLink><NavLink to="/assistant" className="block hover:text-white">Cited care assistant · Available</NavLink></div>
+            <div className="mt-5 space-y-3 text-sm text-blue-100/70"><NavLink to="/#services" className="block hover:text-white">Services</NavLink><NavLink to="/#journey" className="block hover:text-white">How it works</NavLink><NavLink to="/notifications" className="block hover:text-white">Live queue · Available</NavLink><NavLink to="/navigate" className="block hover:text-white">QR hospital map · Available</NavLink><NavLink to="/diagnostics" className="block hover:text-white">Verified diagnostics · Available</NavLink><NavLink to="/blood-support" className="block hover:text-white">Verified blood support · Available</NavLink><NavLink to="/ambulance" className="block hover:text-white">Ambulance workflow · Available</NavLink><NavLink to="/assistant" className="block hover:text-white">Cited care assistant · Available</NavLink></div>
           </div>
           <div>
             <h2 className="text-sm font-black">Patient support</h2>

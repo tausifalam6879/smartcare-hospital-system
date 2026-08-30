@@ -19,8 +19,8 @@ frontend/dist/
 frontend/coverage/
 
 # Runtime data
-data/
-uploads/
+/data/
+/uploads/
 
 # Private runtime medical documents
 backend/var/

@@ -1,6 +1,7 @@
 import { Building2, IndianRupee, MapPin, Search, Stethoscope } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import { isStaticDemo } from '../config/runtime'
 import { api, messageFromError } from '../services/api'
 
 type Hospital = { id: string; name: string; city: string }
@@ -30,11 +31,13 @@ export function DoctorDirectoryPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (isStaticDemo) return
     api.get<Hospital[]>('/api/v1/hospitals').then(({ data }) => setHospitals(data)).catch(() => undefined)
     void loadDoctors()
   }, [])
 
   useEffect(() => {
+    if (isStaticDemo) return
     setDepartmentId('')
     if (!hospitalId) {
       setDepartments([])
@@ -47,6 +50,7 @@ export function DoctorDirectoryPage() {
 
   async function loadDoctors(event?: FormEvent) {
     event?.preventDefault()
+    if (isStaticDemo) return
     setStatus('loading')
     setError('')
     try {
@@ -60,6 +64,8 @@ export function DoctorDirectoryPage() {
       setStatus('error')
     }
   }
+
+  if (isStaticDemo) return <Navigate to="/hospitals" replace />
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

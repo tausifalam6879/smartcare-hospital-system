@@ -1,6 +1,7 @@
 import { Activity, Ambulance, Bell, CalendarDays, Clock3, Droplets, FileHeart, FlaskConical, IndianRupee, LoaderCircle, LogOut, MapPin, Microscope, Navigation, ShieldCheck, Sparkles, Stethoscope, TicketCheck, Users, XCircle } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { isStaticDemo } from '../config/runtime'
 import { useAuth } from '../context/AuthContext'
 import { messageFromError } from '../services/api'
 import {
@@ -29,6 +30,10 @@ export function DashboardPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (isStaticDemo) {
+      setLoading(false)
+      return
+    }
     Promise.all([getMyAppointments(), getMyPayments()])
       .then(([appointmentData, paymentData]) => { setAppointments(appointmentData); setPaymentRecords(paymentData) })
       .catch((requestError) => setError(messageFromError(requestError)))

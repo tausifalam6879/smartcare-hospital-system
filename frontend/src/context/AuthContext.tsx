@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { isStaticDemo } from '../config/runtime'
 import { api } from '../services/api'
 
 type UserSummary = {
@@ -37,6 +38,22 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 const storageKey = 'raahmediq-session'
 
+function demoSession(displayName = 'Demo Patient', credential = 'demo@raahmediq.health'): AuthSession {
+  return {
+    accessToken: 'github-pages-demo-session',
+    tokenType: 'Demo',
+    expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(),
+    user: {
+      id: 'github-pages-demo-patient',
+      displayName,
+      mobileNumber: credential.includes('@') ? '+910000000000' : credential,
+      email: credential.includes('@') ? credential : undefined,
+      patientNumber: 'RMQ-DEMO-2026',
+      roles: ['PATIENT'],
+    },
+  }
+}
+
 function initialSession(): AuthSession | null {
   const raw = sessionStorage.getItem(storageKey)
   if (!raw) return null
@@ -64,10 +81,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(() => ({
     session,
     async login(credential, password) {
+      if (isStaticDemo) {
+        persist(demoSession('Demo Patient', credential))
+        return
+      }
       const response = await api.post<AuthSession>('/api/v1/auth/login', { credential, password })
       persist(response.data)
     },
     async register(input) {
+      if (isStaticDemo) {
+        persist(demoSession(input.name.trim() || 'Demo Patient', input.email || input.mobileNumber))
+        return
+      }
       const response = await api.post<AuthSession>('/api/v1/auth/register', input)
       persist(response.data)
     },

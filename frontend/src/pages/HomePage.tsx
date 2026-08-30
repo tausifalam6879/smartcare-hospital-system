@@ -17,6 +17,7 @@ import {
   TicketCheck,
   Users,
 } from 'lucide-react'
+import { publicAsset } from '../config/runtime'
 import { Link } from 'react-router-dom'
 import { ActionCard } from '../components/ActionCard'
 
@@ -88,7 +89,7 @@ export function HomePage() {
           <div className="relative mx-auto w-full max-w-3xl lg:mr-0">
             <div className="relative overflow-hidden rounded-[2rem] bg-slate-900 shadow-[0_35px_80px_-28px_rgba(9,45,87,.4)]">
               <img
-                src="/images/doctor-consultation.jpg"
+                src={publicAsset('images/doctor-consultation.jpg')}
                 alt="Doctor listening carefully to a patient during a consultation"
                 className="h-[28rem] w-full object-cover object-center sm:h-[34rem] lg:h-[38rem]"
               />
@@ -144,8 +145,8 @@ export function HomePage() {
       <section className="overflow-hidden bg-[#f3f7fb] py-14 sm:py-20" id="journey">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.04fr_.96fr] lg:px-8">
           <div className="relative min-h-[31rem] sm:min-h-[36rem]">
-            <img src="/images/hospital-lobby.jpg" alt="Bright hospital reception and wayfinding area" className="absolute left-0 top-0 h-[82%] w-[82%] rounded-[1.75rem] object-cover shadow-[0_26px_60px_-30px_rgba(9,45,87,.45)]" />
-            <img src="/images/medical-centre.jpg" alt="Modern medical centre exterior" className="absolute bottom-0 right-0 h-[48%] w-[55%] rounded-[1.5rem] border-[6px] border-[#f3f7fb] object-cover shadow-[0_24px_50px_-26px_rgba(9,45,87,.5)]" />
+            <img src={publicAsset('images/hospital-lobby.jpg')} alt="Bright hospital reception and wayfinding area" className="absolute left-0 top-0 h-[82%] w-[82%] rounded-[1.75rem] object-cover shadow-[0_26px_60px_-30px_rgba(9,45,87,.45)]" />
+            <img src={publicAsset('images/medical-centre.jpg')} alt="Modern medical centre exterior" className="absolute bottom-0 right-0 h-[48%] w-[55%] rounded-[1.5rem] border-[6px] border-[#f3f7fb] object-cover shadow-[0_24px_50px_-26px_rgba(9,45,87,.5)]" />
             <div className="absolute bottom-7 left-5 max-w-[15rem] rounded-2xl bg-care-700 p-5 text-white shadow-xl sm:left-8">
               <Navigation className="size-7 text-blue-200" />
               <p className="mt-4 text-lg font-black">Know where to go next.</p>

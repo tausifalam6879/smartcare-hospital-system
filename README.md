@@ -1,5 +1,9 @@
 # RaahMediQ Health — Intelligent Hospital Navigation, Queue & Patient Care Platform
 
+[**Open the live frontend demo**](https://tausifalam6879.github.io/raahmediq-health/) · [View source on GitHub](https://github.com/tausifalam6879/raahmediq-health)
+
+> **Portfolio prototype:** The GitHub Pages demo uses browser-only sample data for directory booking, patient access, and Dijkstra indoor navigation. GitHub Pages cannot run the Spring Boot/PostgreSQL backend, so backend-only clinical, payment, dispatch, and medical-record operations remain available in local full-stack development only. No real hospital, payment provider, or medical service is contacted.
+
 RaahMediQ Health is a production-style academic foundation for hospital navigation, fair queue management, and coordinated patient care. It uses a modular Spring Boot monolith so booking, cancellation, capacity release, and waitlist promotion can share one reliable transaction.
 
 ## Delivered in Phase 1

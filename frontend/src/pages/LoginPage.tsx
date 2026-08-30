@@ -2,6 +2,7 @@ import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AuthShell } from '../components/AuthShell'
+import { isStaticDemo } from '../config/runtime'
 import { useAuth } from '../context/AuthContext'
 import { messageFromError } from '../services/api'
 
@@ -32,8 +33,22 @@ export function LoginPage() {
     }
   }
 
+  async function openDemo() {
+    setLoading(true)
+    setError('')
+    try {
+      await login('demo@raahmediq.health', 'github-pages-demo')
+      navigate('/dashboard', { replace: true })
+    } catch (requestError) {
+      setError(messageFromError(requestError))
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <AuthShell title="Welcome back" subtitle="Use your registered mobile number or email.">
+      {isStaticDemo && <div className="mb-5 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-950"><strong>GitHub Pages prototype</strong><p className="mt-1 text-xs leading-5 text-cyan-800">Explore with sample browser-only data. No real account, hospital, payment or medical service is contacted.</p><button type="button" disabled={loading} onClick={() => void openDemo()} className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 px-4 font-extrabold text-white hover:bg-cyan-800 disabled:opacity-60">{loading && <LoaderCircle className="size-4 animate-spin" />} Explore demo</button></div>}
       {location.state === 'registered' && <div className="mb-4 rounded-2xl bg-care-50 p-4 text-sm font-semibold text-care-900">Account created. You are now signed in.</div>}
       <form onSubmit={submit} className="space-y-5">
         <label className="block text-sm font-bold text-ink-950">Mobile number or email<input autoComplete="username" required value={credential} onChange={(event) => setCredential(event.target.value)} className="mt-2 h-13 w-full rounded-2xl border border-slate-300 bg-white px-4 font-normal" placeholder="+91 98765 43210" /></label>

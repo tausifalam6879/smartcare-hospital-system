@@ -1,4 +1,9 @@
 import { api } from './api'
+import { isStaticDemo } from '../config/runtime'
+import {
+  staticDemoAppointmentDestination, staticDemoCheckpoint, staticDemoHospitals,
+  staticDemoMap, staticDemoRoute,
+} from '../data/staticNavigationDemo'
 
 export type LocationType = 'ENTRANCE' | 'REGISTRATION' | 'LIFT' | 'STAIRS' | 'CORRIDOR' |
   'RECEPTION' | 'DOCTOR_ROOM' | 'LAB' | 'IMAGING' | 'PHARMACY' | 'EMERGENCY' | 'EXIT'
@@ -74,24 +79,34 @@ export type AppointmentDestination = {
 }
 
 export async function getNavigationHospitals() {
+  if (isStaticDemo) return staticDemoHospitals
   return (await api.get<HospitalSummary[]>('/api/v1/hospitals')).data
 }
 
 export async function getHospitalMap(hospitalId: string) {
+  if (isStaticDemo && hospitalId === staticDemoMap.hospitalId) return staticDemoMap
   return (await api.get<HospitalMap>(`/api/v1/navigation/hospitals/${hospitalId}/map`)).data
 }
 
 export async function getCheckpoint(publicCode: string) {
+  if (isStaticDemo) {
+    const result = staticDemoCheckpoint(publicCode)
+    if (result) return result
+  }
   return (await api.get<Checkpoint>(`/api/v1/navigation/checkpoints/${encodeURIComponent(publicCode)}`)).data
 }
 
 export async function getRoute(hospitalId: string, fromCheckpoint: string, destinationCode: string,
   language: 'en' | 'hi', stepFree: boolean) {
+  if (isStaticDemo && hospitalId === staticDemoMap.hospitalId) {
+    return staticDemoRoute(fromCheckpoint, destinationCode, language, stepFree)
+  }
   return (await api.get<NavigationRoute>(`/api/v1/navigation/hospitals/${hospitalId}/route`, {
     params: { fromCheckpoint, destinationCode, language, stepFree },
   })).data
 }
 
 export async function getAppointmentDestination(appointmentId: string) {
+  if (isStaticDemo) return staticDemoAppointmentDestination(appointmentId)
   return (await api.get<AppointmentDestination>(`/api/v1/navigation/appointments/${appointmentId}/destination`)).data
 }
