@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,6 +57,12 @@ public class AppointmentController {
     @GetMapping("/mine")
     public List<AppointmentResponse> mine(@AuthenticationPrincipal Jwt jwt) {
         return service.mine(UUID.fromString(jwt.getSubject()));
+    }
+
+    @GetMapping("/doctor/mine")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public List<AppointmentResponse> doctorMine(@AuthenticationPrincipal Jwt jwt) {
+        return service.doctorMine(UUID.fromString(jwt.getSubject()));
     }
 
     @PostMapping("/{appointmentId}/cancel")

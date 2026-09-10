@@ -20,6 +20,8 @@ import { OperationsPage } from './pages/OperationsPage'
 import { BloodGroupAnalysisPage } from './pages/BloodGroupAnalysisPage'
 import { HospitalDirectoryPage } from './pages/HospitalDirectoryPage'
 import { StaffTaskInboxPage } from './pages/StaffTaskInboxPage'
+import { CareFollowUpsPage } from './pages/CareFollowUpsPage'
+import { DoctorConsultationPage } from './pages/DoctorConsultationPage'
 
 function Protected({ page }: { page: ReactNode }) {
   const { session } = useAuth()
@@ -38,6 +40,8 @@ export function App() {
         <Route path="queue/:appointmentId" element={<Protected page={<LiveQueuePage />} />} />
         <Route path="notifications" element={<Protected page={<NotificationsPage />} />} />
         <Route path="records" element={<Protected page={<MedicalRecordsPage />} />} />
+        <Route path="follow-ups" element={<Protected page={<CareFollowUpsPage />} />} />
+        <Route path="doctor/consultations" element={<Protected page={<DoctorConsultationPage />} />} />
         <Route path="assistant" element={<Protected page={<CareAssistantPage />} />} />
         <Route path="diagnostics" element={<Protected page={<DiagnosticsPage />} />} />
         <Route path="blood-support" element={<Protected page={<BloodSupportPage />} />} />

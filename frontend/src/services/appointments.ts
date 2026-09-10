@@ -54,6 +54,10 @@ export async function getMyAppointments() {
   return (await api.get<Appointment[]>('/api/v1/appointments/mine')).data
 }
 
+export async function getDoctorAppointments() {
+  return (await api.get<Appointment[]>('/api/v1/appointments/doctor/mine')).data
+}
+
 export async function cancelAppointment(id: string, reason = 'Cancelled by patient') {
   return (await api.post<Appointment>(`/api/v1/appointments/${id}/cancel`, { reason })).data
 }

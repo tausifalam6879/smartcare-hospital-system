@@ -12,6 +12,7 @@ import com.smartcare.doctor.domain.Doctor;
 import com.smartcare.doctor.repository.DoctorRepository;
 import com.smartcare.hospital.domain.Hospital;
 import com.smartcare.hospital.repository.HospitalRepository;
+import com.smartcare.followup.service.CareFollowUpService;
 import com.smartcare.medicalrecord.domain.ClinicalVisit;
 import com.smartcare.medicalrecord.domain.DocumentType;
 import com.smartcare.medicalrecord.domain.MedicalDocument;
@@ -60,6 +61,7 @@ public class MedicalRecordService {
     private final MedicalDocumentRepository documents;
     private final PrivateDocumentStorage storage;
     private final AuditService audit;
+    private final CareFollowUpService followUps;
     private final Clock clock;
 
     public MedicalRecordService(PatientRepository patients, DoctorRepository doctors,
@@ -67,7 +69,8 @@ public class MedicalRecordService {
                                 HospitalRepository hospitals, ClinicalVisitRepository visits,
                                 PrescriptionRepository prescriptions, PrescriptionItemRepository prescriptionItems,
                                 PatientAllergyRepository allergies, MedicalDocumentRepository documents,
-                                PrivateDocumentStorage storage, AuditService audit, Clock clock) {
+                                PrivateDocumentStorage storage, AuditService audit, CareFollowUpService followUps,
+                                Clock clock) {
         this.patients = patients;
         this.doctors = doctors;
         this.appointments = appointments;
@@ -80,6 +83,7 @@ public class MedicalRecordService {
         this.documents = documents;
         this.storage = storage;
         this.audit = audit;
+        this.followUps = followUps;
         this.clock = clock;
     }
 
@@ -133,6 +137,9 @@ public class MedicalRecordService {
                 allergies.save(new PatientAllergy(appointment, recorder, allergy.substance().trim(),
                         clean(allergy.reaction()), allergy.severity(), now));
             }
+        }
+        if (request.followUpDate() != null) {
+            followUps.schedule(visit, request.followUpDate(), Boolean.TRUE.equals(request.medicationReminderEnabled()));
         }
         audit.record("CLINICAL_VISIT_FINALIZED", "CLINICAL_VISIT", visit.getId(), appointment.getHospital().getId());
         return toResponse(visit);

@@ -105,6 +105,7 @@ public class DemoDataLoader implements ApplicationRunner {
                 "Asia/Kolkata", true);
         seedStaffAccounts();
         seedCareDirectory(hospital);
+        seedDemoDoctorAccounts();
         deactivateDuplicateDemoDoctors(hospital);
 
         // This seeder is intentionally idempotent. It upgrades older demo databases with newly mapped
@@ -121,6 +122,21 @@ public class DemoDataLoader implements ApplicationRunner {
         demoStaff("+919999990202", "Demo Lab Technician", "DemoLab@2026", Role.LAB_TECHNICIAN);
         demoStaff("+919999990203", "Demo Blood Bank Staff", "DemoBlood@2026", Role.BLOOD_BANK_STAFF);
         demoStaff("+919999990204", "Demo Hospital Administrator", "DemoAdmin@2026", Role.HOSPITAL_ADMIN);
+    }
+
+    private void seedDemoDoctorAccounts() {
+        linkDemoDoctor("+919999990205", "Dr. Ananya Mehta", "SC-DMC-1042");
+        linkDemoDoctor("+919999990206", "Dr. Isha Kapoor", "SC-DEMO-DER-801");
+    }
+
+    private void linkDemoDoctor(String mobile, String name, String registrationNumber) {
+        UserAccount account = users.findByCredential(mobile)
+                .orElseGet(() -> users.save(new UserAccount(mobile, null,
+                        passwordEncoder.encode("DemoDoctor@2026"), name, "en", Set.of(Role.DOCTOR))));
+        account.grantRole(Role.DOCTOR);
+        doctors.findByRegistrationNumberIgnoreCase(registrationNumber).ifPresent(doctor -> {
+            if (doctor.getLinkedUser() == null) doctor.linkAccount(account);
+        });
     }
 
     private void demoStaff(String mobile, String displayName, String password, Role role) {

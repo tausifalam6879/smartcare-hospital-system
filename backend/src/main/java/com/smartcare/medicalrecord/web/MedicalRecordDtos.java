@@ -28,7 +28,9 @@ public final class MedicalRecordDtos {
             @Size(max = 2000) String followUpRecommendation,
             @Size(max = 1200) String prescriptionInstructions,
             @Valid @Size(max = 30) List<PrescriptionItemRequest> medicines,
-            @Valid @Size(max = 30) List<AllergyRequest> allergies
+            @Valid @Size(max = 30) List<AllergyRequest> allergies,
+            LocalDate followUpDate,
+            Boolean medicationReminderEnabled
     ) {
     }
 

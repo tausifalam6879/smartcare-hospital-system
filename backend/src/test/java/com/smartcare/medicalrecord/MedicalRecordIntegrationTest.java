@@ -16,6 +16,8 @@ import com.smartcare.doctor.web.DoctorDtos.ScheduleRequest;
 import com.smartcare.hospital.service.HospitalService;
 import com.smartcare.hospital.web.HospitalDtos.DepartmentRequest;
 import com.smartcare.hospital.web.HospitalDtos.HospitalRequest;
+import com.smartcare.followup.domain.FollowUpStatus;
+import com.smartcare.followup.service.CareFollowUpService;
 import com.smartcare.medicalrecord.domain.AllergySeverity;
 import com.smartcare.medicalrecord.domain.DocumentType;
 import com.smartcare.medicalrecord.service.MedicalRecordService;
@@ -54,6 +56,7 @@ class MedicalRecordIntegrationTest {
     @Autowired QueueService queues;
     @Autowired AuthService auth;
     @Autowired AuditLogRepository auditLogs;
+    @Autowired CareFollowUpService followUps;
 
     @Test
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST"})
@@ -86,10 +89,18 @@ class MedicalRecordIntegrationTest {
                 "Follow up in five days if fever continues.", "Take after food.",
                 List.of(new PrescriptionItemRequest("Paracetamol", "500 mg", "Twice daily", "3 days",
                         "Oral", "Only as advised.")),
-                List.of(new AllergyRequest("Penicillin", "Skin rash", AllergySeverity.HIGH))));
+                List.of(new AllergyRequest("Penicillin", "Skin rash", AllergySeverity.HIGH)),
+                today.plusDays(5), true));
         assertThat(visit.diagnosis()).contains("Viral");
         assertThat(visit.prescription().medicines()).extracting(item -> item.medicineName())
                 .containsExactly("Paracetamol");
+        var followUp = followUps.mine(patient.user().id()).get(0);
+        assertThat(followUp.followUpDate()).isEqualTo(today.plusDays(5));
+        assertThat(followUp.medicationReminderEnabled()).isTrue();
+        assertThat(followUps.updateStatus(patient.user().id(), followUp.id(), FollowUpStatus.CONFIRMED).status())
+                .isEqualTo(FollowUpStatus.CONFIRMED);
+        assertThatThrownBy(() -> followUps.updateStatus(anotherPatient.user().id(), followUp.id(),
+                FollowUpStatus.COMPLETED)).isInstanceOf(com.smartcare.common.error.NotFoundException.class);
 
         byte[] pdf = "%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF".getBytes(StandardCharsets.US_ASCII);
         var uploaded = records.upload(patient.user().id(), hospital.id(), DocumentType.LAB_REPORT, today,

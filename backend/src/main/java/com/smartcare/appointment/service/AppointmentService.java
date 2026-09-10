@@ -144,6 +144,14 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
+    public List<AppointmentResponse> doctorMine(UUID userId) {
+        Doctor doctor = doctors.findByLinkedUserId(userId).filter(Doctor::isActive)
+                .orElseThrow(() -> new AccessDeniedException("A linked active doctor profile is required."));
+        return appointments.findAllByDoctorIdOrderByServiceDateDescCreatedAtDesc(doctor.getId()).stream()
+                .map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<AppointmentResponse> mine(UUID userId) {
         Patient patient = requirePatient(userId);
         return appointments.findAllByPatientIdOrderByServiceDateDescCreatedAtDesc(patient.getId()).stream()

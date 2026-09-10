@@ -1,4 +1,4 @@
-import { Activity, Ambulance, Bell, CalendarDays, Clock3, Droplets, FileHeart, FlaskConical, IndianRupee, LoaderCircle, LogOut, MapPin, Microscope, Navigation, ShieldCheck, Sparkles, Stethoscope, TicketCheck, Users, XCircle } from 'lucide-react'
+import { Activity, Ambulance, Bell, CalendarCheck2, CalendarDays, Clock3, Droplets, FileHeart, FlaskConical, IndianRupee, LoaderCircle, LogOut, MapPin, Microscope, Navigation, ShieldCheck, Sparkles, Stethoscope, TicketCheck, Users, XCircle } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { isStaticDemo } from '../config/runtime'
@@ -125,6 +125,7 @@ export function DashboardPage() {
         <Link to="/ambulance" className="rounded-3xl border border-red-200 bg-red-50 p-5 transition hover:border-red-400"><Ambulance className="size-5 text-red-700" /><h3 className="mt-4 font-extrabold text-ink-950">Ambulance coordination</h3><p className="mt-1 text-xs font-bold text-red-700">Phase 10 · Available now</p></Link>
         <Link to="/operations" className="rounded-3xl border border-amber-200 bg-amber-50 p-5 transition hover:border-amber-400"><Activity className="size-5 text-amber-700" /><h3 className="mt-4 font-extrabold text-ink-950">Appointment recovery</h3><p className="mt-1 text-xs font-bold text-amber-700">Phase 11 · Patient approval required</p></Link>
         <Link to="/blood-group-analysis" className="rounded-3xl border border-violet-200 bg-violet-50 p-5 transition hover:border-violet-400"><Microscope className="size-5 text-violet-700" /><h3 className="mt-4 font-extrabold text-ink-950">Blood-slide review</h3><p className="mt-1 text-xs font-bold text-violet-700">Phase 12 · Experimental · Lab verification</p></Link>
+        <Link to="/follow-ups" className="rounded-3xl border border-indigo-200 bg-indigo-50 p-5 transition hover:border-indigo-400"><CalendarCheck2 className="size-5 text-indigo-700" /><h3 className="mt-4 font-extrabold text-ink-950">Follow-ups & reminders</h3><p className="mt-1 text-xs font-bold text-indigo-700">Phase 13 · Continuity of care</p></Link>
       </div>
     </div>
   )
