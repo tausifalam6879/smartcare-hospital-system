@@ -13,7 +13,7 @@ import {
   type Appointment,
 } from '../services/appointments'
 import { getMyPayments, paymentStatusLabel, type Payment } from '../services/payments'
-import { getPrototypeBookings, updatePrototypeBooking, type PrototypeBooking } from '../services/prototypeBookings'
+import { cancelPrototypeBooking, getPrototypeBookings, type PrototypeBooking } from '../services/prototypeBookings'
 
 function displayDate(value: string) {
   return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(`${value}T12:00:00`))
@@ -59,7 +59,7 @@ export function DashboardPage() {
   }
 
   function cancelPrototype(id: string) {
-    updatePrototypeBooking(id, { status: 'CANCELLED' })
+    cancelPrototypeBooking(id)
     setPrototypeBookings(getPrototypeBookings())
   }
 
@@ -93,8 +93,9 @@ export function DashboardPage() {
         <div className="mt-5 grid gap-4 md:grid-cols-2">{prototypeBookings.map((booking) => <article key={booking.id} className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-4"><div><h3 className="font-black text-ink-950">{booking.doctorName}</h3><p className="text-sm font-semibold text-care-700">{booking.departmentName}</p><p className="mt-1 text-xs text-slate-500">{booking.hospitalName} · {booking.hospitalLocation}</p></div><div className="rounded-xl bg-care-50 px-3 py-2 text-center"><p className="text-[9px] font-black uppercase text-care-700">OPD</p><p className="text-2xl font-black text-care-800">{booking.queuePosition}</p></div></div>
           <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-600"><p><span className="block text-slate-400">Visit date</span><strong>{displayDate(booking.serviceDate)}</strong></p><p><span className="block text-slate-400">Status</span><strong>{booking.status === 'CONFIRMED' ? 'Demo payment verified' : booking.status === 'PAYMENT_PENDING' ? 'Payment required' : booking.status === 'CASH_PENDING' ? 'Cash desk pending' : 'Cancelled'}</strong></p><p><span className="block text-slate-400">Payment</span><strong>{booking.paymentMethod === 'ONLINE' ? 'Online demo' : 'Cash at desk'}</strong></p><p><span className="block text-slate-400">Fee</span><strong>₹{booking.amount.toLocaleString('en-IN')}</strong></p></div>
+          {booking.status === 'CANCELLED' && booking.refundStatus === 'DEMO_REFUND_RECORDED' && <p className="mt-3 rounded-xl bg-blue-50 p-3 text-xs font-semibold leading-5 text-blue-900">Demo refund recorded · {booking.refundReference}. No real money was collected or transferred.</p>}
           {booking.status === 'CANCELLED' && booking.paymentMethod === 'CASH' && <p className="mt-3 rounded-xl bg-slate-50 p-3 text-xs font-semibold leading-5 text-slate-700">No payment was collected, so no refund is due.</p>}
-          {booking.status === 'CANCELLED' && booking.paymentMethod === 'ONLINE' && !booking.receiptNumber && <p className="mt-3 rounded-xl bg-slate-50 p-3 text-xs font-semibold leading-5 text-slate-700">The demo payment was not verified, so no refund is due.</p>}
+          {booking.status === 'CANCELLED' && booking.paymentMethod === 'ONLINE' && booking.refundStatus !== 'DEMO_REFUND_RECORDED' && <p className="mt-3 rounded-xl bg-slate-50 p-3 text-xs font-semibold leading-5 text-slate-700">The demo payment was not verified, so no refund is due.</p>}
           {booking.receiptNumber && <p className="mt-3 rounded-xl bg-emerald-50 p-3 font-mono text-[11px] text-emerald-800">Receipt {booking.receiptNumber}</p>}
           {!['CANCELLED'].includes(booking.status) && <div className="mt-4 flex flex-wrap gap-4"><Link to={`/navigate?prototypeBooking=${booking.id}`} className="inline-flex items-center gap-2 text-xs font-extrabold text-violet-700 hover:underline"><Navigation className="size-4" />Open demo indoor route</Link><button type="button" onClick={() => cancelPrototype(booking.id)} className="text-xs font-extrabold text-rose-700 hover:underline">Cancel project booking</button></div>}
         </article>)}</div>

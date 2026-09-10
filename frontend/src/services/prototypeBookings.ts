@@ -2,6 +2,7 @@ import type { FacilityOwnership } from '../data/indiaFacilities'
 import type { PaymentMethod } from './appointments'
 
 export type PrototypeBookingStatus = 'CASH_PENDING' | 'PAYMENT_PENDING' | 'CONFIRMED' | 'CANCELLED'
+export type PrototypeRefundStatus = 'NOT_DUE' | 'DEMO_REFUND_RECORDED'
 
 export type PrototypeBooking = {
   id: string
@@ -23,6 +24,9 @@ export type PrototypeBooking = {
   status: PrototypeBookingStatus
   providerReference?: string
   receiptNumber?: string
+  refundStatus?: PrototypeRefundStatus
+  refundReference?: string
+  cancelledAt?: string
   createdAt: string
 }
 
@@ -63,4 +67,22 @@ export function updatePrototypeBooking(id: string, changes: Partial<PrototypeBoo
   })
   storePrototypeBookings(bookings)
   return updated
+}
+
+export function cancelPrototypeBooking(id: string) {
+  const booking = getPrototypeBookings().find((item) => item.id === id)
+  if (!booking || booking.status === 'CANCELLED') return booking
+
+  const verifiedOnlinePayment = booking.paymentMethod === 'ONLINE'
+    && booking.status === 'CONFIRMED'
+    && Boolean(booking.receiptNumber)
+
+  return updatePrototypeBooking(id, {
+    status: 'CANCELLED',
+    cancelledAt: new Date().toISOString(),
+    refundStatus: verifiedOnlinePayment ? 'DEMO_REFUND_RECORDED' : 'NOT_DUE',
+    refundReference: verifiedOnlinePayment
+      ? `SC-SIM-RF-${Date.now().toString(36).toUpperCase()}`
+      : undefined,
+  })
 }
