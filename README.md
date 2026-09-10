@@ -1,6 +1,6 @@
 # SmartCare — Intelligent Hospital OPD, Navigation & Emergency Response System
 
-[**Open the live frontend demo**](https://tausifalam6879.github.io/raahmediq-health/) · [View source on GitHub](https://github.com/tausifalam6879/raahmediq-health)
+[**Open the live frontend demo**](https://tausifalam6879.github.io/smartcare-hospital-system/) · [View source on GitHub](https://github.com/tausifalam6879/smartcare-hospital-system)
 
 > **Portfolio prototype:** The GitHub Pages demo uses browser-only sample data for directory booking, patient access, and Dijkstra indoor navigation. GitHub Pages cannot run the Spring Boot/PostgreSQL backend or local Python ML service, so backend-only clinical, payment, dispatch, medical-record, and ML operations remain available in local full-stack development only. The static demo falls back to a clearly labelled sample queue estimate when the ML service is unavailable. No real hospital, payment provider, or medical service is contacted.
 
