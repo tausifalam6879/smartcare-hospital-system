@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { indiaFacilities, indiaStatesAndUts, type FacilityOwnership, type IndiaFacility } from '../data/indiaFacilities'
 import { projectDoctors } from '../data/projectDoctorProfiles'
+import { recommendDepartment, type DepartmentRecommendation } from '../data/departmentRecommendation'
 
 export function HospitalDirectoryPage() {
   const [state, setState] = useState('')
@@ -14,6 +15,8 @@ export function HospitalDirectoryPage() {
   const [pickerGroup, setPickerGroup] = useState<FacilityOwnership | null>(null)
   const [pickerSearch, setPickerSearch] = useState('')
   const [selected, setSelected] = useState<IndiaFacility | null>(null)
+  const [symptoms, setSymptoms] = useState('')
+  const [recommendation, setRecommendation] = useState<DepartmentRecommendation | null>(null)
   const visible = useMemo(() => indiaFacilities.filter((facility) => (!state || facility.state === state) && (!ownership || facility.ownership === ownership) && (!search || `${facility.name} ${facility.city} ${facility.state}`.toLowerCase().includes(search.toLowerCase()))), [ownership, search, state])
   const government = visible.filter((item) => item.ownership === 'GOVERNMENT')
   const privateFacilities = visible.filter((item) => item.ownership === 'PRIVATE')
@@ -40,6 +43,13 @@ export function HospitalDirectoryPage() {
 
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
       <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-950"><div className="flex gap-3"><ShieldAlert className="mt-0.5 size-5 shrink-0 text-amber-700" /><div><strong>Project simulation data.</strong> Hospitals, doctors, fees, availability and follow-up policies on this screen demonstrate the SmartCare workflow. They are not live listings and do not redirect to third-party websites.</div></div></div>
+      <section className="mt-6 rounded-3xl border border-cyan-200 bg-white p-5 shadow-sm sm:p-6">
+        <p className="text-xs font-black uppercase tracking-[.18em] text-care-700">Explainable department guidance</p>
+        <h2 className="mt-2 text-2xl font-black text-ink-950">Which department should I visit?</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Describe the main symptom. SmartCare uses transparent routing rules to suggest a department—not a diagnosis.</p>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row"><label className="sr-only" htmlFor="symptom-guidance">Main symptom</label><input id="symptom-guidance" value={symptoms} onChange={(event) => setSymptoms(event.target.value)} placeholder="e.g. knee pain, skin rash, fever" className="h-12 flex-1 rounded-xl border border-slate-300 px-4 text-sm" /><button onClick={() => setRecommendation(recommendDepartment(symptoms))} className="h-12 rounded-xl bg-care-600 px-5 text-sm font-black text-white">Suggest department</button></div>
+        {recommendation && <div className={`mt-4 rounded-2xl border p-4 ${recommendation.emergency ? 'border-rose-300 bg-rose-50' : 'border-emerald-200 bg-emerald-50'}`} aria-live="polite"><p className={`text-xs font-black uppercase tracking-wider ${recommendation.emergency ? 'text-rose-700' : 'text-emerald-700'}`}>{recommendation.emergency ? 'Emergency warning' : 'Suggested department'}</p>{recommendation.emergency ? <><h3 className="mt-1 text-lg font-black text-rose-950">Do not wait for an OPD booking</h3><p className="mt-1 text-sm text-rose-900">Contact local emergency services or the hospital emergency desk immediately.</p><Link to="/ambulance" className="mt-3 inline-flex rounded-lg bg-rose-700 px-3 py-2 text-xs font-black text-white">Open ambulance coordination</Link></> : <><h3 className="mt-1 text-lg font-black text-emerald-950">{recommendation.department}</h3><p className="mt-1 text-sm text-emerald-900">Reason: the words entered indicate {recommendation.reason}.{recommendation.matchedKeywords.length > 0 && ` Matched: ${recommendation.matchedKeywords.join(', ')}.`}</p><p className="mt-2 text-xs font-bold text-emerald-800">A qualified clinician must confirm the appropriate care pathway.</p></>}</div>}
+      </section>
       <section className="mt-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_1fr_1.4fr_auto]">
         <label className="text-xs font-black text-slate-600">State / Union Territory<select value={state} onChange={(event) => setState(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"><option value="">All States & UTs</option>{indiaStatesAndUts.map((item) => <option key={item}>{item}</option>)}</select></label>
         <label className="text-xs font-black text-slate-600">Care group<select value={ownership} onChange={(event) => setOwnership(event.target.value as FacilityOwnership | '')} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"><option value="">Government + Private</option><option value="GOVERNMENT">Government hospitals</option><option value="PRIVATE">Private hospitals</option></select></label>
