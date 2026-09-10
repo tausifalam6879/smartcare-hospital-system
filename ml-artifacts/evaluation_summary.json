@@ -1,0 +1,17 @@
+{
+  "dataset": "BloodyWell",
+  "total_labelled_wells": 3139,
+  "split_method": "Sheet-safe StratifiedGroupKFold",
+  "train_wells": 2010,
+  "validation_wells": 504,
+  "held_out_test_wells": 625,
+  "validation_accuracy": 0.9444444444444444,
+  "test_accuracy": 0.9504,
+  "test_brier_score": 0.042846016585826874,
+  "review_threshold": 0.9,
+  "test_manual_review_wells": 26,
+  "test_accepted_coverage": 0.9584,
+  "test_accepted_accuracy": 0.9632721202003339,
+  "test_wrong_accepted_wells": 22,
+  "warning": "Not a clinical diagnostic device. Do not use without qualified laboratory verification."
+}

@@ -68,6 +68,8 @@ smartcare:
     requests-per-minute: ${SMARTCARE_AI_REQUESTS_PER_MINUTE:12}
   blood-bank:
     verification-max-age: ${SMARTCARE_BLOOD_VERIFICATION_MAX_AGE:6h}
+  blood-reaction-model:
+    base-url: ${SMARTCARE_BLOOD_REACTION_MODEL_URL:http://127.0.0.1:8001}
 
 management:
   endpoints:

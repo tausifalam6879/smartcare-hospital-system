@@ -52,14 +52,25 @@ services:
       SMARTCARE_ADMIN_PASSWORD: ${SMARTCARE_ADMIN_PASSWORD:-}
       SMARTCARE_ADMIN_NAME: ${SMARTCARE_ADMIN_NAME:-SmartCare Administrator}
       SMARTCARE_DOCUMENT_STORAGE_PATH: /var/lib/smartcare/private-documents
+      SMARTCARE_BLOOD_REACTION_MODEL_URL: http://ml-service:8001
       SMARTCARE_AI_REQUESTS_PER_MINUTE: ${SMARTCARE_AI_REQUESTS_PER_MINUTE:-12}
     volumes:
       - medical_documents:/var/lib/smartcare/private-documents
     depends_on:
       postgres:
         condition: service_healthy
+      ml-service:
+        condition: service_healthy
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  ml-service:
+    build:
+      context: .
+      dockerfile: ml-service/Dockerfile
+    expose:
+      - "8001"
     restart: unless-stopped
 
   frontend:
@@ -69,7 +80,7 @@ services:
       backend:
         condition: service_healthy
     ports:
-      - "5173:80"
+      - "${FRONTEND_PORT:-5173}:80"
     restart: unless-stopped
 
 volumes:

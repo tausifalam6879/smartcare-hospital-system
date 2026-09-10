@@ -1,0 +1,626 @@
+filename,sheet_id,reagent,gt_result,image_path,predicted_result,agglutination_probability,confidence,decision_status
+04. abdOAB_0_0.png,04. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_0.png,1,0.9999949,0.9999949,AI-assisted result — clinician verification required
+04. abdOAB_0_1.png,04. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_1.png,0,3.815334e-06,0.9999962,AI-assisted result — clinician verification required
+04. abdOAB_0_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_2.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+04. abdOAB_0_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_3.png,0,2.520727e-06,0.9999975,AI-assisted result — clinician verification required
+04. abdOAB_0_4.png,04. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_4.png,0,0.0035465218,0.99645346,AI-assisted result — clinician verification required
+04. abdOAB_0_5.png,04. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_0_5.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+04. abdOAB_1_0.png,04. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_0.png,0,1.7384982e-09,1.0,AI-assisted result — clinician verification required
+04. abdOAB_1_1.png,04. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_1.png,0,2.037721e-07,0.9999998,AI-assisted result — clinician verification required
+04. abdOAB_1_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+04. abdOAB_1_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_3.png,0,0.0026940883,0.9973059,AI-assisted result — clinician verification required
+04. abdOAB_1_4.png,04. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+04. abdOAB_1_5.png,04. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_1_5.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+04. abdOAB_2_0.png,04. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_0.png,0,0.08708833,0.91291165,AI-assisted result — clinician verification required
+04. abdOAB_2_1.png,04. abdOAB,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_1.png,1,0.8991151,0.8991151,Manual review required
+04. abdOAB_2_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+04. abdOAB_2_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_3.png,0,1.5173474e-07,0.9999998,AI-assisted result — clinician verification required
+04. abdOAB_2_4.png,04. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_4.png,0,0.08167148,0.9183285,AI-assisted result — clinician verification required
+04. abdOAB_2_5.png,04. abdOAB,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_2_5.png,0,0.001957561,0.99804246,AI-assisted result — clinician verification required
+04. abdOAB_3_0.png,04. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_0.png,0,4.0253436e-08,0.99999994,AI-assisted result — clinician verification required
+04. abdOAB_3_1.png,04. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_1.png,0,2.1764017e-09,1.0,AI-assisted result — clinician verification required
+04. abdOAB_3_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_2.png,1,0.99999833,0.99999833,AI-assisted result — clinician verification required
+04. abdOAB_3_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_3.png,0,3.9552337e-08,0.99999994,AI-assisted result — clinician verification required
+04. abdOAB_3_4.png,04. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_4.png,1,0.9999989,0.9999989,AI-assisted result — clinician verification required
+04. abdOAB_3_5.png,04. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_3_5.png,1,0.99930346,0.99930346,AI-assisted result — clinician verification required
+04. abdOAB_4_0.png,04. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_0.png,1,0.9996822,0.9996822,AI-assisted result — clinician verification required
+04. abdOAB_4_1.png,04. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_1.png,0,1.4423058e-08,1.0,AI-assisted result — clinician verification required
+04. abdOAB_4_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+04. abdOAB_4_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_3.png,0,0.000533161,0.99946684,AI-assisted result — clinician verification required
+04. abdOAB_4_4.png,04. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_4.png,0,0.13337718,0.8666228,Manual review required
+04. abdOAB_4_5.png,04. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_4_5.png,1,0.9999013,0.9999013,AI-assisted result — clinician verification required
+04. abdOAB_5_0.png,04. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_0.png,1,0.9999944,0.9999944,AI-assisted result — clinician verification required
+04. abdOAB_5_1.png,04. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_1.png,0,3.7640467e-07,0.99999964,AI-assisted result — clinician verification required
+04. abdOAB_5_2.png,04. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+04. abdOAB_5_3.png,04. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_3.png,0,0.005938614,0.9940614,AI-assisted result — clinician verification required
+04. abdOAB_5_4.png,04. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_4.png,0,0.0015755496,0.9984245,AI-assisted result — clinician verification required
+04. abdOAB_5_5.png,04. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\04. abdOAB_5_5.png,1,0.9922537,0.9922537,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_0.png,07. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_1.png,07. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_2.png,0,0.00038590207,0.9996141,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_4.png,0,0.00018244017,0.99981755,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_5.png,0,0.0115137,0.9884863,AI-assisted result — clinician verification required
+07. CcEeCwKk_0_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_0_6.png,1,0.99999595,0.99999595,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_0.png,07. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_1.png,07. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_2.png,0,1.4912212e-07,0.9999998,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_4.png,0,7.247405e-05,0.9999275,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_5.png,0,0.08542047,0.9145795,AI-assisted result — clinician verification required
+07. CcEeCwKk_1_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_1_6.png,1,0.99999905,0.99999905,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_0.png,07. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_0.png,0,2.9472885e-06,0.9999971,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_1.png,07. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_3.png,1,0.99936396,0.99936396,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_5.png,0,0.07343106,0.9265689,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_6.png,1,0.9999975,0.9999975,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_0.png,07. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_5.png,0,0.0077014277,0.99229854,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_0.png,07. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_1.png,07. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_5.png,0,0.033029538,0.96697044,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_3.png,07. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_5.png,07. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_5.png,1,0.51512355,0.51512355,Manual review required
+2022.10.26_003_1_map_3_2.png,2022.10.26_003_1_map,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_2.png,0,0.000107851505,0.9998922,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_5_4.png,2022.10.26_009_2_map,Cw,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_4.png,1,0.97549313,0.97549313,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_2.png,0,0.0013079266,0.9986921,AI-assisted result — clinician verification required
+07. CcEeCwKk_2_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_2_4.png,0,0.0009896533,0.9990103,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_1.png,07. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_1.png,0,1.5179121e-06,0.9999985,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_2.png,0,0.00036316985,0.9996368,AI-assisted result — clinician verification required
+07. CcEeCwKk_3_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_3_4.png,0,0.00891941,0.9910806,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_2.png,0,0.00044623602,0.99955374,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_4.png,0,0.022454258,0.97754574,AI-assisted result — clinician verification required
+07. CcEeCwKk_4_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_4_6.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_0.png,07. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_1.png,07. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_1.png,0,0.00024902943,0.999751,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_2.png,07. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_2.png,0,0.0015221606,0.9984778,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_4.png,07. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_4.png,0,0.0014895046,0.9985105,AI-assisted result — clinician verification required
+07. CcEeCwKk_5_6.png,07. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\07. CcEeCwKk_5_6.png,1,0.9542467,0.9542467,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_0.png,2022.10.26_003_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_0.png,1,0.9999291,0.9999291,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_1.png,2022.10.26_003_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_1.png,0,0.000310395,0.9996896,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_2.png,2022.10.26_003_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_3.png,0,0.004044098,0.9959559,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_4.png,2022.10.26_003_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_4.png,0,6.413573e-05,0.99993587,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_0_5.png,2022.10.26_003_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_0_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_0.png,2022.10.26_003_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_0.png,1,0.98237956,0.98237956,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_1.png,2022.10.26_003_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_2.png,2022.10.26_003_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_2.png,1,0.9752137,0.9752137,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_3.png,0,0.0076197386,0.99238026,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_4.png,2022.10.26_003_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_4.png,0,0.0013964163,0.9986036,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_1_5.png,2022.10.26_003_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_1_5.png,0,0.0019739207,0.9980261,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_0.png,2022.10.26_003_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_0.png,0,7.4942267e-07,0.9999992,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_1.png,2022.10.26_003_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_1.png,0,1.0431006e-05,0.99998957,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_2.png,2022.10.26_003_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_3.png,0,0.019444289,0.9805557,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_4.png,2022.10.26_003_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_4.png,1,0.9925001,0.9925001,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_2_5.png,2022.10.26_003_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_2_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_3_0.png,2022.10.26_003_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_0.png,1,0.6428457,0.6428457,Manual review required
+2022.10.26_003_1_map_3_1.png,2022.10.26_003_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_1.png,0,4.7721587e-05,0.99995226,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_3_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_3.png,0,0.0065895156,0.99341047,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_3_4.png,2022.10.26_003_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_4.png,0,0.0016576776,0.99834234,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_3_5.png,2022.10.26_003_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_3_5.png,1,0.9087315,0.9087315,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_0.png,2022.10.26_003_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_0.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_1.png,2022.10.26_003_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_1.png,0,3.6782276e-07,0.99999964,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_2.png,2022.10.26_003_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_3.png,0,0.0033492774,0.9966507,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_4.png,2022.10.26_003_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_4.png,0,0.0009059397,0.99909407,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_4_5.png,2022.10.26_003_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_4_5.png,0,0.014893296,0.9851067,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_5_0.png,2022.10.26_003_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_0.png,0,1.5560894e-05,0.99998444,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_5_1.png,2022.10.26_003_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_1.png,0,4.981826e-06,0.999995,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_5_2.png,2022.10.26_003_1_map,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_2.png,0,0.00010355161,0.99989647,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_5_3.png,2022.10.26_003_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_3.png,0,0.000101848804,0.99989814,AI-assisted result — clinician verification required
+2022.10.26_003_1_map_5_4.png,2022.10.26_003_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_4.png,1,0.8730278,0.8730278,Manual review required
+2022.10.26_003_1_map_5_5.png,2022.10.26_003_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_003_1_map_5_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_0_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_0_5.png,0,7.708773e-06,0.9999923,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_0.png,2022.10.26_010_2_map,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_0.png,0,1.6799604e-06,0.99999833,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_1.png,2022.10.26_010_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_2.png,2022.10.26_010_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_2.png,0,0.01142228,0.9885777,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_3.png,2022.10.26_010_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_3.png,1,0.999998,0.999998,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_4.png,2022.10.26_010_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_4.png,0,0.003649647,0.99635035,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_1_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_1_5.png,0,0.00015934829,0.9998407,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_0.png,2022.10.26_010_2_map,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_0.png,0,3.0978792e-06,0.9999969,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_1.png,2022.10.26_010_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_1.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_2.png,2022.10.26_010_2_map,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_2.png,0,0.003324241,0.9966757,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_3.png,2022.10.26_010_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_3.png,0,0.0056785196,0.99432147,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_4.png,2022.10.26_010_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_4.png,0,0.006284269,0.9937157,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_2_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_2_5.png,0,0.08169344,0.9183066,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_0.png,2022.10.26_010_2_map,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_0.png,1,0.99999833,0.99999833,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_1.png,2022.10.26_010_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_2.png,2022.10.26_010_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_2.png,0,7.065767e-06,0.9999929,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_3.png,2022.10.26_010_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_4.png,2022.10.26_010_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_4.png,0,0.00015335929,0.99984664,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_3_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_3_5.png,0,0.000786022,0.999214,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_4_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_4_5.png,0,1.399861e-05,0.999986,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_0.png,2022.10.26_010_2_map,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_1.png,2022.10.26_010_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_1.png,1,0.9999931,0.9999931,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_2.png,2022.10.26_010_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_2.png,0,7.471605e-07,0.9999992,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_3.png,2022.10.26_010_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_4.png,2022.10.26_010_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_4.png,0,0.0075749247,0.9924251,AI-assisted result — clinician verification required
+2022.10.26_010_2_map_5_5.png,2022.10.26_010_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_2_map_5_5.png,0,3.732876e-05,0.9999627,AI-assisted result — clinician verification required
+2022.06.01_002_map_0_0.png,2022.06.01_002_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_0_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_0_1.png,2022.06.01_002_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_0_1.png,0,0.025694309,0.9743057,AI-assisted result — clinician verification required
+2022.06.01_002_map_0_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_0_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_0_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_0_4.png,0,0.043914188,0.9560858,AI-assisted result — clinician verification required
+2022.06.01_002_map_1_0.png,2022.06.01_002_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_1_0.png,0,0.03230928,0.9676907,AI-assisted result — clinician verification required
+2022.06.01_002_map_1_1.png,2022.06.01_002_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_1_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.06.01_002_map_1_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_1_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_1_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_1_4.png,0,0.30765194,0.69234806,Manual review required
+2022.06.01_002_map_2_0.png,2022.06.01_002_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_2_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_2_1.png,2022.06.01_002_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_2_1.png,0,1.156302e-06,0.99999887,AI-assisted result — clinician verification required
+2022.06.01_002_map_2_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_2_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_2_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_2_4.png,0,1.5667672e-08,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_3_0.png,2022.06.01_002_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_3_0.png,1,0.9999082,0.9999082,AI-assisted result — clinician verification required
+2022.06.01_002_map_3_1.png,2022.06.01_002_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_3_1.png,0,0.00011183167,0.9998882,AI-assisted result — clinician verification required
+2022.06.01_002_map_3_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_3_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_3_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_3_4.png,0,0.0149406,0.9850594,AI-assisted result — clinician verification required
+2022.06.01_002_map_4_0.png,2022.06.01_002_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_4_0.png,0,0.00019338347,0.99980664,AI-assisted result — clinician verification required
+2022.06.01_002_map_4_1.png,2022.06.01_002_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_4_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_4_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_4_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_4_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_4_4.png,0,0.020943778,0.97905624,AI-assisted result — clinician verification required
+2022.06.01_002_map_5_0.png,2022.06.01_002_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_5_0.png,0,0.015855143,0.98414487,AI-assisted result — clinician verification required
+2022.06.01_002_map_5_1.png,2022.06.01_002_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_5_1.png,0,0.002384009,0.997616,AI-assisted result — clinician verification required
+2022.06.01_002_map_5_3.png,2022.06.01_002_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_5_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.06.01_002_map_5_4.png,2022.06.01_002_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.06.01_002_map_5_4.png,1,0.7358866,0.7358866,Manual review required
+2022.10.26_009_2_map_0_5.png,2022.10.26_009_2_map,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_0_5.png,0,0.005935856,0.99406415,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_0_6.png,2022.10.26_009_2_map,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_0_6.png,1,0.99993193,0.99993193,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_0.png,2022.10.26_009_2_map,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_0.png,0,2.174355e-06,0.99999785,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_1.png,2022.10.26_009_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_2.png,2022.10.26_009_2_map,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_2.png,1,0.9999989,0.9999989,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_3.png,2022.10.26_009_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_3.png,1,0.9962709,0.9962709,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_4.png,2022.10.26_009_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_4.png,0,0.017724324,0.98227566,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_1_5.png,2022.10.26_009_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_1_5.png,0,0.00010364704,0.99989635,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_2_5.png,2022.10.26_009_2_map,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_2_5.png,1,0.98593915,0.98593915,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_2_6.png,2022.10.26_009_2_map,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_2_6.png,0,0.0059076403,0.99409235,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_3_5.png,2022.10.26_009_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_3_5.png,0,0.1670033,0.8329967,Manual review required
+2022.10.26_009_2_map_4_0.png,2022.10.26_009_2_map,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_1.png,2022.10.26_009_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_1.png,1,0.999997,0.999997,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_2.png,2022.10.26_009_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_2.png,0,0.07114844,0.92885154,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_3.png,2022.10.26_009_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_3.png,1,0.99951077,0.99951077,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_4.png,2022.10.26_009_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_4.png,0,0.0001685068,0.9998315,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_5.png,2022.10.26_009_2_map,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_5.png,1,0.99857605,0.99857605,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_4_6.png,2022.10.26_009_2_map,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_4_6.png,0,0.15136866,0.8486313,Manual review required
+2022.10.26_009_2_map_5_0.png,2022.10.26_009_2_map,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_0.png,1,0.99992704,0.99992704,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_5_1.png,2022.10.26_009_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_5_2.png,2022.10.26_009_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_2.png,0,1.2542393e-05,0.9999875,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_5_3.png,2022.10.26_009_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_3.png,1,0.9999963,0.9999963,AI-assisted result — clinician verification required
+2022.10.26_009_2_map_5_5.png,2022.10.26_009_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_2_map_5_5.png,0,0.007998749,0.99200124,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_0_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_0_5.png,0,0.00074785546,0.99925214,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_1_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_1_5.png,0,0.00033147482,0.99966854,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_2_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_2_5.png,0,0.009604316,0.99039567,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_3_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_3_5.png,0,0.0019994513,0.99800056,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_4_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_4_5.png,0,0.000838209,0.9991618,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_0.png,2022.10.26_007_2_map,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_0.png,0,1.7209468e-05,0.9999828,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_1.png,2022.10.26_007_2_map,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_2.png,2022.10.26_007_2_map,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_2.png,0,7.478181e-06,0.99999255,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_3.png,2022.10.26_007_2_map,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_3.png,1,0.9983626,0.9983626,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_4.png,2022.10.26_007_2_map,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_4.png,0,0.0011601831,0.9988398,AI-assisted result — clinician verification required
+2022.10.26_007_2_map_5_5.png,2022.10.26_007_2_map,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_007_2_map_5_5.png,0,9.34297e-05,0.9999066,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_0.png,2022.10.26_009_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_0.png,0,0.0003739102,0.9996261,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_1.png,0,0.00090249605,0.9990975,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_2.png,1,0.99999833,0.99999833,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_3.png,0,0.022994181,0.97700584,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_4.png,2022.10.26_009_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_0_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_0_5.png,1,0.9937902,0.9937902,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_0.png,2022.10.26_009_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_0.png,0,0.0006341868,0.9993658,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_1.png,0,0.00023793455,0.99976206,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_2.png,1,0.9999144,0.9999144,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_3.png,0,0.000105820465,0.9998942,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_4.png,2022.10.26_009_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_1_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_1_5.png,1,0.9999832,0.9999832,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_2_0.png,2022.10.26_009_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_0.png,0,9.684434e-06,0.99999034,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_2_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_1.png,0,1.1363553e-05,0.9999886,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_2_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_2.png,1,0.98860264,0.98860264,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_2_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_3.png,0,0.246579,0.753421,Manual review required
+2022.10.26_009_1_map_2_4.png,2022.10.26_009_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_2_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_2_5.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_0.png,2022.10.26_009_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_0.png,0,0.00041766439,0.99958235,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_1.png,0,0.00014442806,0.9998556,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_3.png,0,0.00037405567,0.9996259,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_4.png,2022.10.26_009_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_4.png,1,0.99997723,0.99997723,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_3_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_3_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_0.png,2022.10.26_009_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_0.png,0,8.804828e-06,0.9999912,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_1.png,0,0.04109152,0.9589085,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_2.png,1,0.9999449,0.9999449,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_3.png,0,0.002591285,0.9974087,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_4.png,2022.10.26_009_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_4_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_4_5.png,1,0.5680073,0.5680073,Manual review required
+2022.10.26_009_1_map_5_0.png,2022.10.26_009_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_0.png,1,0.86907136,0.86907136,Manual review required
+2022.10.26_009_1_map_5_1.png,2022.10.26_009_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_1.png,0,0.0019447856,0.9980552,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_5_2.png,2022.10.26_009_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_5_3.png,2022.10.26_009_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_3.png,0,0.05304176,0.94695824,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_5_4.png,2022.10.26_009_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_4.png,0,0.0001856786,0.99981433,AI-assisted result — clinician verification required
+2022.10.26_009_1_map_5_5.png,2022.10.26_009_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_009_1_map_5_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_0.png,2022.10.21_001_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_0.png,1,0.97371894,0.97371894,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_1.png,2022.10.21_001_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_2.png,1,0.99997807,0.99997807,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_3.png,0,0.0004568138,0.9995432,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_4.png,2022.10.21_001_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_4.png,1,0.99754804,0.99754804,AI-assisted result — clinician verification required
+2022.10.21_001_map_0_5.png,2022.10.21_001_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_0_5.png,1,0.95659095,0.95659095,AI-assisted result — clinician verification required
+2022.10.21_001_map_1_0.png,2022.10.21_001_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_0.png,1,0.9950899,0.9950899,AI-assisted result — clinician verification required
+2022.10.21_001_map_1_1.png,2022.10.21_001_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_1.png,0,0.010571381,0.98942864,AI-assisted result — clinician verification required
+2022.10.21_001_map_1_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_2.png,1,0.9871464,0.9871464,AI-assisted result — clinician verification required
+2022.10.21_001_map_1_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_3.png,0,0.11628853,0.88371146,Manual review required
+2022.10.21_001_map_1_4.png,2022.10.21_001_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_4.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.21_001_map_1_5.png,2022.10.21_001_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_1_5.png,0,0.00032276436,0.99967724,AI-assisted result — clinician verification required
+2022.10.21_001_map_2_0.png,2022.10.21_001_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_0.png,0,0.029280907,0.9707191,AI-assisted result — clinician verification required
+2022.10.21_001_map_2_1.png,2022.10.21_001_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_1.png,0,0.0007278208,0.99927217,AI-assisted result — clinician verification required
+2022.10.21_001_map_2_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_2.png,1,0.9999852,0.9999852,AI-assisted result — clinician verification required
+2022.10.21_001_map_2_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_3.png,0,0.02820939,0.9717906,AI-assisted result — clinician verification required
+2022.10.21_001_map_2_4.png,2022.10.21_001_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_4.png,1,0.55802804,0.55802804,Manual review required
+2022.10.21_001_map_2_5.png,2022.10.21_001_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_2_5.png,1,0.9999175,0.9999175,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_0.png,2022.10.21_001_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_0.png,0,0.017419241,0.9825808,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_1.png,2022.10.21_001_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_1.png,0,0.08099614,0.91900384,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_2.png,1,0.9998043,0.9998043,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_3.png,0,0.008457863,0.99154216,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_4.png,2022.10.21_001_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_4.png,1,0.99999833,0.99999833,AI-assisted result — clinician verification required
+2022.10.21_001_map_3_5.png,2022.10.21_001_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_3_5.png,0,2.0414354e-06,0.999998,AI-assisted result — clinician verification required
+2022.10.21_001_map_4_0.png,2022.10.21_001_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_0.png,0,0.03953981,0.9604602,AI-assisted result — clinician verification required
+2022.10.21_001_map_4_1.png,2022.10.21_001_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_1.png,1,0.9999926,0.9999926,AI-assisted result — clinician verification required
+2022.10.21_001_map_4_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.21_001_map_4_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_3.png,0,0.36156777,0.63843226,Manual review required
+2022.10.21_001_map_4_4.png,2022.10.21_001_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_4.png,1,0.9885542,0.9885542,AI-assisted result — clinician verification required
+2022.10.21_001_map_4_5.png,2022.10.21_001_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_4_5.png,1,0.64228135,0.64228135,Manual review required
+2022.10.21_001_map_5_0.png,2022.10.21_001_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_0.png,0,0.025617462,0.9743825,AI-assisted result — clinician verification required
+2022.10.21_001_map_5_1.png,2022.10.21_001_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_1.png,0,0.06463066,0.9353694,AI-assisted result — clinician verification required
+2022.10.21_001_map_5_2.png,2022.10.21_001_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.21_001_map_5_3.png,2022.10.21_001_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_3.png,1,0.60155916,0.60155916,Manual review required
+2022.10.21_001_map_5_4.png,2022.10.21_001_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_4.png,1,0.99999964,0.99999964,AI-assisted result — clinician verification required
+2022.10.21_001_map_5_5.png,2022.10.21_001_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.21_001_map_5_5.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_0.png,2022.10.26_002_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_0.png,1,0.9999968,0.9999968,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_1.png,2022.10.26_002_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_1.png,0,9.2223104e-07,0.9999991,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_2.png,2022.10.26_002_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_3.png,0,1.3073125e-05,0.99998695,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_4.png,2022.10.26_002_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_4.png,0,2.086461e-05,0.99997914,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_0_5.png,2022.10.26_002_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_0_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_0.png,2022.10.26_002_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_0.png,0,0.008475761,0.9915242,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_1.png,2022.10.26_002_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_2.png,2022.10.26_002_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_3.png,0,0.0030871257,0.9969129,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_4.png,2022.10.26_002_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_4.png,1,0.9999908,0.9999908,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_1_5.png,2022.10.26_002_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_1_5.png,0,2.350375e-05,0.9999765,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_0.png,2022.10.26_002_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_0.png,1,0.9999995,0.9999995,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_1.png,2022.10.26_002_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_2.png,2022.10.26_002_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_3.png,0,0.0005817938,0.9994182,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_4.png,2022.10.26_002_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_4.png,0,0.029985784,0.9700142,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_2_5.png,2022.10.26_002_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_2_5.png,0,5.6085773e-05,0.9999439,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_0.png,2022.10.26_002_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_0.png,1,0.99999857,0.99999857,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_1.png,2022.10.26_002_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_1.png,0,0.07287553,0.9271245,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_2.png,2022.10.26_002_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_2.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_3.png,0,0.03365574,0.96634424,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_4.png,2022.10.26_002_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_4.png,0,0.00994952,0.9900505,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_3_5.png,2022.10.26_002_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_3_5.png,0,0.00016531053,0.9998347,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_0.png,2022.10.26_002_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_1.png,2022.10.26_002_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_1.png,0,0.000147066,0.99985296,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_2.png,2022.10.26_002_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_3.png,0,0.06845827,0.93154174,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_4.png,2022.10.26_002_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_4.png,0,9.913514e-05,0.9999009,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_4_5.png,2022.10.26_002_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_4_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_5_0.png,2022.10.26_002_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_0.png,0,9.060216e-09,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_5_1.png,2022.10.26_002_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_5_2.png,2022.10.26_002_1_map,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_2.png,0,9.32227e-05,0.9999068,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_5_3.png,2022.10.26_002_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_3.png,0,0.012247273,0.98775274,AI-assisted result — clinician verification required
+2022.10.26_002_1_map_5_4.png,2022.10.26_002_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_4.png,1,0.791837,0.791837,Manual review required
+2022.10.26_002_1_map_5_5.png,2022.10.26_002_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_002_1_map_5_5.png,0,0.0015464947,0.9984535,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_0.png,2022.10.26_010_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_0.png,0,2.9939736e-07,0.9999997,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_1.png,2022.10.26_010_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_1.png,1,0.99993336,0.99993336,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_2.png,2022.10.26_010_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_2.png,1,0.99997914,0.99997914,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_3.png,0,1.0277549e-05,0.99998975,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_4.png,2022.10.26_010_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_4.png,0,0.0004674265,0.9995326,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_0_5.png,2022.10.26_010_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_0_5.png,0,0.00091957336,0.9990804,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_0.png,2022.10.26_010_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_1.png,2022.10.26_010_1_map,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_2.png,2022.10.26_010_1_map,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_2.png,0,5.337657e-06,0.99999464,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_3.png,0,3.5158166e-06,0.9999965,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_4.png,2022.10.26_010_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_4.png,0,9.487743e-06,0.9999905,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_1_5.png,2022.10.26_010_1_map,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_1_5.png,0,0.00022790006,0.9997721,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_0.png,2022.10.26_010_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_0.png,1,0.99617696,0.99617696,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_1.png,2022.10.26_010_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_1.png,0,0.00077671185,0.9992233,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_2.png,2022.10.26_010_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_3.png,0,0.0029460858,0.9970539,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_4.png,2022.10.26_010_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_4.png,0,0.00086680154,0.99913317,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_2_5.png,2022.10.26_010_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_2_5.png,0,0.009392382,0.9906076,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_0.png,2022.10.26_010_1_map,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_1.png,2022.10.26_010_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_1.png,0,5.825089e-07,0.9999994,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_2.png,2022.10.26_010_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_3.png,0,6.9966576e-05,0.99993,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_4.png,2022.10.26_010_1_map,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_4.png,0,0.038153242,0.96184677,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_3_5.png,2022.10.26_010_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_3_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_0.png,2022.10.26_010_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_0.png,0,1.9005718e-07,0.9999998,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_1.png,2022.10.26_010_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_1.png,0,3.691476e-07,0.99999964,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_2.png,2022.10.26_010_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_3.png,0,0.00011790458,0.9998821,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_4.png,2022.10.26_010_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_4_5.png,2022.10.26_010_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_4_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_0.png,2022.10.26_010_1_map,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_0.png,0,1.6908709e-06,0.99999833,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_1.png,2022.10.26_010_1_map,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_1.png,0,1.401498e-07,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_2.png,2022.10.26_010_1_map,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_2.png,1,0.9999995,0.9999995,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_3.png,2022.10.26_010_1_map,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_3.png,0,0.0007597893,0.9992402,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_4.png,2022.10.26_010_1_map,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_4.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+2022.10.26_010_1_map_5_5.png,2022.10.26_010_1_map,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\2022.10.26_010_1_map_5_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_0.png,11. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_0.png,0,0.121843226,0.8781568,Manual review required
+11. CcEeCwKk_5_1.png,11. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_2.png,11. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_2.png,0,0.0076276865,0.99237233,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_3.png,1,0.99825436,0.99825436,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_4.png,0,0.000721799,0.9992782,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_5.png,0,0.0007523725,0.9992476,AI-assisted result — clinician verification required
+11. CcEeCwKk_5_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_5_6.png,1,0.99998,0.99998,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_0.png,11. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_0.png,0,5.686137e-07,0.9999994,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_1.png,11. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_2.png,11. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_2.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_3.png,1,0.9942247,0.9942247,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_4.png,0,3.3861514e-05,0.99996614,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_5.png,0,0.020522764,0.9794772,AI-assisted result — clinician verification required
+11. CcEeCwKk_0_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_0_6.png,1,0.9999962,0.9999962,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_0.png,11. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_0.png,0,6.168536e-05,0.9999383,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_1.png,11. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_2.png,11. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_4.png,0,2.3975076e-07,0.99999976,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_5.png,0,0.07607666,0.9239234,AI-assisted result — clinician verification required
+11. CcEeCwKk_1_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_1_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_0.png,11. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_1.png,11. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_1.png,1,0.99898714,0.99898714,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_2.png,11. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_3.png,1,0.99963987,0.99963987,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_4.png,0,2.1862794e-05,0.9999781,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_5.png,0,0.000649363,0.9993506,AI-assisted result — clinician verification required
+11. CcEeCwKk_2_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_2_6.png,1,0.9993851,0.9993851,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_0.png,11. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_1.png,11. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_1.png,0,2.234475e-08,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_2.png,11. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_2.png,0,2.0605461e-07,0.9999998,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_3.png,1,0.9998621,0.9998621,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_4.png,0,9.4949016e-08,0.9999999,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_5.png,0,5.8189184e-05,0.9999418,AI-assisted result — clinician verification required
+11. CcEeCwKk_3_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_3_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_0.png,11. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_0.png,1,0.99972934,0.99972934,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_1.png,11. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_1.png,0,0.0038568838,0.9961431,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_2.png,11. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_2.png,0,1.4294907e-06,0.99999857,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_3.png,11. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_3.png,1,0.9996018,0.9996018,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_4.png,11. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_4.png,0,1.592824e-06,0.9999984,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_5.png,11. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_5.png,0,0.00015885737,0.99984115,AI-assisted result — clinician verification required
+11. CcEeCwKk_4_6.png,11. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\11. CcEeCwKk_4_6.png,1,0.99061334,0.99061334,AI-assisted result — clinician verification required
+15. abdOAB_5_0.png,15. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_0.png,0,5.3383446e-05,0.9999466,AI-assisted result — clinician verification required
+15. abdOAB_5_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_1.png,0,1.4097642e-05,0.9999859,AI-assisted result — clinician verification required
+15. abdOAB_5_2.png,15. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. abdOAB_5_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_3.png,0,6.0655108e-05,0.9999393,AI-assisted result — clinician verification required
+15. abdOAB_5_4.png,15. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_4.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+15. abdOAB_5_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_5_5.png,1,0.9999994,0.9999994,AI-assisted result — clinician verification required
+15. abdOAB_0_0.png,15. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_0.png,1,0.99994385,0.99994385,AI-assisted result — clinician verification required
+15. abdOAB_0_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_1.png,0,3.5708518e-07,0.99999964,AI-assisted result — clinician verification required
+15. abdOAB_0_2.png,15. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. abdOAB_0_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_3.png,0,0.008206014,0.991794,AI-assisted result — clinician verification required
+15. abdOAB_0_4.png,15. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_4.png,0,1.4434528e-06,0.99999857,AI-assisted result — clinician verification required
+15. abdOAB_0_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_0_5.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. abdOAB_1_0.png,15. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_0.png,0,9.266416e-06,0.99999076,AI-assisted result — clinician verification required
+15. abdOAB_1_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_1.png,0,4.6577912e-05,0.99995345,AI-assisted result — clinician verification required
+15. abdOAB_1_2.png,15. abdOAB,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_2.png,0,0.00018532557,0.9998147,AI-assisted result — clinician verification required
+15. abdOAB_1_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_3.png,0,3.3512626e-07,0.99999964,AI-assisted result — clinician verification required
+15. abdOAB_1_4.png,15. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. abdOAB_1_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_1_5.png,1,0.99999905,0.99999905,AI-assisted result — clinician verification required
+15. abdOAB_2_0.png,15. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_0.png,1,0.99847,0.99847,AI-assisted result — clinician verification required
+15. abdOAB_2_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_1.png,0,0.0006672242,0.9993328,AI-assisted result — clinician verification required
+15. abdOAB_2_2.png,15. abdOAB,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_2.png,0,0.00019899348,0.999801,AI-assisted result — clinician verification required
+15. abdOAB_2_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_3.png,0,3.896797e-07,0.9999996,AI-assisted result — clinician verification required
+15. abdOAB_2_4.png,15. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_4.png,0,2.6608428e-05,0.9999734,AI-assisted result — clinician verification required
+15. abdOAB_2_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_2_5.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. abdOAB_3_0.png,15. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_0.png,1,0.99909127,0.99909127,AI-assisted result — clinician verification required
+15. abdOAB_3_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_1.png,0,7.334389e-07,0.9999993,AI-assisted result — clinician verification required
+15. abdOAB_3_2.png,15. abdOAB,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_2.png,0,6.3760586e-07,0.99999934,AI-assisted result — clinician verification required
+15. abdOAB_3_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_3.png,0,2.0101522e-06,0.999998,AI-assisted result — clinician verification required
+15. abdOAB_3_4.png,15. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_4.png,0,1.4716933e-07,0.9999999,AI-assisted result — clinician verification required
+15. abdOAB_3_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_3_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. abdOAB_4_0.png,15. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_0.png,0,6.253302e-05,0.9999375,AI-assisted result — clinician verification required
+15. abdOAB_4_1.png,15. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_1.png,0,6.093636e-08,0.99999994,AI-assisted result — clinician verification required
+15. abdOAB_4_2.png,15. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_2.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. abdOAB_4_3.png,15. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_3.png,0,5.023495e-08,0.99999994,AI-assisted result — clinician verification required
+15. abdOAB_4_4.png,15. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_4.png,1,0.9999989,0.9999989,AI-assisted result — clinician verification required
+15. abdOAB_4_5.png,15. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. abdOAB_4_5.png,1,0.99999964,0.99999964,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_0.png,15. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_1.png,15. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_1.png,1,0.9998617,0.9998617,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_2.png,15. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_2.png,0,3.597497e-09,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_3.png,1,0.9999851,0.9999851,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_4.png,0,0.0034058494,0.99659413,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_5.png,0,5.790953e-06,0.9999942,AI-assisted result — clinician verification required
+15. CcEeCwKk_5_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_5_6.png,1,0.9999988,0.9999988,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_0.png,15. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_0.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_1.png,15. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_2.png,15. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_2.png,0,5.8254447e-08,0.99999994,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_4.png,0,2.9402344e-07,0.9999997,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_5.png,0,7.711383e-08,0.99999994,AI-assisted result — clinician verification required
+15. CcEeCwKk_0_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_0_6.png,1,0.9999995,0.9999995,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_0.png,15. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_0.png,0,3.3055337e-06,0.9999967,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_1.png,15. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_1.png,1,0.99998045,0.99998045,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_2.png,15. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_2.png,0,1.1407749e-06,0.99999887,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_3.png,1,0.9999933,0.9999933,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_4.png,0,1.8591211e-07,0.9999998,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_5.png,0,2.3409789e-06,0.9999977,AI-assisted result — clinician verification required
+15. CcEeCwKk_1_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_1_6.png,1,0.91532445,0.91532445,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_0.png,15. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_0.png,0,2.9664341e-05,0.9999703,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_1.png,15. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_1.png,1,0.9999844,0.9999844,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_2.png,15. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_2.png,0,2.1501032e-06,0.99999785,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_4.png,0,2.6735368e-06,0.9999973,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_5.png,0,4.901472e-05,0.999951,AI-assisted result — clinician verification required
+15. CcEeCwKk_2_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_2_6.png,1,0.9999907,0.9999907,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_0.png,15. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_1.png,15. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_2.png,15. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_3.png,1,0.9999949,0.9999949,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_4.png,0,0.00033759428,0.9996624,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_5.png,0,0.00014697867,0.999853,AI-assisted result — clinician verification required
+15. CcEeCwKk_3_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_3_6.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_0.png,15. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_1.png,15. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_1.png,0,6.1489067e-07,0.9999994,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_2.png,15. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_2.png,0,3.5712123e-08,0.99999994,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_3.png,15. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_3.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_4.png,15. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_4.png,0,1.3117622e-05,0.9999869,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_5.png,15. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_5.png,0,4.0027307e-06,0.999996,AI-assisted result — clinician verification required
+15. CcEeCwKk_4_6.png,15. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\15. CcEeCwKk_4_6.png,1,0.9988889,0.9988889,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_0.png,16. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_2.png,16. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_2.png,0,1.4392136e-05,0.99998564,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_3.png,1,0.9999933,0.9999933,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_4.png,0,0.0035394984,0.9964605,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_5.png,16. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_5.png,0,0.06467189,0.9353281,AI-assisted result — clinician verification required
+16. CcEeCwKk_5_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_5_6.png,0,0.0007212902,0.9992787,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_0.png,16. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_0.png,0,8.2953363e-07,0.99999917,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_2.png,16. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_3.png,1,0.9998332,0.9998332,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_4.png,0,7.2449175e-06,0.9999927,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_5.png,16. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_5.png,0,1.7411227e-06,0.9999983,AI-assisted result — clinician verification required
+16. CcEeCwKk_0_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_0_6.png,1,0.9990607,0.9990607,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_0.png,16. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_0.png,0,4.3822783e-06,0.9999956,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_2.png,16. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_3.png,1,0.94747573,0.94747573,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_4.png,0,8.843607e-08,0.99999994,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_5.png,16. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_5.png,0,2.8481207e-07,0.9999997,AI-assisted result — clinician verification required
+16. CcEeCwKk_1_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_1_6.png,0,0.2701468,0.7298532,Manual review required
+16. CcEeCwKk_2_0.png,16. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_0.png,0,3.861604e-05,0.9999614,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_2.png,16. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_2.png,0,5.4336463e-10,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_3.png,1,0.9999621,0.9999621,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_4.png,0,8.297043e-06,0.9999917,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_5.png,16. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_5.png,0,1.6365868e-06,0.9999984,AI-assisted result — clinician verification required
+16. CcEeCwKk_2_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_2_6.png,1,0.927083,0.927083,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_0.png,16. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_1.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_2.png,16. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_2.png,0,8.9656845e-05,0.99991035,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_3.png,1,0.99997425,0.99997425,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_4.png,0,0.0002737107,0.9997263,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_5.png,16. CcEeCwKk,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_5.png,1,0.9959621,0.9959621,AI-assisted result — clinician verification required
+16. CcEeCwKk_3_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_3_6.png,0,0.011046032,0.98895395,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_0.png,16. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_0.png,1,0.99999917,0.99999917,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_1.png,16. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_1.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_2.png,16. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_2.png,0,0.00044888415,0.9995511,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_3.png,16. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_3.png,1,0.99999785,0.99999785,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_4.png,16. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_4.png,0,0.00030054242,0.9996995,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_5.png,16. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_5.png,0,0.0034585062,0.9965415,AI-assisted result — clinician verification required
+16. CcEeCwKk_4_6.png,16. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\16. CcEeCwKk_4_6.png,1,0.982847,0.982847,AI-assisted result — clinician verification required
+21. CcEeCwKk_0_1.png,21. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_1.png,0,0.43838117,0.5616188,Manual review required
+21. CcEeCwKk_0_2.png,21. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_2.png,1,0.9854086,0.9854086,AI-assisted result — clinician verification required
+21. CcEeCwKk_0_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_3.png,1,0.9999994,0.9999994,AI-assisted result — clinician verification required
+21. CcEeCwKk_0_4.png,21. CcEeCwKk,Cw,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_4.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_0_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_5.png,0,0.39241785,0.60758215,Manual review required
+21. CcEeCwKk_0_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_1_0.png,21. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_0.png,0,0.48380178,0.5161982,Manual review required
+21. CcEeCwKk_1_1.png,21. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_1_2.png,21. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_1_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_1_4.png,21. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_4.png,0,0.003486279,0.9965137,AI-assisted result — clinician verification required
+21. CcEeCwKk_1_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_5.png,1,0.74769825,0.74769825,Manual review required
+21. CcEeCwKk_1_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_1_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_0.png,21. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_1.png,21. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_2.png,21. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_4.png,21. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_4.png,0,9.532992e-06,0.99999046,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_5.png,1,0.99195695,0.99195695,AI-assisted result — clinician verification required
+21. CcEeCwKk_2_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_2_6.png,1,0.99999964,0.99999964,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_0.png,21. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_0.png,0,0.0011417097,0.9988583,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_1.png,21. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_2.png,21. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_2.png,1,0.9999981,0.9999981,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_4.png,21. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_4.png,0,0.0019778288,0.9980222,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_5.png,0,0.0006178528,0.99938214,AI-assisted result — clinician verification required
+21. CcEeCwKk_3_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_3_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_0.png,21. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_0.png,1,0.99998355,0.99998355,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_1.png,21. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_2.png,21. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_2.png,1,0.9999968,0.9999968,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_4.png,21. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_4.png,0,0.00018778758,0.9998122,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_5.png,0,0.00082330493,0.9991767,AI-assisted result — clinician verification required
+21. CcEeCwKk_4_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_4_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_0.png,21. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_0.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_1.png,21. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_1.png,1,0.9999987,0.9999987,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_2.png,21. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_2.png,0,0.4322998,0.5677002,Manual review required
+21. CcEeCwKk_0_0.png,21. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_0_0.png,1,0.9478395,0.9478395,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_3.png,21. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_4.png,21. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_4.png,0,0.013681149,0.9863188,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_5.png,21. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_5.png,1,0.9994929,0.9994929,AI-assisted result — clinician verification required
+21. CcEeCwKk_5_6.png,21. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\21. CcEeCwKk_5_6.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+22. abdOAB_0_1.png,22. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_1.png,0,0.00014524427,0.99985474,AI-assisted result — clinician verification required
+22. abdOAB_0_2.png,22. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_2.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+22. abdOAB_0_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_3.png,1,0.99877757,0.99877757,AI-assisted result — clinician verification required
+22. abdOAB_0_4.png,22. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_4.png,1,0.9999932,0.9999932,AI-assisted result — clinician verification required
+22. abdOAB_0_5.png,22. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_5.png,1,0.99998283,0.99998283,AI-assisted result — clinician verification required
+22. abdOAB_1_0.png,22. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_0.png,0,1.735945e-05,0.99998266,AI-assisted result — clinician verification required
+22. abdOAB_1_1.png,22. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_1.png,0,0.00078275334,0.9992173,AI-assisted result — clinician verification required
+22. abdOAB_1_2.png,22. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+22. abdOAB_1_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_3.png,0,5.020784e-08,0.99999994,AI-assisted result — clinician verification required
+22. abdOAB_1_4.png,22. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_4.png,1,0.99983025,0.99983025,AI-assisted result — clinician verification required
+22. abdOAB_1_5.png,22. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_1_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+22. abdOAB_2_0.png,22. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_0.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+22. abdOAB_2_1.png,22. abdOAB,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_1.png,1,0.9997944,0.9997944,AI-assisted result — clinician verification required
+22. abdOAB_2_2.png,22. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+22. abdOAB_2_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_3.png,0,4.248484e-06,0.99999577,AI-assisted result — clinician verification required
+22. abdOAB_2_4.png,22. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_4.png,0,7.403372e-08,0.99999994,AI-assisted result — clinician verification required
+22. abdOAB_2_5.png,22. abdOAB,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_2_5.png,0,8.10177e-08,0.99999994,AI-assisted result — clinician verification required
+22. abdOAB_3_0.png,22. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_0.png,1,0.99999976,0.99999976,AI-assisted result — clinician verification required
+22. abdOAB_3_1.png,22. abdOAB,B,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+22. abdOAB_3_2.png,22. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+22. abdOAB_3_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_3.png,0,5.4044623e-08,0.99999994,AI-assisted result — clinician verification required
+22. abdOAB_3_4.png,22. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_4.png,0,0.00037549334,0.9996245,AI-assisted result — clinician verification required
+22. abdOAB_3_5.png,22. abdOAB,B(III),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_3_5.png,0,0.008847899,0.9911521,AI-assisted result — clinician verification required
+22. abdOAB_4_0.png,22. abdOAB,A,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_0.png,1,0.9999677,0.9999677,AI-assisted result — clinician verification required
+22. abdOAB_4_1.png,22. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_1.png,0,1.3383445e-07,0.9999999,AI-assisted result — clinician verification required
+22. abdOAB_4_2.png,22. abdOAB,D,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_2.png,0,2.0423477e-07,0.9999998,AI-assisted result — clinician verification required
+22. abdOAB_4_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_3.png,0,3.805642e-08,0.99999994,AI-assisted result — clinician verification required
+22. abdOAB_4_4.png,22. abdOAB,A(II),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_4.png,0,5.5122327e-05,0.99994487,AI-assisted result — clinician verification required
+22. abdOAB_4_5.png,22. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_4_5.png,1,0.9999989,0.9999989,AI-assisted result — clinician verification required
+22. abdOAB_5_0.png,22. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_0.png,0,0.14541091,0.8545891,Manual review required
+22. abdOAB_5_1.png,22. abdOAB,B,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_1.png,0,2.7163302e-05,0.9999728,AI-assisted result — clinician verification required
+22. abdOAB_5_2.png,22. abdOAB,D,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_2.png,1,0.99999833,0.99999833,AI-assisted result — clinician verification required
+22. abdOAB_0_0.png,22. abdOAB,A,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_0_0.png,0,1.6668248e-06,0.99999833,AI-assisted result — clinician verification required
+22. abdOAB_5_3.png,22. abdOAB,O(I),0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_3.png,0,1.7437782e-05,0.99998254,AI-assisted result — clinician verification required
+22. abdOAB_5_4.png,22. abdOAB,A(II),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_4.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+22. abdOAB_5_5.png,22. abdOAB,B(III),1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\22. abdOAB_5_5.png,1,0.99999964,0.99999964,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_1.png,24. CcEeCwKk,c,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_1.png,0,2.6794925e-05,0.9999732,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_2.png,24. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_2.png,0,1.4193763e-08,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_3.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_4.png,0,2.1703181e-07,0.99999976,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_5.png,24. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_5.png,0,1.5354473e-05,0.9999846,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_0.png,24. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_1.png,24. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_1.png,1,0.9999995,0.9999995,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_2.png,24. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_2.png,1,0.99999857,0.99999857,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_4.png,0,3.35135e-06,0.99999666,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_5.png,24. CcEeCwKk,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_5.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_1_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_1_6.png,1,0.9999089,0.9999089,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_0.png,24. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_1.png,24. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_2.png,24. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_2.png,1,0.9999908,0.9999908,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_3.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_4.png,0,1.48659165e-08,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_5.png,24. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_5.png,0,4.4705207e-08,0.99999994,AI-assisted result — clinician verification required
+24. CcEeCwKk_2_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_2_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_0.png,24. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_1.png,24. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_1.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_2.png,24. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_2.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_3.png,1,0.9999975,0.9999975,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_4.png,0,3.85072e-09,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_5.png,24. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_5.png,0,1.1842066e-05,0.99998814,AI-assisted result — clinician verification required
+24. CcEeCwKk_3_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_3_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_0.png,24. CcEeCwKk,C,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_0.png,0,2.2760796e-07,0.99999976,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_1.png,24. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_1.png,1,0.9999919,0.9999919,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_2.png,24. CcEeCwKk,E,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_2.png,0,1.0010618e-05,0.99999,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_3.png,1,0.9999994,0.9999994,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_4.png,0,2.6701887e-06,0.9999973,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_5.png,24. CcEeCwKk,K,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_5.png,0,6.4995804e-09,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_4_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_4_6.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_0.png,24. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_0.png,1,1.0,1.0,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_1.png,24. CcEeCwKk,c,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_1.png,1,0.9999976,0.9999976,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_2.png,24. CcEeCwKk,E,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_2.png,1,0.99998546,0.99998546,AI-assisted result — clinician verification required
+24. CcEeCwKk_0_0.png,24. CcEeCwKk,C,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_0_0.png,1,0.9999999,0.9999999,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_3.png,24. CcEeCwKk,e,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_3.png,1,0.9999975,0.9999975,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_4.png,24. CcEeCwKk,Cw,0,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_4.png,0,0.008969723,0.9910303,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_5.png,24. CcEeCwKk,K,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_5.png,1,0.99999964,0.99999964,AI-assisted result — clinician verification required
+24. CcEeCwKk_5_6.png,24. CcEeCwKk,k,1,C:\Users\hp\Downloads\imgs\alvs_dataset_all\24. CcEeCwKk_5_6.png,1,0.9999956,0.9999956,AI-assisted result — clinician verification required
