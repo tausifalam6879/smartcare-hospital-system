@@ -297,6 +297,13 @@ public class AppointmentService {
         if (appointment.getServiceDate().isAfter(today)) {
             throw new ConflictException("A future appointment cannot be marked no-show.");
         }
+        DailySchedule daily = dailySchedule(appointment.getDoctor(), appointment.getServiceDate());
+        Instant eligibleAt = LocalDateTime.of(appointment.getServiceDate(), daily.start())
+                .atZone(ZoneId.of(appointment.getHospital().getTimeZone())).toInstant()
+                .plus(properties.noShowGracePeriod());
+        if (clock.instant().isBefore(eligibleAt)) {
+            throw new ConflictException("The patient can be marked no-show only after the 15-minute grace period.");
+        }
         releaseAndPromote(appointment);
         appointment.markNoShow(clock.instant());
         audit.record("APPOINTMENT_MARKED_NO_SHOW", "APPOINTMENT", appointment.getId(),

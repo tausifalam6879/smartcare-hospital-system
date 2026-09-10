@@ -52,6 +52,7 @@ smartcare:
     online-reservation-ttl: ${SMARTCARE_ONLINE_RESERVATION_TTL:10m}
     cash-grace-period: ${SMARTCARE_CASH_GRACE_PERIOD:15m}
     confirmed-cancellation-cutoff: ${SMARTCARE_CANCELLATION_CUTOFF:2h}
+    no-show-grace-period: ${SMARTCARE_NO_SHOW_GRACE_PERIOD:15m}
   check-in:
     opens-before: ${SMARTCARE_CHECK_IN_OPENS_BEFORE:4h}
     closes-after: ${SMARTCARE_CHECK_IN_CLOSES_AFTER:2h}
