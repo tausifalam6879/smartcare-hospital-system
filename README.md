@@ -162,6 +162,7 @@ Not yet implemented: a clinically validated ONNX/OpenCV blood-slide model and go
 - [Hospital operations design](docs/hospital-operations-design.md)
 - [Blood-group image decision-support design](docs/blood-group-image-design.md)
 - [Project directory structure](docs/project-structure.md)
+- [Future implementation roadmap](docs/roadmap.md)
 
 ## Prerequisites
 
