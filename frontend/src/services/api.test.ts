@@ -21,4 +21,10 @@ describe('messageFromError', () => {
       detail: 'An account already uses this email address.',
     })))).toBe('An account already uses this email address.')
   })
+
+  it('never exposes an HTML error page as user-facing text', () => {
+    expect(messageFromError(axiosError(
+      '<!DOCTYPE html><html><body><h1>404</h1></body></html>',
+    ))).toBe('The API returned a web page instead of SmartCare data. Check the backend URL and try again.')
+  })
 })

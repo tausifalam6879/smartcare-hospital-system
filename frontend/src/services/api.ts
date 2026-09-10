@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { isStaticDemo } from '../config/runtime'
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '',
@@ -60,7 +61,13 @@ api.interceptors.request.use((config) => {
 
 export function messageFromError(error: unknown) {
   if (axios.isAxiosError(error)) {
+    if (isStaticDemo) {
+      return 'This workflow requires the private SmartCare backend and is not active in the public portfolio demo.'
+    }
     const body = errorBody(error.response?.data)
+    if (typeof error.response?.data === 'string' && /<!doctype html|<html/i.test(error.response.data)) {
+      return 'The API returned a web page instead of SmartCare data. Check the backend URL and try again.'
+    }
     const validation = validationMessage(body?.errors)
     if (validation) return validation
     return body?.detail ?? body?.message ?? (error.response ? 'The request could not be completed. Please check the entered details.' : 'The service is not reachable right now.')
