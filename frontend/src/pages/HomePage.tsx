@@ -117,12 +117,11 @@ export function HomePage() {
               [MapPinned, 'Scan & navigate', 'Verified hospital checkpoints', '#journey'],
             ].map(([Icon, title, body, to], index) => {
               const ItemIcon = Icon as typeof Stethoscope
-              return (
-                <a key={title as string} href={to as string} className={`group flex items-center gap-4 p-5 transition hover:bg-blue-50/60 sm:p-6 ${index !== 2 ? 'border-b border-slate-200 sm:border-b-0 sm:border-r' : ''}`}>
-                  <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-care-50 text-care-700"><ItemIcon className="size-6" /></span>
-                  <div><p className="font-black text-ink-950">{title as string}</p><p className="mt-0.5 text-xs leading-5 text-slate-500">{body as string}</p></div>
-                  <ChevronRight className="ml-auto size-5 text-slate-300 transition group-hover:translate-x-1 group-hover:text-care-600" />
-                </a>
+              const className = `group flex items-center gap-4 p-5 transition hover:bg-blue-50/60 sm:p-6 ${index !== 2 ? 'border-b border-slate-200 sm:border-b-0 sm:border-r' : ''}`
+              const content = <><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-care-50 text-care-700"><ItemIcon className="size-6" /></span><div><p className="font-black text-ink-950">{title as string}</p><p className="mt-0.5 text-xs leading-5 text-slate-500">{body as string}</p></div><ChevronRight className="ml-auto size-5 text-slate-300 transition group-hover:translate-x-1 group-hover:text-care-600" /></>
+              return (typeof to === 'string' && to.startsWith('/')
+                ? <Link key={title as string} to={to} className={className}>{content}</Link>
+                : <a key={title as string} href={to as string} className={className}>{content}</a>
               )
             })}
           </div>
