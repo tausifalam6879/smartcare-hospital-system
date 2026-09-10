@@ -38,6 +38,7 @@ import {
 } from '../services/appointments'
 import { createPaymentIntent, paymentStatusLabel, type Payment } from '../services/payments'
 import { createPrototypeBooking, updatePrototypeBooking, type PrototypeBooking } from '../services/prototypeBookings'
+import { predictWaitTime, type WaitTimePrediction } from '../services/waitTime'
 
 type Hospital = { id: string; name: string; city: string }
 type Department = { id: string; name: string }
@@ -52,7 +53,7 @@ type Doctor = {
   consultationFee: number
 }
 type Page<T> = { content: T[] }
-type HospitalGroupId = 'raahmediq' | 'national' | 'regional' | 'government' | 'private'
+type HospitalGroupId = 'smartcare' | 'national' | 'regional' | 'government' | 'private'
 type HospitalPickerItem = {
   value: string
   name: string
@@ -132,8 +133,9 @@ export function QueueBookingPage() {
   const [payment, setPayment] = useState<Payment | null>(null)
   const [paymentFlow, setPaymentFlow] = useState<'closed' | 'review' | 'provider' | 'authorizing' | 'pending' | 'verified'>('closed')
   const [referenceResult, setReferenceResult] = useState<PrototypeBooking | null>(null)
+const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction | null>(null)
   const [hospitalPickerOpen, setHospitalPickerOpen] = useState(false)
-  const [hospitalGroup, setHospitalGroup] = useState<HospitalGroupId>('raahmediq')
+  const [hospitalGroup, setHospitalGroup] = useState<HospitalGroupId>('smartcare')
   const [hospitalSearch, setHospitalSearch] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -156,9 +158,9 @@ export function QueueBookingPage() {
       }))
     return [
       {
-        id: 'raahmediq',
-        title: 'RaahMediQ Network',
-        shortTitle: 'RaahMediQ',
+        id: 'smartcare',
+        title: 'SmartCare Network',
+        shortTitle: 'SmartCare',
         subtitle: 'Connected OPDs with the live capacity ledger',
         items: hospitals.map((hospital) => ({
           value: `live:${hospital.id}`,
@@ -303,7 +305,7 @@ export function QueueBookingPage() {
   }
 
   function openHospitalPicker() {
-    if (hospitalSelection.startsWith('live:')) setHospitalGroup('raahmediq')
+    if (hospitalSelection.startsWith('live:')) setHospitalGroup('smartcare')
     if (selectedReferenceFacility) setHospitalGroup(facilityGroup(selectedReferenceFacility))
     setHospitalSearch('')
     setHospitalPickerOpen(true)
@@ -322,27 +324,84 @@ export function QueueBookingPage() {
       return
     }
     if (selectedReferenceFacility && selectedDoctor) {
-      const queuePosition = prototypeQueuePosition(selectedDoctor.id, serviceDate)
+      const queuePosition = prototypeQueuePosition(
+        selectedDoctor.id,
+        serviceDate,
+      )
+
+      const patientsAhead = Math.max(0, queuePosition - 1)
+
       setError('')
       setResult(null)
       setPayment(null)
-      const booking = createPrototypeBooking({
-        hospitalName: selectedReferenceFacility.name,
-        hospitalLocation: `${selectedReferenceFacility.city} · ${selectedReferenceFacility.state}`,
-        ownership: selectedReferenceFacility.ownership,
-        doctorName: selectedDoctor.name,
-        specialization: selectedDoctor.specialization,
-        departmentName: selectedDoctor.departmentName,
-        serviceDate,
-        paymentMethod,
-        queuePosition,
-        estimatedWaitMinutes: Math.max(10, queuePosition * 4),
-        amount: selectedDoctor.consultationFee,
-        status: paymentMethod === 'ONLINE' ? 'PAYMENT_PENDING' : 'CASH_PENDING',
-        providerReference: paymentMethod === 'ONLINE' ? `RMQ-DEMO-${Date.now().toString(36).toUpperCase()}` : undefined,
-      })
-      setReferenceResult(booking)
-      setPaymentFlow(paymentMethod === 'ONLINE' ? 'review' : 'closed')
+      setReferenceResult(null)
+      setWaitTimePrediction(null)
+      setSubmitting(true)
+
+      try {
+        const prediction = await predictWaitTime({
+          department: selectedDoctor.departmentName,
+          triageCategory: 'Non-urgent',
+          patientsAhead,
+          activeDoctors: 2,
+          averageConsultationMinutes: 12,
+          currentDoctorDelayMinutes: 0,
+          occupancyRate: Math.min(
+            0.95,
+            0.35 + patientsAhead / 50,
+          ),
+        }).catch(() => null)
+
+        const fallbackEstimate = Math.max(
+          10,
+          queuePosition * 4,
+        )
+
+        const booking = createPrototypeBooking({
+          hospitalName: selectedReferenceFacility.name,
+          hospitalLocation:
+            `${selectedReferenceFacility.city} · ${selectedReferenceFacility.state}`,
+          ownership: selectedReferenceFacility.ownership,
+          doctorName: selectedDoctor.name,
+          specialization: selectedDoctor.specialization,
+          departmentName: selectedDoctor.departmentName,
+          serviceDate,
+          paymentMethod,
+          queuePosition,
+          estimatedWaitMinutes:
+            prediction?.estimatedWaitMinutes
+            ?? fallbackEstimate,
+          estimatedWaitMinimumMinutes:
+            prediction?.estimatedRangeMinutes.minimum,
+          estimatedWaitMaximumMinutes:
+            prediction?.estimatedRangeMinutes.maximum,
+          waitEstimateSource:
+            prediction ? 'ML_HYBRID' : 'FALLBACK',
+          waitModelVersion: prediction?.modelVersion,
+          amount: selectedDoctor.consultationFee,
+          status:
+            paymentMethod === 'ONLINE'
+              ? 'PAYMENT_PENDING'
+              : 'CASH_PENDING',
+          providerReference:
+            paymentMethod === 'ONLINE'
+              ? `SC-DEMO-${Date.now()
+                  .toString(36)
+                  .toUpperCase()}`
+              : undefined,
+        })
+
+        setWaitTimePrediction(prediction)
+        setReferenceResult(booking)
+        setPaymentFlow(
+          paymentMethod === 'ONLINE'
+            ? 'review'
+            : 'closed',
+        )
+      } finally {
+        setSubmitting(false)
+      }
+
       return
     }
     setSubmitting(true)
@@ -383,7 +442,7 @@ export function QueueBookingPage() {
     setPaymentFlow('authorizing')
     window.setTimeout(() => {
       if (referenceResult) {
-        const receiptNumber = `RMQ-SIM-${Date.now().toString(36).toUpperCase()}`
+        const receiptNumber = `SC-SIM-${Date.now().toString(36).toUpperCase()}`
         const updated = updatePrototypeBooking(referenceResult.id, {
           status: 'CONFIRMED',
           receiptNumber,
@@ -411,7 +470,7 @@ export function QueueBookingPage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-care-50 px-3 py-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-care-800"><ShieldCheck className="size-4" /> Capacity checked before issue</span>
             <p className="mt-6 text-xs font-extrabold uppercase tracking-[.22em] text-care-700">Fair OPD access</p>
             <h1 className="mt-3 text-4xl font-black tracking-[-0.04em] text-ink-950 sm:text-5xl">Book a protected OPD number</h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">Choose a hospital, doctor and date. Live RaahMediQ OPDs check the capacity ledger; India directory hospitals demonstrate the same journey as a clearly labelled prototype.</p>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">Choose a hospital, doctor and date. Live SmartCare OPDs check the capacity ledger; India directory hospitals demonstrate the same journey as a clearly labelled prototype.</p>
           </div>
         </div>
       </section>
@@ -423,7 +482,7 @@ export function QueueBookingPage() {
             <span className="grid size-12 place-items-center rounded-xl bg-care-50 text-care-700"><CalendarDays className="size-6" /></span>
           </div>
 
-          <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950 sm:flex-row sm:items-center sm:justify-between"><div><strong>70 India directory hospitals are now selectable</strong><p className="mt-1 text-xs leading-5 text-blue-800">RaahMediQ Demo Care Centre uses the live capacity ledger. Government and private directory entries create a clearly labelled prototype OPD preview inside this project.</p></div><Link to="/hospitals" className="shrink-0 font-black text-care-700 underline">Browse full profiles</Link></div>
+          <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950 sm:flex-row sm:items-center sm:justify-between"><div><strong>70 India directory hospitals are now selectable</strong><p className="mt-1 text-xs leading-5 text-blue-800">SmartCare Demo Care Centre uses the live capacity ledger. Government and private directory entries create a clearly labelled prototype OPD preview inside this project.</p></div><Link to="/hospitals" className="shrink-0 font-black text-care-700 underline">Browse full profiles</Link></div>
 
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div className="text-sm font-bold text-slate-700">Hospital
@@ -451,7 +510,7 @@ export function QueueBookingPage() {
 
           <div className="mt-5 min-h-20 rounded-2xl border border-slate-200 bg-slate-50 p-4" aria-live="polite">
             {selectedReferenceFacility ? (
-              selectedDoctor ? <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm font-black text-ink-950">Project OPD workflow ready</p><p className="mt-1 text-xs leading-5 text-slate-600">{selectedReferenceProfile?.availability ?? 'Sample OPD availability'} · generated inside RaahMediQ</p></div><span className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-extrabold text-amber-900">Simulation capacity</span><p className="w-full text-xs leading-5 text-slate-500">You can complete OPD booking and demo payment inside this project. No real hospital is contacted.</p></div>
+              selectedDoctor ? <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm font-black text-ink-950">Project OPD workflow ready</p><p className="mt-1 text-xs leading-5 text-slate-600">{selectedReferenceProfile?.availability ?? 'Sample OPD availability'} · generated inside SmartCare</p></div><span className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-extrabold text-amber-900">Simulation capacity</span><p className="w-full text-xs leading-5 text-slate-500">You can complete OPD booking and demo payment inside this project. No real hospital is contacted.</p></div>
                 : <p className="text-sm text-slate-500">Select a project doctor to continue to OPD booking.</p>
             ) : <>
               {availabilityState === 'idle' && <p className="text-sm text-slate-500">Select a doctor and date to check the live capacity ledger.</p>}
@@ -491,7 +550,40 @@ export function QueueBookingPage() {
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-sm">
                   <div><p className="text-xs text-slate-400">Preferred date</p><p className="mt-1 font-bold">{readableDate(referenceResult.serviceDate)}</p></div>
-                  <div><p className="text-xs text-slate-400">Sample wait estimate</p><p className="mt-1 font-bold">~{referenceResult.estimatedWaitMinutes} min</p></div>
+                  <div>
+                    <p className="text-xs text-slate-400">
+                      SmartCare wait estimate
+                    </p>
+
+                    <p className="mt-1 font-bold">
+                      ~{referenceResult.estimatedWaitMinutes} min
+                    </p>
+
+                    {referenceResult.estimatedWaitMinimumMinutes !== undefined
+                      && referenceResult.estimatedWaitMaximumMinutes !== undefined
+                      && (
+                        <p className="mt-1 text-[11px] text-blue-200">
+                          Indicative range:{' '}
+                          {referenceResult.estimatedWaitMinimumMinutes}
+                          –
+                          {referenceResult.estimatedWaitMaximumMinutes} min
+                        </p>
+                      )}
+
+                    <p className="mt-1 text-[10px] font-semibold text-blue-200">
+                      {referenceResult.waitEstimateSource === 'ML_HYBRID'
+                        ? `Experimental ML + live queue · v${referenceResult.waitModelVersion ?? '1.0.0'}`
+                        : 'Fallback queue estimate'}
+                    </p>
+
+                    {waitTimePrediction
+                      && !waitTimePrediction.departmentSupported
+                      && (
+                        <p className="mt-1 text-[10px] text-amber-200">
+                          Generic department baseline used
+                        </p>
+                      )}
+                  </div>
                   <div><p className="text-xs text-slate-400">Hospital group</p><p className="mt-1 font-bold">{referenceResult.ownership === 'GOVERNMENT' ? 'Government' : 'Private'}</p></div>
                   <div><p className="text-xs text-slate-400">Payment preference</p><p className="mt-1 font-bold">{referenceResult.paymentMethod === 'CASH' ? 'Cash at desk' : 'Online'}</p></div>
                 </div>
@@ -523,14 +615,14 @@ export function QueueBookingPage() {
       {hospitalPickerOpen && <div className="fixed inset-0 z-[70] grid place-items-center bg-ink-950/70 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-labelledby="booking-hospital-picker-title">
         <div className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl">
           <div className="flex items-start justify-between gap-4 border-b border-slate-200 p-5 sm:p-6">
-            <div><p className="text-xs font-black uppercase tracking-[.16em] text-care-700">RaahMediQ hospital picker</p><h2 id="booking-hospital-picker-title" className="mt-1 text-2xl font-black text-ink-950">Choose a hospital section</h2><p className="mt-1 text-xs leading-5 text-slate-500">Pick one category first, then search or scroll only inside that section.</p></div>
+            <div><p className="text-xs font-black uppercase tracking-[.16em] text-care-700">SmartCare hospital picker</p><h2 id="booking-hospital-picker-title" className="mt-1 text-2xl font-black text-ink-950">Choose a hospital section</h2><p className="mt-1 text-xs leading-5 text-slate-500">Pick one category first, then search or scroll only inside that section.</p></div>
             <button type="button" aria-label="Close hospital picker" onClick={() => setHospitalPickerOpen(false)} className="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-50"><X className="size-5" /></button>
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
             <div className="grid shrink-0 grid-cols-2 gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:grid-cols-5 lg:w-72 lg:grid-cols-1 lg:border-b-0 lg:border-r">
               {hospitalPickerGroups.map((group) => <button type="button" key={group.id} onClick={() => { setHospitalGroup(group.id); setHospitalSearch('') }} className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition ${hospitalGroup === group.id ? 'border-care-300 bg-white text-care-800 shadow-sm' : 'border-transparent text-slate-600 hover:bg-white'}`}>
-                <span className={`grid size-9 shrink-0 place-items-center rounded-lg ${hospitalGroup === group.id ? 'bg-care-100 text-care-700' : 'bg-white text-slate-500'}`}>{group.id === 'raahmediq' ? <HospitalIcon className="size-4" /> : group.id === 'private' ? <Building2 className="size-4" /> : <Landmark className="size-4" />}</span>
+                <span className={`grid size-9 shrink-0 place-items-center rounded-lg ${hospitalGroup === group.id ? 'bg-care-100 text-care-700' : 'bg-white text-slate-500'}`}>{group.id === 'smartcare' ? <HospitalIcon className="size-4" /> : group.id === 'private' ? <Building2 className="size-4" /> : <Landmark className="size-4" />}</span>
                 <span className="min-w-0"><span className="block text-xs font-black sm:text-sm">{group.shortTitle}</span><span className="block text-[10px] font-semibold text-slate-400">{group.items.length} hospital{group.items.length === 1 ? '' : 's'}</span></span>
               </button>)}
             </div>
@@ -543,7 +635,7 @@ export function QueueBookingPage() {
 
               <div className="mt-4 grid min-h-0 flex-1 auto-rows-max gap-3 overflow-y-auto pr-1 sm:grid-cols-2">
                 {filteredHospitalItems.map((item) => <button type="button" key={item.value} onClick={() => selectHospital(item.value)} className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-care-300 hover:shadow-md ${hospitalSelection === item.value ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 bg-white'}`}>
-                  <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${hospitalGroup === 'private' ? 'bg-violet-50 text-violet-700' : hospitalGroup === 'raahmediq' ? 'bg-care-50 text-care-700' : 'bg-emerald-50 text-emerald-700'}`}>{hospitalGroup === 'private' ? <Building2 className="size-5" /> : hospitalGroup === 'raahmediq' ? <HospitalIcon className="size-5" /> : <Landmark className="size-5" />}</span>
+                  <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${hospitalGroup === 'private' ? 'bg-violet-50 text-violet-700' : hospitalGroup === 'smartcare' ? 'bg-care-50 text-care-700' : 'bg-emerald-50 text-emerald-700'}`}>{hospitalGroup === 'private' ? <Building2 className="size-5" /> : hospitalGroup === 'smartcare' ? <HospitalIcon className="size-5" /> : <Landmark className="size-5" />}</span>
                   <span className="min-w-0"><span className="block font-black text-ink-950">{item.name}</span><span className="mt-1 block text-xs text-slate-500">{item.location}</span><span className="mt-2 block text-[10px] font-black uppercase tracking-wider text-care-700">{hospitalSelection === item.value ? 'Selected' : item.meta}</span></span>
                 </button>)}
                 {filteredHospitalItems.length === 0 && <div className="col-span-full rounded-2xl border border-dashed border-slate-300 p-8 text-center"><Search className="mx-auto size-7 text-slate-400" /><p className="mt-3 font-black text-ink-950">No hospital found in this section</p><p className="mt-1 text-sm text-slate-500">Try another search or choose a different category.</p></div>}
@@ -559,9 +651,9 @@ export function QueueBookingPage() {
 
           <div className="p-6 sm:p-7">
             {paymentFlow === 'review' && <><p className="text-xs font-black uppercase tracking-wider text-care-700">1 · Review</p><h3 className="mt-2 text-xl font-black text-ink-950">{selectedDoctor?.name}</h3><div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-slate-50 p-4 text-sm"><div><p className="text-xs text-slate-500">Amount</p><p className="mt-1 text-xl font-black">₹{paymentAmount.toLocaleString('en-IN')}</p></div><div><p className="text-xs text-slate-500">OPD date</p><p className="mt-1 font-black">{readableDate(paymentDate)}</p></div></div><p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">Project payment simulation only. No account is debited.</p><button onClick={() => setPaymentFlow('provider')} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white">Continue to secure provider <ArrowRight className="size-4" /></button></>}
-            {paymentFlow === 'provider' && <><p className="text-xs font-black uppercase tracking-wider text-care-700">2 · Bank or UPI provider</p><div className="mt-4 flex gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4"><Smartphone className="mt-0.5 size-6 shrink-0 text-care-700" /><div><h3 className="font-black text-blue-950">Approve in your trusted provider app</h3><p className="mt-2 text-sm leading-6 text-blue-900">A real production payment redirects to the bank or UPI app. Enter your UPI PIN only there. <strong>RaahMediQ Health never asks for, sees or stores your PIN.</strong></p></div></div><p className="mt-4 text-xs leading-5 text-slate-500">Demo mode collects no money. This screen demonstrates the hand-off and callback states without imitating a bank PIN screen.</p><button onClick={approveProvider} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white">I approved in the provider app <ShieldCheck className="size-4" /></button></>}
+            {paymentFlow === 'provider' && <><p className="text-xs font-black uppercase tracking-wider text-care-700">2 · Bank or UPI provider</p><div className="mt-4 flex gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4"><Smartphone className="mt-0.5 size-6 shrink-0 text-care-700" /><div><h3 className="font-black text-blue-950">Approve in your trusted provider app</h3><p className="mt-2 text-sm leading-6 text-blue-900">A real production payment redirects to the bank or UPI app. Enter your UPI PIN only there. <strong>SmartCare never asks for, sees or stores your PIN.</strong></p></div></div><p className="mt-4 text-xs leading-5 text-slate-500">Demo mode collects no money. This screen demonstrates the hand-off and callback states without imitating a bank PIN screen.</p><button onClick={approveProvider} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white">I approved in the provider app <ShieldCheck className="size-4" /></button></>}
             {paymentFlow === 'authorizing' && <div className="py-10 text-center"><span className="mx-auto grid size-20 place-items-center rounded-full bg-care-50 text-care-700"><LoaderCircle className="size-10 animate-spin" /></span><h3 className="mt-5 text-xl font-black text-ink-950">Authorizing securely…</h3><p className="mt-2 text-sm leading-6 text-slate-500">Waiting for the provider’s signed confirmation. Do not refresh or pay again.</p></div>}
-            {paymentFlow === 'pending' && <div className="py-5 text-center"><span className="mx-auto grid size-16 place-items-center rounded-full bg-amber-50 text-amber-700"><Clock3 className="size-8" /></span><h3 className="mt-5 text-xl font-black text-ink-950">Provider confirmation pending</h3><p className="mt-2 text-sm leading-6 text-slate-600">Your OPD position remains temporarily held. It becomes confirmed only after RaahMediQ receives a valid signed callback from the provider.</p><div className="mt-5 rounded-xl bg-slate-50 p-3 text-left text-xs text-slate-600"><strong>Reference:</strong> {paymentReference}<br /><strong>Status:</strong> {paymentDisplayStatus}</div><button onClick={() => setPaymentFlow('closed')} className="mt-6 min-h-12 w-full rounded-xl bg-ink-950 px-5 text-sm font-black text-white">Return to booking</button></div>}
+            {paymentFlow === 'pending' && <div className="py-5 text-center"><span className="mx-auto grid size-16 place-items-center rounded-full bg-amber-50 text-amber-700"><Clock3 className="size-8" /></span><h3 className="mt-5 text-xl font-black text-ink-950">Provider confirmation pending</h3><p className="mt-2 text-sm leading-6 text-slate-600">Your OPD position remains temporarily held. It becomes confirmed only after SmartCare receives a valid signed callback from the provider.</p><div className="mt-5 rounded-xl bg-slate-50 p-3 text-left text-xs text-slate-600"><strong>Reference:</strong> {paymentReference}<br /><strong>Status:</strong> {paymentDisplayStatus}</div><button onClick={() => setPaymentFlow('closed')} className="mt-6 min-h-12 w-full rounded-xl bg-ink-950 px-5 text-sm font-black text-white">Return to booking</button></div>}
             {paymentFlow === 'verified' && referenceResult && <div className="py-5 text-center"><span className="mx-auto grid size-16 place-items-center rounded-full bg-emerald-50 text-emerald-700"><CheckCircle2 className="size-8" /></span><h3 className="mt-5 text-xl font-black text-ink-950">Demo payment verified</h3><p className="mt-2 text-sm leading-6 text-slate-600">Your project OPD number {referenceResult.queuePosition} is confirmed and saved in My Care for this browser session.</p><div className="mt-5 rounded-xl bg-slate-50 p-3 text-left text-xs text-slate-600"><strong>Reference:</strong> {paymentReference}<br /><strong>Receipt:</strong> {referenceResult.receiptNumber}<br /><strong>Status:</strong> {paymentDisplayStatus}</div><button onClick={() => setPaymentFlow('closed')} className="mt-6 min-h-12 w-full rounded-xl bg-ink-950 px-5 text-sm font-black text-white">View confirmed booking</button></div>}
           </div>
         </div>

@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // Port 8080 is occupied by Oracle TNS Listener on this development PC.
-      // Keep the local RaahMediQ backend on 8081 so API calls never reach the unrelated service.
+      // Keep the local SmartCare backend on 8081 so API calls never reach the unrelated service.
       '/api': process.env.VITE_BACKEND_PROXY ?? 'http://127.0.0.1:8081',
       '/actuator': process.env.VITE_BACKEND_PROXY ?? 'http://127.0.0.1:8081',
     },

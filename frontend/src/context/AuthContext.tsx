@@ -36,9 +36,9 @@ type AuthContextValue = {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
-const storageKey = 'raahmediq-session'
+const storageKey = 'smartcare-session'
 
-function demoSession(displayName = 'Demo Patient', credential = 'demo@raahmediq.health'): AuthSession {
+function demoSession(displayName = 'Demo Patient', credential = 'demo@smartcare.health'): AuthSession {
   return {
     accessToken: 'github-pages-demo-session',
     tokenType: 'Demo',
@@ -48,7 +48,7 @@ function demoSession(displayName = 'Demo Patient', credential = 'demo@raahmediq.
       displayName,
       mobileNumber: credential.includes('@') ? '+910000000000' : credential,
       email: credential.includes('@') ? credential : undefined,
-      patientNumber: 'RMQ-DEMO-2026',
+      patientNumber: 'SC-DEMO-2026',
       roles: ['PATIENT'],
     },
   }

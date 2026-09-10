@@ -17,7 +17,7 @@ vi.mock('../services/bloodGroupAnalysis', () => ({
 }))
 
 const submitted = {
-  id: 'analysis-1', patientNumber: 'RMQ-2026-0001', hospitalId: 'hospital-1',
+  id: 'analysis-1', patientNumber: 'SC-2026-0001', hospitalId: 'hospital-1',
   hospitalName: 'City General Hospital', originalFilename: 'slide.png', contentType: 'image/png',
   sizeBytes: 4096, status: 'SUBMITTED' as const, modelInferenceStatus: 'NOT_CONFIGURED' as const,
   createdAt: '2026-08-22T10:00:00Z',

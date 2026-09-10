@@ -168,7 +168,7 @@ export function BloodSupportPage() {
               <label className="block text-xs font-black text-slate-700">Component<select value={component} onChange={(event) => setComponent(event.target.value as BloodComponent)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold">{Object.entries(componentLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
               <button onClick={() => void search()} disabled={!hospitalId || searching} className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-rose-700 text-sm font-black text-white shadow-md shadow-rose-900/15 disabled:opacity-50">{searching ? <LoaderCircle className="size-5 animate-spin" /> : <RefreshCw className="size-4" />}Check current verification</button>
             </div>
-            <div className="mt-5 flex gap-3 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600"><Info className="size-5 shrink-0 text-slate-500" /><p>Search is exact group + component only. RaahMediQ Health does not calculate transfusion compatibility or approve a donation.</p></div>
+            <div className="mt-5 flex gap-3 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600"><Info className="size-5 shrink-0 text-slate-500" /><p>Search is exact group + component only. SmartCare does not calculate transfusion compatibility or approve a donation.</p></div>
           </div>
 
           <div>

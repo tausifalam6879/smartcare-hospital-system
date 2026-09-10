@@ -116,7 +116,7 @@ export function MainLayout() {
           </div>
         </div>
         <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 pb-24 pt-5 text-xs text-blue-100/55 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:pb-5 lg:px-8"><p>© 2026 RaahMediQ Health. Navigate · Queue · Care.</p><p>Medical decisions remain with qualified care teams.</p></div>
+          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 pb-24 pt-5 text-xs text-blue-100/55 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:pb-5 lg:px-8"><p>© 2026 SmartCare. Navigate · Queue · Care.</p><p>Medical decisions remain with qualified care teams.</p></div>
         </div>
       </footer>
 

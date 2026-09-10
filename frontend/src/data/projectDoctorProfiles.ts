@@ -36,7 +36,7 @@ export function projectDoctors(facility: IndiaFacility): ProjectDoctor[] {
       specialty: profile[1],
       fee: profile[2],
       availability: profile[3],
-      note: 'Synthetic doctor profile for RaahMediQ prototype testing.',
+      note: 'Synthetic doctor profile for SmartCare prototype testing.',
     }
   })
   if (facility.name === 'Raj Hospitals') profiles.unshift({

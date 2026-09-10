@@ -95,7 +95,7 @@ function RecoveryCard({ item, onResolved }: { item: RecoveryCase; onResolved: (n
       <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-950">{item.interruptionReason || 'The doctor is unavailable for this visit.'}</p>
       {pending ? (
         <form onSubmit={submit} className="mt-5 space-y-4">
-          <p className="flex gap-2 text-sm font-bold text-slate-700"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-care-700" />RaahMediQ Health will not move your doctor or date without your approval.</p>
+          <p className="flex gap-2 text-sm font-bold text-slate-700"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-care-700" />SmartCare will not move your doctor or date without your approval.</p>
           <label className="block text-xs font-bold text-slate-600">Choose what happens next
             <select value={choice} onChange={(event) => setChoice(event.target.value as RecoveryChoice)} className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-ink-950">
               <option value="RESCHEDULE_SAME_DOCTOR">{choiceLabels.RESCHEDULE_SAME_DOCTOR}</option>

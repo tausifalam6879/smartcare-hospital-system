@@ -20,7 +20,7 @@ describe('MedicalRecordsPage', () => {
   beforeEach(() => {
     vi.mocked(api.get).mockResolvedValue({ data: [{ id: 'hospital-1', name: 'City General Hospital' }] })
     vi.mocked(getMyMedicalRecord).mockResolvedValue({
-      patientNumber: 'RMQ-2026-0001',
+      patientNumber: 'SC-2026-0001',
       generatedAt: '2026-08-22T10:00:00Z',
       allergies: [{
         id: 'allergy-1', substance: 'Penicillin', reaction: 'Skin rash', severity: 'HIGH',

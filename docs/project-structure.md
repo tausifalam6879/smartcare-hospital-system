@@ -1,10 +1,10 @@
 # Project Directory Structure
 
 ```text
-raahmediq-health/
+smartcare-health/
 ├── backend/
 │   ├── .mvn/wrapper/             # pinned, checksummed Maven wrapper
-│   ├── src/main/java/com/raahmediq/
+│   ├── src/main/java/com/smartcare/
 │   │   ├── auth/                 # accounts, roles, JWT, security
 │   │   ├── patient/              # patient registration profile
 │   │   ├── hospital/             # hospital and department directory

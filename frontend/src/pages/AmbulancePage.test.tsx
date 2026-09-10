@@ -34,7 +34,7 @@ const request = {
 describe('AmbulancePage', () => {
   beforeEach(() => {
     vi.mocked(getNavigationHospitals).mockResolvedValue([{
-      id: 'hospital-1', code: 'RMQ', name: 'City General Hospital', city: 'Delhi',
+      id: 'hospital-1', code: 'SC', name: 'City General Hospital', city: 'Delhi',
     }])
     vi.mocked(getAmbulanceAvailability).mockResolvedValue({
       hospitalId: 'hospital-1', hospitalName: 'City General Hospital', availableVehicles: 2,

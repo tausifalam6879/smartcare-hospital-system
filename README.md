@@ -1,10 +1,10 @@
-# RaahMediQ Health — Intelligent Hospital Navigation, Queue & Patient Care Platform
+# SmartCare — Intelligent Hospital OPD, Navigation & Emergency Response System
 
 [**Open the live frontend demo**](https://tausifalam6879.github.io/raahmediq-health/) · [View source on GitHub](https://github.com/tausifalam6879/raahmediq-health)
 
-> **Portfolio prototype:** The GitHub Pages demo uses browser-only sample data for directory booking, patient access, and Dijkstra indoor navigation. GitHub Pages cannot run the Spring Boot/PostgreSQL backend, so backend-only clinical, payment, dispatch, and medical-record operations remain available in local full-stack development only. No real hospital, payment provider, or medical service is contacted.
+> **Portfolio prototype:** The GitHub Pages demo uses browser-only sample data for directory booking, patient access, and Dijkstra indoor navigation. GitHub Pages cannot run the Spring Boot/PostgreSQL backend or local Python ML service, so backend-only clinical, payment, dispatch, medical-record, and ML operations remain available in local full-stack development only. The static demo falls back to a clearly labelled sample queue estimate when the ML service is unavailable. No real hospital, payment provider, or medical service is contacted.
 
-RaahMediQ Health is a production-style academic foundation for hospital navigation, fair queue management, and coordinated patient care. It uses a modular Spring Boot monolith so booking, cancellation, capacity release, and waitlist promotion can share one reliable transaction.
+SmartCare is a production-style academic foundation for hospital navigation, fair queue management, and coordinated patient care. It uses a modular Spring Boot monolith so booking, cancellation, capacity release, and waitlist promotion can share one reliable transaction.
 
 ## Delivered in Phase 1
 
@@ -112,7 +112,7 @@ RaahMediQ Health is a production-style academic foundation for hospital navigati
 - Role-aware hospital operations dashboard for appointment flow, doctor availability, queues, waitlists, payments, no-shows, diagnostics, blood alerts, ambulance readiness, recorded wait, and super-admin notification failures.
 - Doctor-day operational states for on-time, 30/60-minute delay, emergency interruption, temporary unavailability, and cancellation for the day, with durable patient notifications.
 - Doctor delays are included in patient live-queue estimates with an explicit approximate-estimate warning.
-- Sudden doctor cancellation creates a patient-owned recovery case; RaahMediQ Health never silently changes the doctor or date.
+- Sudden doctor cancellation creates a patient-owned recovery case; SmartCare never silently changes the doctor or date.
 - Patient-approved same-doctor rescheduling, priority future queue, eligible-doctor backend transfer, or cancellation with refund review. New capacity is locked and rechecked before an OPD position is issued.
 - Staff no-show control releases capacity and promotes the fair waitlist; doctor accounts are restricted to their linked doctor.
 - Responsive React/Tailwind recovery and operations views with explicit refund-review and emergency boundaries.
@@ -126,11 +126,20 @@ RaahMediQ Health is a production-style academic foundation for hospital navigati
 - Patient-owned submission history, lab/blood-bank worklist, rejection flow, durable notifications, and sensitive-operation audit events.
 - Responsive React/Tailwind patient and staff views that distinguish experimental model suggestions, preliminary reactions, and independently laboratory-verified results.
 
+## Delivered in Phase 13
+
+- Reproducible OPD wait-time exploration notebook built from a separately downloadable synthetic dataset; raw source data and notebook runtime files are excluded from Git.
+- Versioned Scikit-learn base-wait pipeline using department and triage category after analysis showed that the source occupancy/staffing fields had no credible wait-time relationship.
+- Five-fold cross-validation with MAE `27.16 ± 0.34` minutes, RMSE `40.92 ± 0.35` minutes, and R² `0.2186 ± 0.0102`; the interface presents an indicative range instead of claiming an exact time.
+- Local FastAPI inference service with validated request bounds, model/health metadata, supported-department detection, generic unseen-department fallback, and emergency escalation messaging.
+- Transparent hybrid queue adjustment using patients ahead, active doctors, consultation duration, doctor delay, occupancy, and triage weighting; automated regression tests prevent the earlier counter-intuitive high-load/lower-wait behaviour.
+- Prototype directory booking integration that stores the model version, preserves booking/payment flow, and falls back safely when the local ML service is offline.
+
 ## Prototype experience additions
 
-- Compact India hospital picker covering all 28 states and 8 union territories with 70 government/private project entries; the list and doctor profiles stay inside RaahMediQ Health and never redirect to hospital websites.
+- Compact India hospital picker covering all 28 states and 8 union territories with 70 government/private project entries; the list and doctor profiles stay inside SmartCare and never redirect to hospital websites.
 - Scrollable hospital and doctor panels, mobile overflow protection, and an explicitly synthetic Ranchi profile for Dr. Prakash Chandra based only on project assumptions supplied for the prototype.
-- Expanded demo care centre with 10 departments, 10 operational doctors, 10 diagnostic procedures, and role-specific demo staff accounts when `RAAHMEDIQ_DEMO_DATA=true`.
+- Expanded demo care centre with 10 departments, 10 operational doctors, 10 diagnostic procedures, and role-specific demo staff accounts when `SMARTCARE_DEMO_DATA=true`.
 - Plain-language Dijkstra route explanation and legend, clickable diagnostic preparation guides, and role-aware staff task inboxes for dispatcher, laboratory, and blood-bank work.
 - Safer simulated online-payment walkthrough: review, provider selection, authorization buffer, and callback-pending status. It never asks for a UPI PIN and never claims that real money was collected.
 - Ambulance request next-step guidance, automatic status refresh, dispatcher call/action controls, and explicit task ownership so requests do not appear to wait without explanation.
@@ -160,11 +169,12 @@ Not yet implemented: a clinically validated ONNX/OpenCV blood-slide model and go
 - Node.js 20.19+ or 22.12+ (Node 22.22 is used in Docker/CI).
 - PostgreSQL 14+ for local non-Docker development.
 - Docker Compose is optional but is the simplest full-stack startup.
+- Python 3.13 is required only for the optional local OPD wait-time ML service and notebook workflow.
 
 ## Run with Docker Compose
 
 1. Copy `.env.example` to `.env`.
-2. Replace `POSTGRES_PASSWORD` and `RAAHMEDIQ_JWT_SECRET` with long random values.
+2. Replace `POSTGRES_PASSWORD` and `SMARTCARE_JWT_SECRET` with long random values.
 3. Optionally enable the one-time super-admin bootstrap and provide its values.
 4. Start the stack:
 
@@ -174,11 +184,11 @@ docker compose up --build
 
 Open `http://localhost:5173` or `http://127.0.0.1:5173`. Both local frontend origins are allowed by the backend. The API runs at `http://localhost:8080`; health is available at `/actuator/health`.
 
-After the first administrator is created, set `RAAHMEDIQ_BOOTSTRAP_ADMIN=false` and restart. Existing accounts are never overwritten by the bootstrap.
+After the first administrator is created, set `SMARTCARE_BOOTSTRAP_ADMIN=false` and restart. Existing accounts are never overwritten by the bootstrap.
 
 ## Run locally
 
-Start PostgreSQL and create a `raahmediq` database, then set `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, and a 32+ character `RAAHMEDIQ_JWT_SECRET`.
+Start PostgreSQL and create a `smartcare` database, then set `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, and a 32+ character `SMARTCARE_JWT_SECRET`.
 
 Backend on Windows PowerShell:
 
@@ -204,6 +214,18 @@ npm run dev
 
 Vite proxies `/api` and `/actuator` to the backend during local development.
 
+Optional OPD wait-time ML service from the repository root:
+
+```powershell
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r .\ml-service\requirements.txt
+Set-Location .\ml-service
+python -m uvicorn app:app --host 127.0.0.1 --port 8001
+```
+
+Copy `frontend/.env.example` to `frontend/.env.local` when a different ML-service URL is required. Interactive local API documentation is available at `http://127.0.0.1:8001/docs`.
+
 ## Verify
 
 ```powershell
@@ -213,6 +235,9 @@ cd backend
 cd ..\frontend
 npm test
 npm run build
+
+cd ..\ml-service
+python -m unittest -v test_app.py
 ```
 
 The committed Maven wrapper pins Maven 3.9.16 and verifies its SHA-256 checksum. The npm lockfile pins the frontend dependency graph.
@@ -331,4 +356,4 @@ POST /api/v1/blood-group-analyses/{analysisId}/reject       (authorized reviewer
 
 ## Safety notes
 
-This is an academic Phase 12 foundation, not a certified medical device, emergency-dispatch system, or production hospital deployment. The blood-slide module has no configured image-classification model and produces no automatic result; even a future experimental suggestion must never replace validated tube testing, cross-matching, donation eligibility, or independent laboratory verification. A doctor-delay estimate is operational guidance, not a clinical priority or guarantee. Doctor transfers and future dates require the patient's explicit choice; a refund-review state is not a claim that money has been refunded. Submitting an ambulance request does not assign or guarantee a vehicle; users must contact official local emergency services for immediate or life-threatening help. Blood availability is operational information, not a transfusion decision. RaahMediQ Health displays diagnostic values exactly as verified by authorized staff but does not interpret them as a diagnosis or treatment decision. Its local grounded assistant never diagnoses, prescribes, changes clinician advice, or decides that an emergency can wait. The development adapters require accredited integrations, hospital-scoped staff grants, MFA, encryption/key management, backup, retention, and legal/clinical governance before real use.
+This is an academic Phase 13 foundation, not a certified medical device, emergency-dispatch system, or production hospital deployment. The OPD ML artifact was trained on synthetic data, has material prediction error, and supplies operational guidance only; it must never assign clinical priority, delay emergency assessment, or be described as a guaranteed appointment time. The blood-slide module has no configured image-classification model and produces no automatic result; even a future experimental suggestion must never replace validated tube testing, cross-matching, donation eligibility, or independent laboratory verification. A doctor-delay estimate is operational guidance, not a clinical priority or guarantee. Doctor transfers and future dates require the patient's explicit choice; a refund-review state is not a claim that money has been refunded. Submitting an ambulance request does not assign or guarantee a vehicle; users must contact official local emergency services for immediate or life-threatening help. Blood availability is operational information, not a transfusion decision. SmartCare displays diagnostic values exactly as verified by authorized staff but does not interpret them as a diagnosis or treatment decision. Its local grounded assistant never diagnoses, prescribes, changes clinician advice, or decides that an emergency can wait. The development adapters require accredited integrations, hospital-scoped staff grants, MFA, encryption/key management, backup, retention, and legal/clinical governance before real use.

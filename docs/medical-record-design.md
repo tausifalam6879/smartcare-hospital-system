@@ -2,7 +2,7 @@
 
 ## Delivered Phase 6 boundary
 
-RaahMediQ Health keeps a patient-owned longitudinal view of clinician-finalized visits, structured prescriptions, medicines, allergies, follow-up guidance, and patient-uploaded reports. It stores and displays authored care facts; it does not infer a diagnosis, prescribe medicine, rewrite clinical notes, or run RAG over documents in this phase.
+SmartCare keeps a patient-owned longitudinal view of clinician-finalized visits, structured prescriptions, medicines, allergies, follow-up guidance, and patient-uploaded reports. It stores and displays authored care facts; it does not infer a diagnosis, prescribe medicine, rewrite clinical notes, or run RAG over documents in this phase.
 
 ## Authorization model
 

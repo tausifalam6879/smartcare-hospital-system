@@ -2,7 +2,7 @@
 
 ## Safety boundary
 
-RaahMediQ Health records and coordinates hospital transport requests. It is not an official emergency number, a clinical-triage tool, a guaranteed vehicle service, or a production computer-aided dispatch system. A patient submission remains `REQUESTED` until an authorized dispatcher explicitly assigns an available ambulance. The AI assistant does not select vehicles, prioritize dispatches, alter operational stages, or tell a patient that an emergency can wait.
+SmartCare records and coordinates hospital transport requests. It is not an official emergency number, a clinical-triage tool, a guaranteed vehicle service, or a production computer-aided dispatch system. A patient submission remains `REQUESTED` until an authorized dispatcher explicitly assigns an available ambulance. The AI assistant does not select vehicles, prioritize dispatches, alter operational stages, or tell a patient that an emergency can wait.
 
 The development fleet is marked `synthetic=true` in the database and UI. It has no callable crew contact and must never be presented as real availability.
 

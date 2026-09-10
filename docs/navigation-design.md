@@ -2,7 +2,7 @@
 
 ## Safety boundary
 
-RaahMediQ Health does not use browser GPS as an indoor-position claim. A route starts only from a hospital-approved QR checkpoint selected or scanned by the patient. The backend searches only active, stored map edges. When no connected route exists it returns an unavailable response and asks the patient to use the help desk; no model or fallback text generator creates directions.
+SmartCare does not use browser GPS as an indoor-position claim. A route starts only from a hospital-approved QR checkpoint selected or scanned by the patient. The backend searches only active, stored map edges. When no connected route exists it returns an unavailable response and asks the patient to use the help desk; no model or fallback text generator creates directions.
 
 Emergency signage and staff instructions always override the assistant. The UI repeats this boundary beside every route.
 

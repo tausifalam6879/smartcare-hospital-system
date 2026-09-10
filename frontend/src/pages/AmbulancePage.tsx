@@ -164,7 +164,7 @@ export function AmbulancePage() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-black uppercase tracking-[.16em] text-cyan-100"><ShieldCheck className="size-4" />Human-authorized dispatch</div>
             <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">Ambulance coordination with accountable handoffs</h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-blue-100/80 sm:text-base">Request hospital transport, follow dispatcher-confirmed stages, and see the latest shared area. RaahMediQ Health never auto-dispatches a vehicle or replaces emergency services.</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-blue-100/80 sm:text-base">Request hospital transport, follow dispatcher-confirmed stages, and see the latest shared area. SmartCare never auto-dispatches a vehicle or replaces emergency services.</p>
           </div>
           <div className="grid grid-cols-2 gap-3 self-end">
             <div className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur"><p className="text-3xl font-black">{availability?.availableVehicles ?? '—'}</p><p className="mt-1 text-xs font-bold text-blue-100/70">Currently marked available</p></div>
@@ -175,7 +175,7 @@ export function AmbulancePage() {
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-6 grid gap-3 lg:grid-cols-[1fr_auto]">
-          <div className="flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-950"><AlertOctagon className="mt-0.5 size-5 shrink-0" /><p><strong>Life-threatening emergency?</strong> Contact your local official emergency service immediately. Do not wait for a RaahMediQ Health request, availability count, or page update.</p></div>
+          <div className="flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-950"><AlertOctagon className="mt-0.5 size-5 shrink-0" /><p><strong>Life-threatening emergency?</strong> Contact your local official emergency service immediately. Do not wait for a SmartCare request, availability count, or page update.</p></div>
           <button onClick={() => void refresh()} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 text-sm font-black text-slate-700 hover:border-care-300 hover:bg-care-50"><RefreshCw className="size-4" />Refresh</button>
         </div>
         {availability?.syntheticData && <div className="mb-6 flex gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-950"><ShieldAlert className="mt-0.5 size-5 shrink-0" /><p><strong>Synthetic demo fleet:</strong> vehicle availability on this development hospital is test data, not a real ambulance service. Do not call or rely on it for care.</p></div>}

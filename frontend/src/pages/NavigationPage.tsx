@@ -19,7 +19,7 @@ type Language = 'en' | 'hi'
 const copy = {
   en: {
     eyebrow: 'QR hospital guide', title: 'Find your room without getting lost',
-    intro: 'Scan a RaahMediQ Health board or choose the nearest checkpoint. Directions use the hospital’s verified indoor map.',
+    intro: 'Scan a SmartCare board or choose the nearest checkpoint. Directions use the hospital’s verified indoor map.',
     source: 'Where are you now?', sourceHelp: 'Choose the QR board nearest to you', destination: 'Where do you want to go?',
     choose: 'Choose destination', guide: 'Show my route', accessible: 'Step-free route',
     accessibleHelp: 'Uses lifts and accessible corridors only', verified: 'Verified checkpoint',
@@ -31,7 +31,7 @@ const copy = {
     signIn: 'Sign in to automatically select your appointment room.', allHospitals: 'Hospital',
     safetySub: 'QR checkpoints · verified map · no indoor GPS claim',
     fallbackTitle: 'Safe fallback guidance', fallbackRoute: 'The selected room has no complete verified route. Guidance now ends at the nearest mapped help desk.',
-    demoTitle: 'Project simulation route', demoRoute: 'This directory hospital has no real indoor map in the project. A clearly labelled RaahMediQ demo route is shown to demonstrate the navigation workflow.',
+    demoTitle: 'Project simulation route', demoRoute: 'This directory hospital has no real indoor map in the project. A clearly labelled SmartCare demo route is shown to demonstrate the navigation workflow.',
     why: 'Why did the app choose this path?', algorithm: 'Dijkstra route in plain language',
     algorithmText: 'Each verified location is a node and each corridor is a connection. Dijkstra compares the accumulated travel time and selects the lowest-cost verified path. Step-free mode removes stair connections.',
     scan: 'Scan verified nodes', compare: 'Compare total cost', exclude: 'Remove stairs', select: 'Choose lowest cost',
@@ -42,7 +42,7 @@ const copy = {
   },
   hi: {
     eyebrow: 'QR अस्पताल गाइड', title: 'बिना भटके अपना कमरा खोजें',
-    intro: 'RaahMediQ Health बोर्ड स्कैन करें या पास का QR स्थान चुनें। रास्ता अस्पताल के सत्यापित इनडोर मानचित्र से मिलता है।',
+    intro: 'SmartCare बोर्ड स्कैन करें या पास का QR स्थान चुनें। रास्ता अस्पताल के सत्यापित इनडोर मानचित्र से मिलता है।',
     source: 'आप अभी कहाँ हैं?', sourceHelp: 'अपने सबसे पास का QR बोर्ड चुनें', destination: 'आपको कहाँ जाना है?',
     choose: 'जगह चुनें', guide: 'मेरा रास्ता दिखाएँ', accessible: 'सीढ़ी रहित रास्ता',
     accessibleHelp: 'केवल लिफ्ट और सुविधाजनक गलियारे', verified: 'सत्यापित QR स्थान',
@@ -54,7 +54,7 @@ const copy = {
     signIn: 'अपना अपॉइंटमेंट कमरा अपने आप चुनने के लिए साइन इन करें।', allHospitals: 'अस्पताल',
     safetySub: 'QR चेकपॉइंट · सत्यापित नक्शा · इनडोर GPS का दावा नहीं',
     fallbackTitle: 'सुरक्षित वैकल्पिक मार्गदर्शन', fallbackRoute: 'चुने गए कमरे तक पूरा सत्यापित रास्ता उपलब्ध नहीं है। अब रास्ता सबसे पास के मैप किए गए सहायता डेस्क तक जाता है।',
-    demoTitle: 'प्रोजेक्ट सिमुलेशन रास्ता', demoRoute: 'इस डायरेक्टरी अस्पताल का वास्तविक इनडोर नक्शा प्रोजेक्ट में नहीं है। नेविगेशन प्रक्रिया दिखाने के लिए स्पष्ट लेबल वाला RaahMediQ डेमो रास्ता दिखाया गया है।',
+    demoTitle: 'प्रोजेक्ट सिमुलेशन रास्ता', demoRoute: 'इस डायरेक्टरी अस्पताल का वास्तविक इनडोर नक्शा प्रोजेक्ट में नहीं है। नेविगेशन प्रक्रिया दिखाने के लिए स्पष्ट लेबल वाला SmartCare डेमो रास्ता दिखाया गया है।',
     why: 'ऐप ने यह रास्ता क्यों चुना?', algorithm: 'Dijkstra रास्ता आसान भाषा में',
     algorithmText: 'हर सत्यापित जगह एक नोड और हर गलियारा एक कनेक्शन है। Dijkstra कुल यात्रा समय की तुलना करके सबसे कम लागत वाला सत्यापित रास्ता चुनता है। सीढ़ी-रहित मोड सीढ़ियों वाले कनेक्शन हटा देता है।',
     scan: 'सत्यापित नोड देखें', compare: 'कुल लागत तुलना', exclude: 'सीढ़ियाँ हटाएँ', select: 'सबसे कम लागत चुनें',
@@ -138,7 +138,7 @@ export function NavigationPage() {
         const list = await getNavigationHospitals()
         if (!active) return
         setHospitals(list)
-        const demo = list.find((hospital) => hospital.code === 'RMQ-DEMO') ?? list[0]
+        const demo = list.find((hospital) => hospital.code === 'SC-DEMO') ?? list[0]
         if (appointmentId && session) {
           try {
             const result = await getAppointmentDestination(appointmentId)

@@ -2,7 +2,7 @@
 
 ## Delivered Phase 8 boundary
 
-RaahMediQ Health coordinates clinician-ordered laboratory and imaging work. It does not let a patient self-prescribe a test, interpret values as a diagnosis, or release a draft result as final.
+SmartCare coordinates clinician-ordered laboratory and imaging work. It does not let a patient self-prescribe a test, interpret values as a diagnosis, or release a draft result as final.
 
 ## State flow
 

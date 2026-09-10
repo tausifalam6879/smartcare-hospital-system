@@ -2,13 +2,13 @@
 
 ## Safety boundary
 
-RaahMediQ Health coordinates verified operational information; it does not decide transfusion compatibility, cross-match blood, approve donation, or administer a component. Search uses the exact clinician-recorded ABO/Rh group and component. Qualified blood-bank and clinical staff remain responsible for confirmation and release.
+SmartCare coordinates verified operational information; it does not decide transfusion compatibility, cross-match blood, approve donation, or administer a component. Search uses the exact clinician-recorded ABO/Rh group and component. Qualified blood-bank and clinical staff remain responsible for confirmation and release.
 
 An emergency must not wait for a website lookup. The patient UI explicitly directs users to local emergency services or the hospital emergency desk and warns them to reconfirm availability before travelling.
 
 ## Inventory trust
 
-Each inventory row represents a batch at one hospital-authorized internal or partner blood bank. It records total and reserved units, expiry, verification state, verification time, and verifier. A configurable `RAAHMEDIQ_BLOOD_VERIFICATION_MAX_AGE` defaults to six hours.
+Each inventory row represents a batch at one hospital-authorized internal or partner blood bank. It records total and reserved units, expiry, verification state, verification time, and verifier. A configurable `SMARTCARE_BLOOD_VERIFICATION_MAX_AGE` defaults to six hours.
 
 A batch is searchable only when all conditions are true:
 

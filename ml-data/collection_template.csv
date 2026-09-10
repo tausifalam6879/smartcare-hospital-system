@@ -1,0 +1,1 @@
+day_of_week,scheduled_hour,department,triage_category,doctor_id,token_number,patients_ahead,active_doctors,average_consultation_minutes,emergency_insertions,current_doctor_delay_minutes,occupancy_rate,actual_wait_minutes

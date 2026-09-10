@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { HospitalDirectoryPage } from './HospitalDirectoryPage'
 
 describe('HospitalDirectoryPage', () => {
-  it('keeps the directory compact and shows hospital doctors inside RaahMediQ', () => {
+  it('keeps the directory compact and shows hospital doctors inside SmartCare', () => {
     render(<MemoryRouter><HospitalDirectoryPage /></MemoryRouter>)
 
     expect(screen.getByRole('button', { name: /Private hospitals/ })).toBeInTheDocument()

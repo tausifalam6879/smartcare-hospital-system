@@ -17,7 +17,7 @@ Cancelling a doctor's day creates one recovery case for each confirmed or checke
 - a priority future queue date; or
 - cancellation with refund review.
 
-For a reschedule, RaahMediQ Health locks the target doctor/day ledger, verifies guaranteed capacity, releases the original position with normal FIFO promotion, and confirms the new position in one transaction. `REFUND_REVIEW_REQUIRED` means staff/payment workflow must still determine eligibility and gateway outcome; it is not a successful refund.
+For a reschedule, SmartCare locks the target doctor/day ledger, verifies guaranteed capacity, releases the original position with normal FIFO promotion, and confirms the new position in one transaction. `REFUND_REVIEW_REQUIRED` means staff/payment workflow must still determine eligibility and gateway outcome; it is not a successful refund.
 
 ## Operational dashboard
 

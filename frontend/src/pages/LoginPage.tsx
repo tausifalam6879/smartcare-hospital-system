@@ -37,7 +37,7 @@ export function LoginPage() {
     setLoading(true)
     setError('')
     try {
-      await login('demo@raahmediq.health', 'github-pages-demo')
+      await login('demo@smartcare.health', 'github-pages-demo')
       navigate('/dashboard', { replace: true })
     } catch (requestError) {
       setError(messageFromError(requestError))
@@ -56,7 +56,7 @@ export function LoginPage() {
         {error && <p role="alert" className="rounded-2xl bg-rose-50 p-3 text-sm font-semibold text-rose-800">{error}</p>}
         <button disabled={loading} className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-care-600 px-5 font-extrabold text-white hover:bg-care-700 disabled:opacity-60">{loading && <LoaderCircle className="size-5 animate-spin" />} Sign in</button>
       </form>
-      <p className="mt-6 text-center text-sm text-slate-600">New to RaahMediQ Health? <Link to="/register" className="font-extrabold text-care-700 hover:underline">Create an account</Link></p>
+      <p className="mt-6 text-center text-sm text-slate-600">New to SmartCare? <Link to="/register" className="font-extrabold text-care-700 hover:underline">Create an account</Link></p>
     </AuthShell>
   )
 }

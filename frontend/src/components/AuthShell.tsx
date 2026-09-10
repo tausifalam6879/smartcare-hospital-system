@@ -12,7 +12,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         <div className="mt-12 flex items-start gap-3 rounded-2xl bg-white/10 p-4"><ShieldCheck className="mt-0.5 size-5 shrink-0 text-care-300" /><p className="text-sm leading-6 text-slate-200">Passwords are BCrypt hashed. Access tokens expire quickly and are kept only for this browser session.</p></div>
       </div>
       <div className="mx-auto w-full max-w-md">
-        <p className="text-xs font-extrabold uppercase tracking-[.2em] text-care-700">RaahMediQ Health patient access</p>
+        <p className="text-xs font-extrabold uppercase tracking-[.2em] text-care-700">SmartCare patient access</p>
         <h1 className="mt-2 text-3xl font-black tracking-tight text-ink-950">{title}</h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">{subtitle}</p>
         <div className="mt-7">{children}</div>

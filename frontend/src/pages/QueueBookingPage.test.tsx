@@ -41,7 +41,7 @@ describe('QueueBookingPage project hospital flow', () => {
     expect(await screen.findByRole('heading', { name: /Demo payment verified/i }, { timeout: 3000 })).toBeInTheDocument()
     expect(screen.getByText(/project OPD number .* is confirmed/i)).toBeInTheDocument()
 
-    const stored = JSON.parse(sessionStorage.getItem('raahmediq-prototype-bookings') ?? '[]') as Array<{ status: string }>
+    const stored = JSON.parse(sessionStorage.getItem('smartcare-prototype-bookings') ?? '[]') as Array<{ status: string }>
     expect(stored[0]?.status).toBe('CONFIRMED')
   })
 })

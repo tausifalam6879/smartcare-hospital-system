@@ -17,7 +17,7 @@ vi.mock('../services/navigation', () => ({ getNavigationHospitals: vi.fn() }))
 describe('DiagnosticsPage', () => {
   beforeEach(() => {
     vi.mocked(getNavigationHospitals).mockResolvedValue([{
-      id: 'hospital-1', code: 'RMQ', name: 'City General Hospital', city: 'Delhi',
+      id: 'hospital-1', code: 'SC', name: 'City General Hospital', city: 'Delhi',
     }])
     vi.mocked(getDiagnosticProcedures).mockResolvedValue([])
     vi.mocked(getMyDiagnosticOrders).mockResolvedValue([{

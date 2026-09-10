@@ -1,8 +1,8 @@
-# RaahMediQ Health Architecture
+# SmartCare Architecture
 
 ## 1. Architectural style
 
-RaahMediQ Health starts as a **modular Spring Boot monolith**. A single deployable process owns one PostgreSQL database, while Java packages enforce domain boundaries. This keeps cross-module transactions reliable during the early hospital rollout and avoids distributed failure modes before operational scale requires them.
+SmartCare starts as a **modular Spring Boot monolith**. A single deployable process owns one PostgreSQL database, while Java packages enforce domain boundaries. This keeps cross-module transactions reliable during the early hospital rollout and avoids distributed failure modes before operational scale requires them.
 
 The application uses a ports-and-adapters shape inside each domain:
 

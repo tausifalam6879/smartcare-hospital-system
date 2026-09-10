@@ -20,7 +20,7 @@ vi.mock('../services/navigation', () => ({ getNavigationHospitals: vi.fn() }))
 describe('BloodSupportPage', () => {
   beforeEach(() => {
     vi.mocked(getNavigationHospitals).mockResolvedValue([{
-      id: 'hospital-1', code: 'RMQ', name: 'City General Hospital', city: 'Delhi',
+      id: 'hospital-1', code: 'SC', name: 'City General Hospital', city: 'Delhi',
     }])
     vi.mocked(getMyDonorConsent).mockResolvedValue(null)
     vi.mocked(getMyBloodRequests).mockResolvedValue([{

@@ -11,10 +11,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.raahmediq</groupId>
-    <artifactId>raahmediq-backend</artifactId>
+    <groupId>com.smartcare</groupId>
+    <artifactId>smartcare-backend</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>RaahMediQ Health Backend</name>
+    <name>SmartCare Backend</name>
     <description>Modular hospital navigation, queue, and patient care platform</description>
 
     <properties>

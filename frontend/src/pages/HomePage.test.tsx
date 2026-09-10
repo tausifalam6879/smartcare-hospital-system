@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { HomePage } from './HomePage'
 
 describe('HomePage', () => {
-  it('shows the RaahMediQ Health identity, OPD booking, and planned queue modules', () => {
+  it('shows the SmartCare identity, OPD booking, and planned queue modules', () => {
     render(<MemoryRouter><HomePage /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /care made clear/i })).toBeInTheDocument()
     expect(screen.getAllByText('Book OPD number').length).toBeGreaterThan(0)

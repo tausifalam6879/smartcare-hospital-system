@@ -1,4 +1,4 @@
-name: Deploy RaahMediQ frontend demo
+name: Deploy SmartCare frontend demo
 
 on:
   push:

@@ -5,8 +5,8 @@ import type {
 
 const hospital: HospitalSummary = {
   id: 'github-pages-demo-hospital',
-  code: 'RMQ-DEMO',
-  name: 'RaahMediQ Health Demo Care Centre',
+  code: 'SC-DEMO',
+  name: 'SmartCare Demo Care Centre',
   city: 'New Delhi',
 }
 
@@ -61,13 +61,13 @@ function checkpoint(publicCode: string, locationCode: string, labelEn: string, l
 }
 
 const checkpoints: Checkpoint[] = [
-  checkpoint('RMQ-DEMO-ENTRANCE', 'MAIN_ENTRANCE', 'Main entrance QR', 'मुख्य प्रवेश QR'),
-  checkpoint('RMQ-DEMO-REG', 'MAIN_REGISTRATION', 'Registration QR', 'पंजीकरण QR'),
-  checkpoint('RMQ-DEMO-LIFT-A1', 'LIFT_A_1', 'Lift A · 1st floor QR', 'लिफ्ट A · पहली मंज़िल QR'),
-  checkpoint('RMQ-DEMO-LIFT-A2', 'LIFT_A_2', 'Lift A · 2nd floor QR', 'लिफ्ट A · दूसरी मंज़िल QR'),
-  checkpoint('RMQ-DEMO-LIFT-B3', 'LIFT_B_3', 'Lift B · 3rd floor QR', 'लिफ्ट B · तीसरी मंज़िल QR'),
-  checkpoint('RMQ-DEMO-OPD-1', 'FIRST_FLOOR_RECEPTION', 'First-floor OPD help desk QR', 'पहली मंज़िल ओपीडी सहायता डेस्क QR'),
-  checkpoint('RMQ-DEMO-OPD-2', 'GENERAL_RECEPTION', 'Second-floor OPD reception QR', 'दूसरी मंज़िल ओपीडी रिसेप्शन QR'),
+  checkpoint('SC-DEMO-ENTRANCE', 'MAIN_ENTRANCE', 'Main entrance QR', 'मुख्य प्रवेश QR'),
+  checkpoint('SC-DEMO-REG', 'MAIN_REGISTRATION', 'Registration QR', 'पंजीकरण QR'),
+  checkpoint('SC-DEMO-LIFT-A1', 'LIFT_A_1', 'Lift A · 1st floor QR', 'लिफ्ट A · पहली मंज़िल QR'),
+  checkpoint('SC-DEMO-LIFT-A2', 'LIFT_A_2', 'Lift A · 2nd floor QR', 'लिफ्ट A · दूसरी मंज़िल QR'),
+  checkpoint('SC-DEMO-LIFT-B3', 'LIFT_B_3', 'Lift B · 3rd floor QR', 'लिफ्ट B · तीसरी मंज़िल QR'),
+  checkpoint('SC-DEMO-OPD-1', 'FIRST_FLOOR_RECEPTION', 'First-floor OPD help desk QR', 'पहली मंज़िल ओपीडी सहायता डेस्क QR'),
+  checkpoint('SC-DEMO-OPD-2', 'GENERAL_RECEPTION', 'Second-floor OPD reception QR', 'दूसरी मंज़िल ओपीडी रिसेप्शन QR'),
 ]
 
 type DemoEdge = {

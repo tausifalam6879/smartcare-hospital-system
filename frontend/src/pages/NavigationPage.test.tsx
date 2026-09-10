@@ -19,7 +19,7 @@ vi.mock('../context/AuthContext', () => ({
 vi.mock('../services/api', () => ({ messageFromError: () => 'Request failed' }))
 
 vi.mock('../services/navigation', () => ({
-  getNavigationHospitals: vi.fn(() => Promise.resolve([{ id: 'hospital-1', code: 'RMQ-DEMO', name: 'Demo Care Centre', city: 'Delhi' }])),
+  getNavigationHospitals: vi.fn(() => Promise.resolve([{ id: 'hospital-1', code: 'SC-DEMO', name: 'Demo Care Centre', city: 'Delhi' }])),
   getAppointmentDestination: vi.fn(() => Promise.resolve({
     appointmentId: 'appointment-1', hospitalId: 'hospital-1', hospitalName: 'Demo Care Centre', doctorName: 'Dr. Unmapped',
     destination: reception, exactRoomMatch: false,

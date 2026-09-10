@@ -45,13 +45,13 @@ function validationMessage(errors: ApiErrorBody['errors']) {
 }
 
 api.interceptors.request.use((config) => {
-  const raw = sessionStorage.getItem('raahmediq-session')
+  const raw = sessionStorage.getItem('smartcare-session')
   if (raw) {
     try {
       const session = JSON.parse(raw) as { accessToken?: string }
       if (session.accessToken) config.headers.Authorization = `Bearer ${session.accessToken}`
     } catch {
-      sessionStorage.removeItem('raahmediq-session')
+      sessionStorage.removeItem('smartcare-session')
     }
   }
   config.headers['X-Correlation-ID'] = crypto.randomUUID()

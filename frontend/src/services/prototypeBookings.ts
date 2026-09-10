@@ -15,6 +15,10 @@ export type PrototypeBooking = {
   paymentMethod: PaymentMethod
   queuePosition: number
   estimatedWaitMinutes: number
+  estimatedWaitMinimumMinutes?: number
+  estimatedWaitMaximumMinutes?: number
+  waitEstimateSource?: 'ML_HYBRID' | 'FALLBACK'
+  waitModelVersion?: string
   amount: number
   status: PrototypeBookingStatus
   providerReference?: string
@@ -22,7 +26,7 @@ export type PrototypeBooking = {
   createdAt: string
 }
 
-const storageKey = 'raahmediq-prototype-bookings'
+const storageKey = 'smartcare-prototype-bookings'
 
 export function getPrototypeBookings(): PrototypeBooking[] {
   if (typeof window === 'undefined') return []

@@ -64,7 +64,7 @@ export function HomePage() {
               <span className="text-care-600">Queues made fair. Journeys connected.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-              RaahMediQ Health brings advance OPD-number booking, live queue status, indoor navigation and the next care step into one patient journey.
+              SmartCare brings advance OPD-number booking, live queue status, indoor navigation and the next care step into one patient journey.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -157,7 +157,7 @@ export function HomePage() {
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[.22em] text-care-700">Plan your journey</p>
             <h2 className="text-balance mt-3 text-3xl font-black tracking-[-0.035em] text-ink-950 sm:text-4xl">From finding a doctor to getting home, stay one step ahead.</h2>
-            <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">RaahMediQ Health connects the practical steps around care so patients and families spend less energy figuring out the system.</p>
+            <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">SmartCare connects the practical steps around care so patients and families spend less energy figuring out the system.</p>
             <div className="mt-8 space-y-2">
               {journey.map((item) => (
                 <div key={item.number} className="group grid grid-cols-[3rem_1fr] gap-4 rounded-2xl border border-transparent p-3 transition hover:border-blue-100 hover:bg-white">

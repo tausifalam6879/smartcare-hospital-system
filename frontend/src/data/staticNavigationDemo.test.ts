@@ -3,7 +3,7 @@ import { staticDemoRoute } from './staticNavigationDemo'
 
 describe('staticNavigationDemo', () => {
   it('builds the lowest-cost step-free route to the cardiology OPD', () => {
-    const route = staticDemoRoute('RMQ-DEMO-ENTRANCE', 'OPD_307', 'en', true)
+    const route = staticDemoRoute('SC-DEMO-ENTRANCE', 'OPD_307', 'en', true)
 
     expect(route.available).toBe(true)
     expect(route.pathCodes).toEqual([
@@ -16,7 +16,7 @@ describe('staticNavigationDemo', () => {
   })
 
   it('returns hospital-approved-style Hindi demo instructions', () => {
-    const route = staticDemoRoute('RMQ-DEMO-ENTRANCE', 'OPD_214', 'hi', true)
+    const route = staticDemoRoute('SC-DEMO-ENTRANCE', 'OPD_214', 'hi', true)
 
     expect(route.available).toBe(true)
     expect(route.message).toContain('सबसे कम लागत')
