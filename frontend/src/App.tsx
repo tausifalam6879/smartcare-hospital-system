@@ -28,6 +28,28 @@ function Protected({ page }: { page: ReactNode }) {
   return session ? page : <Navigate to="/login" replace />
 }
 
+function PatientOrGuest({ page }: { page: ReactNode }) {
+  const { session } = useAuth()
+  return session && !session.user.roles.includes('PATIENT') ? <Navigate to="/dashboard" replace /> : page
+}
+
+function RoleProtected({ page, roles }: { page: ReactNode; roles: string[] }) {
+  const { session } = useAuth()
+  if (!session) return <Navigate to="/login" replace />
+  return session.user.roles.some((role) => roles.includes(role)) ? page : <Navigate to="/dashboard" replace />
+}
+
+function RoleHome() {
+  const { session } = useAuth()
+  if (!session) return <Navigate to="/login" replace />
+  const roles = session.user.roles
+  if (roles.includes('DOCTOR')) return <Navigate to="/doctor/consultations" replace />
+  if (roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))) {
+    return <Navigate to="/staff/tasks" replace />
+  }
+  return <DashboardPage />
+}
+
 export function App() {
   return (
     <Routes>
@@ -35,20 +57,20 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="doctors" element={<DoctorDirectoryPage />} />
         <Route path="hospitals" element={<HospitalDirectoryPage />} />
-        <Route path="booking" element={<QueueBookingPage />} />
-        <Route path="dashboard" element={<Protected page={<DashboardPage />} />} />
-        <Route path="queue/:appointmentId" element={<Protected page={<LiveQueuePage />} />} />
+        <Route path="booking" element={<PatientOrGuest page={<QueueBookingPage />} />} />
+        <Route path="dashboard" element={<Protected page={<RoleHome />} />} />
+        <Route path="queue/:appointmentId" element={<RoleProtected roles={['PATIENT']} page={<LiveQueuePage />} />} />
         <Route path="notifications" element={<Protected page={<NotificationsPage />} />} />
-        <Route path="records" element={<Protected page={<MedicalRecordsPage />} />} />
-        <Route path="follow-ups" element={<Protected page={<CareFollowUpsPage />} />} />
-        <Route path="doctor/consultations" element={<Protected page={<DoctorConsultationPage />} />} />
-        <Route path="assistant" element={<Protected page={<CareAssistantPage />} />} />
-        <Route path="diagnostics" element={<Protected page={<DiagnosticsPage />} />} />
-        <Route path="blood-support" element={<Protected page={<BloodSupportPage />} />} />
-        <Route path="ambulance" element={<Protected page={<AmbulancePage />} />} />
-        <Route path="operations" element={<Protected page={<OperationsPage />} />} />
-        <Route path="staff/tasks" element={<Protected page={<StaffTaskInboxPage />} />} />
-        <Route path="blood-group-analysis" element={<Protected page={<BloodGroupAnalysisPage />} />} />
+        <Route path="records" element={<RoleProtected roles={['PATIENT']} page={<MedicalRecordsPage />} />} />
+        <Route path="follow-ups" element={<RoleProtected roles={['PATIENT']} page={<CareFollowUpsPage />} />} />
+        <Route path="doctor/consultations" element={<RoleProtected roles={['DOCTOR']} page={<DoctorConsultationPage />} />} />
+        <Route path="assistant" element={<RoleProtected roles={['PATIENT']} page={<CareAssistantPage />} />} />
+        <Route path="diagnostics" element={<RoleProtected roles={['PATIENT']} page={<DiagnosticsPage />} />} />
+        <Route path="blood-support" element={<RoleProtected roles={['PATIENT']} page={<BloodSupportPage />} />} />
+        <Route path="ambulance" element={<RoleProtected roles={['PATIENT', 'AMBULANCE_DISPATCHER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']} page={<AmbulancePage />} />} />
+        <Route path="operations" element={<RoleProtected roles={['PATIENT', 'DOCTOR', 'RECEPTIONIST', 'CASHIER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']} page={<OperationsPage />} />} />
+        <Route path="staff/tasks" element={<RoleProtected roles={['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']} page={<StaffTaskInboxPage />} />} />
+        <Route path="blood-group-analysis" element={<RoleProtected roles={['PATIENT', 'LAB_TECHNICIAN', 'BLOOD_BANK_STAFF', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']} page={<BloodGroupAnalysisPage />} />} />
         <Route path="navigate" element={<NavigationPage />} />
         <Route path="navigate/:checkpointCode" element={<NavigationPage />} />
         <Route path="login" element={<LoginPage />} />

@@ -89,22 +89,10 @@ export function HomePage() {
           <div className="relative mx-auto w-full max-w-3xl lg:mr-0">
             <div className="relative overflow-hidden rounded-[2rem] bg-slate-900 shadow-[0_35px_80px_-28px_rgba(9,45,87,.4)]">
               <img
-                src={publicAsset('images/doctor-consultation.jpg')}
-                alt="Doctor listening carefully to a patient during a consultation"
+                src={publicAsset('images/smartcare-queue-workstation.png')}
+                alt="SmartCare OPD queue workstation showing a confirmed token and estimated wait"
                 className="h-[28rem] w-full object-cover object-center sm:h-[34rem] lg:h-[38rem]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08294d]/55 via-transparent to-transparent" />
-              <div className="absolute right-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-white/30 bg-white/95 p-3.5 shadow-xl backdrop-blur sm:right-6 sm:top-6 sm:p-4">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-700"><TicketCheck className="size-5" /></span>
-                <div>
-                  <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-slate-500">Example OPD token</p>
-                  <p className="mt-0.5 text-sm font-black text-ink-950">#37 · Position confirmed</p>
-                </div>
-              </div>
-              <div className="absolute bottom-4 left-4 max-w-[calc(100%-2rem)] rounded-2xl border border-white/30 bg-[#071b35]/92 p-4 text-white shadow-xl backdrop-blur sm:bottom-6 sm:left-6 sm:w-[22rem] sm:p-5">
-                <div className="flex items-center justify-between gap-4"><div><p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-blue-300">Example live queue</p><p className="mt-1 text-sm font-black">Now serving #28</p></div><span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-200">Live</span></div>
-                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-white/10 pt-3 text-xs"><p><span className="block text-lg font-black">8</span><span className="text-blue-100/65">Patients ahead</span></p><p><span className="block text-lg font-black">~42 min</span><span className="text-blue-100/65">Estimated wait</span></p></div>
-              </div>
             </div>
           </div>
         </div>

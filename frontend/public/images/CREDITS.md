@@ -7,3 +7,5 @@ The interface uses locally stored editorial photography released under the Unspl
 - `hospital-lobby.jpg` — Martha Dominguez de Gouveia, “Hospital lobby reception with signage”
 
 The photographs are used as representative interface imagery and do not imply an affiliation with SmartCare.
+
+`smartcare-queue-workstation.png` is a project-specific SmartCare interface visual supplied by the project owner.

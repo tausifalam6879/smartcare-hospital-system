@@ -1,4 +1,4 @@
-import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Droplets, FileHeart, FlaskConical, Home, LayoutDashboard, LogIn, MapPin, Navigation, Phone, TicketCheck } from 'lucide-react'
+import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Droplets, FileHeart, FlaskConical, Home, LayoutDashboard, LogIn, MapPin, Microscope, Navigation, Phone, Stethoscope, TicketCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -6,7 +6,7 @@ import { isStaticDemo } from '../config/runtime'
 import { getUnreadCount } from '../services/notifications'
 import { BrandMark } from './BrandMark'
 
-const desktopLinks = [
+const patientDesktopLinks = [
   { to: '/', label: 'Home', icon: Home },
   { to: '/hospitals', label: 'Hospitals', icon: Building2 },
   { to: '/booking', label: 'Book OPD', icon: TicketCheck },
@@ -17,13 +17,62 @@ const desktopLinks = [
   { to: '/dashboard', label: 'My care', icon: CalendarDays },
 ]
 
-const mobileLinks = [
+const patientMobileLinks = [
   { to: '/', label: 'Home', icon: Home },
   { to: '/booking', label: 'Book OPD', icon: TicketCheck },
   { to: '/navigate', label: 'Navigate', icon: Navigation },
   { to: '/records', label: 'Records', icon: FileHeart },
   { to: '/dashboard', label: 'My care', icon: CalendarDays },
 ]
+
+const patientFooterLinks = [
+  ['/booking', 'Book OPD number'], ['/hospitals', 'India hospital directory'], ['/doctors', 'Find a doctor'],
+  ['/ambulance', 'Ambulance coordination'], ['/navigate', 'Hospital navigation'], ['/diagnostics', 'Diagnostics & results'],
+  ['/blood-support', 'Blood support'], ['/blood-group-analysis', 'Blood-slide review'], ['/records', 'My health record'],
+  ['/follow-ups', 'Follow-ups & reminders'], ['/assistant', 'Care assistant'], ['/operations', 'Appointment recovery'], ['/dashboard', 'My care'],
+]
+
+const doctorLinks = [
+  { to: '/', label: 'Home', icon: Home },
+  { to: '/doctor/consultations', label: 'Consultations', icon: Stethoscope },
+  { to: '/navigate', label: 'Navigate', icon: Navigation },
+  { to: '/notifications', label: 'Notifications', icon: Bell },
+]
+
+const staffLinksByRole: Record<string, typeof patientDesktopLinks> = {
+  AMBULANCE_DISPATCHER: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
+    { to: '/ambulance', label: 'Dispatch', icon: Ambulance },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+  LAB_TECHNICIAN: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
+    { to: '/blood-group-analysis', label: 'Slide review', icon: Microscope },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+  BLOOD_BANK_STAFF: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
+    { to: '/blood-group-analysis', label: 'Slide review', icon: Microscope },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+  HOSPITAL_ADMIN: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
+    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
+    { to: '/ambulance', label: 'Ambulance', icon: Ambulance },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+  SUPER_ADMIN: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
+    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
+    { to: '/ambulance', label: 'Ambulance', icon: Ambulance },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+}
 
 function navClass({ isActive }: { isActive: boolean }) {
   return `relative flex items-center gap-2 px-3 py-7 text-sm font-bold transition after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full ${
@@ -43,7 +92,18 @@ export function MainLayout() {
   const { session } = useAuth()
   const { pathname } = useLocation()
   const [unread, setUnread] = useState(0)
-  const isStaff = Boolean(session?.user.roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)))
+  const staffRole = session?.user.roles.find((role) => staffLinksByRole[role])
+  const isStaff = Boolean(staffRole)
+  const isDoctor = Boolean(session?.user.roles.includes('DOCTOR'))
+  const desktopLinks = isDoctor ? doctorLinks : staffRole ? staffLinksByRole[staffRole] : patientDesktopLinks
+  const mobileLinks = (isDoctor || staffRole ? desktopLinks : patientMobileLinks).slice(0, 5)
+  const workspacePath = isDoctor ? '/doctor/consultations' : isStaff ? '/staff/tasks' : '/dashboard'
+  const canUseAmbulance = !session || session.user.roles.some((role) => ['PATIENT', 'AMBULANCE_DISPATCHER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
+  const footerLinks = isDoctor
+    ? [['/doctor/consultations', 'Finalize consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation'], ['/notifications', 'Notifications']]
+    : isStaff
+      ? [['/staff/tasks', 'My assigned work'], ...(session?.user.roles.some((role) => ['HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)) ? [['/operations', 'Hospital operations']] : []), ...(canUseAmbulance ? [['/ambulance', 'Ambulance coordination']] : []), ...(session?.user.roles.some((role) => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [['/blood-group-analysis', 'Blood-slide review']] : []), ['/navigate', 'Hospital navigation'], ['/notifications', 'Notifications']]
+      : patientFooterLinks
   useEffect(() => {
     if (isStaticDemo) { setUnread(0); return }
     if (!session) { setUnread(0); return }
@@ -59,7 +119,7 @@ export function MainLayout() {
       <header className="sticky top-0 z-40 shadow-[0_1px_0_rgba(15,23,42,.08)]">
         <div className="bg-ink-950 text-white">
           <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-[11px] font-bold sm:px-6 lg:px-8">
-            <NavLink to="/ambulance" className="flex items-center gap-2 text-blue-100 transition hover:text-white"><Ambulance className="size-3.5 text-red-400" /><span>Emergency care is always prioritized · Ambulance coordination</span></NavLink>
+            {canUseAmbulance ? <NavLink to="/ambulance" className="flex items-center gap-2 text-blue-100 transition hover:text-white"><Ambulance className="size-3.5 text-red-400" /><span>Emergency care is always prioritized · Ambulance coordination</span></NavLink> : <span className="flex items-center gap-2 text-blue-100"><Ambulance className="size-3.5 text-red-400" /><span>Emergency care is always prioritized</span></span>}
             <div className="hidden items-center gap-5 text-blue-100 md:flex"><span className="flex items-center gap-1.5"><Clock3 className="size-3.5" />24/7 patient guidance</span><span className="flex items-center gap-1.5"><MapPin className="size-3.5" />Hospital locations</span></div>
           </div>
         </div>
@@ -75,7 +135,7 @@ export function MainLayout() {
             </nav>
             <div className="flex items-center gap-2">
               {session ? (
-                <>{isStaff && <NavLink to="/staff/tasks" aria-label="Open staff task inbox" className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><ClipboardList className="size-4" /></NavLink>}<NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink><NavLink to="/dashboard" className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
+                <><NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink><NavLink to={workspacePath} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
                   <LayoutDashboard className="size-4 text-care-700" />
                   <span className="hidden sm:inline">{session.user.displayName.split(' ')[0]}</span>
                 </NavLink></>
@@ -84,9 +144,9 @@ export function MainLayout() {
                   <LogIn className="size-4" /> Sign in
                 </NavLink>
               )}
-              <NavLink to="/booking" className="flex items-center gap-2 rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-md shadow-blue-700/15 transition hover:bg-care-700">
+              {!session || (!isDoctor && !isStaff) ? <NavLink to="/booking" className="flex items-center gap-2 rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-md shadow-blue-700/15 transition hover:bg-care-700">
                 <TicketCheck className="size-4" /><span className="hidden xs:inline">Book OPD number</span><span className="xs:hidden">Book OPD</span>
-              </NavLink>
+              </NavLink> : null}
             </div>
           </div>
         </div>
@@ -103,8 +163,8 @@ export function MainLayout() {
             <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-bold text-blue-100/70"><span className="rounded-full border border-white/10 px-3 py-1.5">Privacy-first</span><span className="rounded-full border border-white/10 px-3 py-1.5">Clinician-led</span><span className="rounded-full border border-white/10 px-3 py-1.5">Accessible</span></div>
           </div>
           <div>
-            <h2 className="text-sm font-black">Patient links</h2>
-            <div className="mt-5 space-y-3 text-sm text-blue-100/70"><NavLink to="/booking" className="block hover:text-white">Book OPD number</NavLink><NavLink to="/hospitals" className="block hover:text-white">India hospital directory</NavLink><NavLink to="/doctors" className="block hover:text-white">Find a doctor</NavLink><NavLink to="/ambulance" className="block hover:text-white">Ambulance coordination</NavLink><NavLink to="/navigate" className="block hover:text-white">Hospital navigation</NavLink><NavLink to="/diagnostics" className="block hover:text-white">Diagnostics & results</NavLink><NavLink to="/blood-support" className="block hover:text-white">Blood support</NavLink><NavLink to="/blood-group-analysis" className="block hover:text-white">Blood-slide review</NavLink><NavLink to="/records" className="block hover:text-white">My health record</NavLink><NavLink to="/assistant" className="block hover:text-white">Care assistant</NavLink><NavLink to="/operations" className="block hover:text-white">Appointment recovery</NavLink><NavLink to="/dashboard" className="block hover:text-white">My care</NavLink></div>
+            <h2 className="text-sm font-black">{isDoctor ? 'Doctor workspace' : isStaff ? 'Staff workspace' : 'Patient links'}</h2>
+            <div className="mt-5 space-y-3 text-sm text-blue-100/70">{footerLinks.map(([to, label]) => <NavLink key={to} to={to} className="block hover:text-white">{label}</NavLink>)}</div>
           </div>
           <div>
             <h2 className="text-sm font-black">Care journey</h2>
