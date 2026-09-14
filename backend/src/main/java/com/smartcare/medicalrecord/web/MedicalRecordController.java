@@ -71,6 +71,7 @@ public class MedicalRecordController {
     }
 
     @GetMapping("/documents/{documentId}/content")
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR')")
     public ResponseEntity<byte[]> download(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID documentId) {
         var download = service.download(UUID.fromString(jwt.getSubject()), documentId);
         return ResponseEntity.ok()

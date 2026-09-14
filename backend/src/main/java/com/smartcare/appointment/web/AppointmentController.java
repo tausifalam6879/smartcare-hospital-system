@@ -48,6 +48,7 @@ public class AppointmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('PATIENT')")
     public AppointmentResponse book(@AuthenticationPrincipal Jwt jwt,
                                     @RequestHeader("Idempotency-Key") String idempotencyKey,
                                     @Valid @RequestBody BookingRequest request) {
@@ -55,6 +56,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/mine")
+    @PreAuthorize("hasRole('PATIENT')")
     public List<AppointmentResponse> mine(@AuthenticationPrincipal Jwt jwt) {
         return service.mine(UUID.fromString(jwt.getSubject()));
     }
@@ -66,6 +68,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/{appointmentId}/cancel")
+    @PreAuthorize("hasRole('PATIENT')")
     public AppointmentResponse cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID appointmentId,
                                       @Valid @RequestBody(required = false) CancelRequest request) {
         return payments.cancelAndRefund(UUID.fromString(jwt.getSubject()), appointmentId,
@@ -73,6 +76,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/{appointmentId}/cash-confirmation")
+    @PreAuthorize("hasAnyRole('CASHIER','HOSPITAL_ADMIN','SUPER_ADMIN')")
     public CashConfirmationResponse confirmCash(@PathVariable UUID appointmentId) {
         return payments.confirmCash(appointmentId);
     }

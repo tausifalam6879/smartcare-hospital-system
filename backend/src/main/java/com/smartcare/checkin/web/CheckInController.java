@@ -5,6 +5,7 @@ import com.smartcare.checkin.web.CheckInDtos.CheckInRequest;
 import com.smartcare.checkin.web.CheckInDtos.CheckInResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +30,14 @@ public class CheckInController {
 
     @PostMapping("/{appointmentId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR','RECEPTIONIST','HOSPITAL_ADMIN','SUPER_ADMIN')")
     public CheckInResponse checkIn(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID appointmentId,
                                    @Valid @RequestBody CheckInRequest request) {
         return service.checkIn(UUID.fromString(jwt.getSubject()), roles(jwt), appointmentId, request.channel());
     }
 
     @GetMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR','RECEPTIONIST','HOSPITAL_ADMIN','SUPER_ADMIN')")
     public CheckInResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID appointmentId) {
         return service.get(UUID.fromString(jwt.getSubject()), roles(jwt), appointmentId);
     }

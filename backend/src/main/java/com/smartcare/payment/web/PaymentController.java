@@ -5,6 +5,7 @@ import com.smartcare.payment.web.PaymentDtos.IntentRequest;
 import com.smartcare.payment.web.PaymentDtos.PaymentResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class PaymentController {
 
     @PostMapping("/intents")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('PATIENT')")
     public PaymentResponse createIntent(@AuthenticationPrincipal Jwt jwt,
                                         @RequestHeader("Idempotency-Key") String idempotencyKey,
                                         @Valid @RequestBody IntentRequest request) {
@@ -38,6 +40,7 @@ public class PaymentController {
     }
 
     @GetMapping("/mine")
+    @PreAuthorize("hasRole('PATIENT')")
     public List<PaymentResponse> mine(@AuthenticationPrincipal Jwt jwt) {
         return service.mine(UUID.fromString(jwt.getSubject()));
     }

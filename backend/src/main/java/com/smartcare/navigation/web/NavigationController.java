@@ -11,6 +11,7 @@ import com.smartcare.navigation.web.NavigationDtos.PathRequest;
 import com.smartcare.navigation.web.NavigationDtos.RouteResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +54,7 @@ public class NavigationController {
     }
 
     @GetMapping("/appointments/{appointmentId}/destination")
+    @PreAuthorize("hasRole('PATIENT')")
     public AppointmentDestinationResponse appointmentDestination(@AuthenticationPrincipal Jwt jwt,
                                                                  @PathVariable UUID appointmentId) {
         return service.appointmentDestination(UUID.fromString(jwt.getSubject()), appointmentId);
@@ -60,6 +62,7 @@ public class NavigationController {
 
     @PostMapping("/hospitals/{hospitalId}/locations")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public LocationResponse createLocation(@PathVariable UUID hospitalId,
                                            @Valid @RequestBody LocationRequest request) {
         return service.createLocation(hospitalId, request);
@@ -67,12 +70,14 @@ public class NavigationController {
 
     @PostMapping("/hospitals/{hospitalId}/paths")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public void createPath(@PathVariable UUID hospitalId, @Valid @RequestBody PathRequest request) {
         service.createPath(hospitalId, request);
     }
 
     @PostMapping("/hospitals/{hospitalId}/checkpoints")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public CheckpointResponse createCheckpoint(@PathVariable UUID hospitalId,
                                                @Valid @RequestBody CheckpointRequest request) {
         return service.createCheckpoint(hospitalId, request);
