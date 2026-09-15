@@ -67,6 +67,15 @@ export type DonorOptIn = {
   consentActive: boolean
 }
 
+export type DonorMatch = {
+  donorOptInId: string
+  displayName: string
+  mobileNumber: string
+  contactPreference: string
+  verifiedBloodGroup: BloodGroup
+  eligibilityVerifiedAt: string
+}
+
 export async function getBloodAvailability(hospitalId: string, bloodGroup: BloodGroup,
                                            component: BloodComponent, units: number) {
   return (await api.get<BloodAvailability[]>('/api/v1/blood-banks/availability', {
@@ -89,4 +98,8 @@ export async function createDonorConsent(contactPreference: DonorOptIn['contactP
 
 export async function withdrawDonorConsent() {
   return (await api.post<DonorOptIn>('/api/v1/blood-donors/withdraw')).data
+}
+
+export async function getVerifiedDonorMatches(requestId: string) {
+  return (await api.get<DonorMatch[]>(`/api/v1/blood-requests/${requestId}/donor-matches`)).data
 }
