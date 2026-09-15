@@ -42,6 +42,14 @@ export type VerifiedDiagnosticResult = {
   items: DiagnosticResultItem[]
 }
 
+export type VerifyDiagnosticResultRequest = {
+  summary: string
+  findings?: string
+  impression?: string
+  overallFlag: DiagnosticResultFlag
+  items: DiagnosticResultItem[]
+}
+
 export type DiagnosticOrder = {
   id: string
   appointmentId: string
@@ -90,4 +98,8 @@ export async function cancelDiagnosticOrder(orderId: string) {
   return (await api.post<DiagnosticOrder>(`/api/v1/diagnostics/orders/${orderId}/cancel`, {
     reason: 'Cancelled by patient',
   })).data
+}
+
+export async function verifyDiagnosticResult(orderId: string, request: VerifyDiagnosticResultRequest) {
+  return (await api.post<DiagnosticOrder>(`/api/v1/diagnostics/orders/${orderId}/verify-result`, request)).data
 }

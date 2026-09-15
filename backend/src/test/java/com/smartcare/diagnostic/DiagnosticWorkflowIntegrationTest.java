@@ -29,6 +29,8 @@ import com.smartcare.doctor.web.DoctorDtos.ScheduleRequest;
 import com.smartcare.hospital.service.HospitalService;
 import com.smartcare.hospital.web.HospitalDtos.DepartmentRequest;
 import com.smartcare.hospital.web.HospitalDtos.HospitalRequest;
+import com.smartcare.notification.domain.NotificationType;
+import com.smartcare.notification.service.NotificationService;
 import com.smartcare.payment.service.PaymentService;
 import com.smartcare.queue.service.QueueService;
 import org.junit.jupiter.api.Test;
@@ -60,6 +62,7 @@ class DiagnosticWorkflowIntegrationTest {
     @Autowired AuthService auth;
     @Autowired UserAccountRepository users;
     @Autowired AuditLogRepository auditLogs;
+    @Autowired NotificationService notifications;
 
     @Test
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST", "DOCTOR", "LAB_TECHNICIAN"})
@@ -132,6 +135,10 @@ class DiagnosticWorkflowIntegrationTest {
         assertThat(diagnostics.mine(owner.user().id())).hasSize(1);
         assertThat(diagnostics.mine(other.user().id())).singleElement()
                 .satisfies(order -> assertThat(order.result()).isNull());
+        assertThat(notifications.mine(owner.user().id()))
+                .extracting(item -> item.type())
+                .contains(NotificationType.DIAGNOSTIC_ORDER_CREATED,
+                        NotificationType.DIAGNOSTIC_RESULT_VERIFIED);
         assertThat(auditLogs.count()).isGreaterThanOrEqualTo(12);
     }
 

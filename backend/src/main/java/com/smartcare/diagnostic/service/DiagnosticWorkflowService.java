@@ -37,6 +37,8 @@ import com.smartcare.hospital.domain.Hospital;
 import com.smartcare.hospital.repository.HospitalRepository;
 import com.smartcare.patient.domain.Patient;
 import com.smartcare.patient.repository.PatientRepository;
+import com.smartcare.notification.domain.NotificationType;
+import com.smartcare.notification.service.NotificationService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +66,7 @@ public class DiagnosticWorkflowService {
     private final AppointmentRepository appointments;
     private final UserAccountRepository users;
     private final AuditService audit;
+    private final NotificationService notifications;
     private final Clock clock;
 
     public DiagnosticWorkflowService(DiagnosticProcedureRepository procedures,
@@ -73,7 +76,8 @@ public class DiagnosticWorkflowService {
                                      DiagnosticResultItemRepository resultItems,
                                      HospitalRepository hospitals, PatientRepository patients,
                                      DoctorRepository doctors, AppointmentRepository appointments,
-                                     UserAccountRepository users, AuditService audit, Clock clock) {
+                                     UserAccountRepository users, AuditService audit,
+                                     NotificationService notifications, Clock clock) {
         this.procedures = procedures;
         this.ledgers = ledgers;
         this.orders = orders;
@@ -85,6 +89,7 @@ public class DiagnosticWorkflowService {
         this.appointments = appointments;
         this.users = users;
         this.audit = audit;
+        this.notifications = notifications;
         this.clock = clock;
     }
 
@@ -145,6 +150,10 @@ public class DiagnosticWorkflowService {
                 request.priority(), clean(request.clinicalNote())));
         audit.record("DIAGNOSTIC_ORDER_CREATED", "DIAGNOSTIC_ORDER", order.getId(),
                 appointment.getHospital().getId());
+        notifications.notifyPatient(order.getPatient(), appointment.getHospital().getId(),
+                NotificationType.DIAGNOSTIC_ORDER_CREATED, order.getId(), "created",
+                "Diagnostic test ordered",
+                doctor.getName() + " ordered " + procedure.getName() + ". Open Tests to schedule it.");
         return toResponse(order);
     }
 
@@ -254,7 +263,15 @@ public class DiagnosticWorkflowService {
         }
         audit.record("DIAGNOSTIC_RESULT_VERIFIED", "DIAGNOSTIC_RESULT", result.getId(),
                 order.getProcedure().getHospital().getId());
+        notifications.notifyPatient(order.getPatient(), order.getProcedure().getHospital().getId(),
+                NotificationType.DIAGNOSTIC_RESULT_VERIFIED, order.getId(), "verified",
+                "Verified diagnostic result ready",
+                procedureName(order) + " result was verified by authorized diagnostic staff. Open Tests or Records to view it.");
         return toResponse(order);
+    }
+
+    private static String procedureName(DiagnosticOrder order) {
+        return order.getProcedure().getName();
     }
 
     private OrderResponse toResponse(DiagnosticOrder order) {
