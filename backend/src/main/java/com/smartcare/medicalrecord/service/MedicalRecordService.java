@@ -1,5 +1,7 @@
 package com.smartcare.medicalrecord.service;
 
+import com.smartcare.ai.domain.KnowledgeSourceType;
+import com.smartcare.ai.repository.KnowledgeIndexStateRepository;
 import com.smartcare.appointment.domain.Appointment;
 import com.smartcare.appointment.domain.AppointmentStatus;
 import com.smartcare.appointment.repository.AppointmentRepository;
@@ -62,6 +64,7 @@ public class MedicalRecordService {
     private final PrivateDocumentStorage storage;
     private final AuditService audit;
     private final CareFollowUpService followUps;
+    private final KnowledgeIndexStateRepository knowledgeIndexStates;
     private final Clock clock;
 
     public MedicalRecordService(PatientRepository patients, DoctorRepository doctors,
@@ -70,7 +73,7 @@ public class MedicalRecordService {
                                 PrescriptionRepository prescriptions, PrescriptionItemRepository prescriptionItems,
                                 PatientAllergyRepository allergies, MedicalDocumentRepository documents,
                                 PrivateDocumentStorage storage, AuditService audit, CareFollowUpService followUps,
-                                Clock clock) {
+                                KnowledgeIndexStateRepository knowledgeIndexStates, Clock clock) {
         this.patients = patients;
         this.doctors = doctors;
         this.appointments = appointments;
@@ -84,6 +87,7 @@ public class MedicalRecordService {
         this.storage = storage;
         this.audit = audit;
         this.followUps = followUps;
+        this.knowledgeIndexStates = knowledgeIndexStates;
         this.clock = clock;
     }
 
@@ -169,7 +173,7 @@ public class MedicalRecordService {
                     filename, stored.detectedContentType(), stored.sizeBytes(), stored.storageKey(), stored.sha256(),
                     documentDate, clean(description)));
             audit.record("MEDICAL_DOCUMENT_UPLOADED", "MEDICAL_DOCUMENT", document.getId(), hospitalId);
-            return toResponse(document);
+            return toResponse(document, patient);
         } catch (RuntimeException exception) {
             storage.delete(stored.storageKey());
             throw exception;
@@ -199,7 +203,7 @@ public class MedicalRecordService {
                 allergies.findAllByPatientIdOrderByRecordedAtDesc(patient.getId()).stream()
                         .map(MedicalRecordService::toResponse).toList(),
                 documents.findAllByPatientIdOrderByDocumentDateDescCreatedAtDesc(patient.getId()).stream()
-                        .map(MedicalRecordService::toResponse).toList());
+                        .map(document -> toResponse(document, patient)).toList());
     }
 
     private VisitResponse toResponse(ClinicalVisit visit) {
@@ -224,12 +228,18 @@ public class MedicalRecordService {
                 allergy.getSeverity(), allergy.getStatus(), allergy.getDoctor().getName(), allergy.getRecordedAt());
     }
 
-    private static DocumentResponse toResponse(MedicalDocument document) {
+    private DocumentResponse toResponse(MedicalDocument document, Patient patient) {
+        String assistantReadiness = knowledgeIndexStates
+                .findByPatientIdAndSourceTypeAndSourceKey(patient.getId(), KnowledgeSourceType.MEDICAL_DOCUMENT,
+                        document.getId())
+                .map(state -> state.getStatus().name())
+                .orElseGet(() -> "application/pdf".equals(document.getContentType())
+                        ? "READY_FOR_TEXT_CHECK" : "OCR_REQUIRED");
         return new DocumentResponse(document.getId(), document.getHospital().getId(), document.getHospital().getName(),
                 document.getDocumentType(), document.getOriginalFilename(), document.getContentType(),
                 document.getSizeBytes(), document.getDocumentDate(), document.getDescription(),
                 document.getVerificationStatus(), document.getCreatedAt(),
-                "/api/v1/medical-records/documents/" + document.getId() + "/content");
+                "/api/v1/medical-records/documents/" + document.getId() + "/content", assistantReadiness);
     }
 
     private Patient requirePatient(UUID userId) {

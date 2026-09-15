@@ -59,6 +59,7 @@ export type MedicalDocument = {
   verificationStatus: 'PATIENT_UPLOADED' | 'CLINICIAN_VERIFIED'
   uploadedAt: string
   contentPath: string
+  assistantReadiness: 'READY_FOR_TEXT_CHECK' | 'INDEXED' | 'OCR_REQUIRED' | 'NO_TEXT' | 'FAILED'
 }
 
 export type MedicalRecord = {

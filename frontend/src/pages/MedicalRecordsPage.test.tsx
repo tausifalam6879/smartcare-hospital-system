@@ -41,6 +41,7 @@ describe('MedicalRecordsPage', () => {
         documentType: 'LAB_REPORT', originalFilename: 'cbc-report.pdf', contentType: 'application/pdf',
         sizeBytes: 2048, documentDate: '2026-08-21', verificationStatus: 'PATIENT_UPLOADED',
         uploadedAt: '2026-08-22T09:40:00Z', contentPath: '/api/v1/medical-records/documents/document-1/content',
+        assistantReadiness: 'READY_FOR_TEXT_CHECK',
       }],
     })
   })
@@ -53,6 +54,7 @@ describe('MedicalRecordsPage', () => {
     expect(screen.getByText('Clinician documented diagnosis')).toBeInTheDocument()
     expect(screen.getByText(/Paracetamol · 500 mg/)).toBeInTheDocument()
     expect(screen.getByText('cbc-report.pdf')).toBeInTheDocument()
+    expect(screen.getByText(/Assistant: Text checked when asked/i)).toBeInTheDocument()
     expect(screen.getByText(/does not diagnose, prescribe or alter/i)).toBeInTheDocument()
   })
 })

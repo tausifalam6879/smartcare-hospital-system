@@ -77,7 +77,7 @@ public final class MedicalRecordDtos {
                                    String originalFilename, String contentType, long sizeBytes,
                                    LocalDate documentDate, String description,
                                    DocumentVerificationStatus verificationStatus, Instant uploadedAt,
-                                   String contentPath) {
+                                   String contentPath, String assistantReadiness) {
     }
 
     public record DownloadedDocument(String filename, String contentType, byte[] content) {
