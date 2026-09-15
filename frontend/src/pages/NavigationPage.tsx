@@ -112,6 +112,10 @@ export function NavigationPage() {
   const [searchParams] = useSearchParams()
   const appointmentId = searchParams.get('appointment') ?? ''
   const prototypeBookingId = searchParams.get('prototypeBooking') ?? ''
+  const requestedHospitalId = searchParams.get('hospital') ?? ''
+  const requestedBuilding = searchParams.get('building') ?? ''
+  const requestedFloor = searchParams.get('floor') ?? ''
+  const requestedRoom = searchParams.get('room') ?? ''
   const { session } = useAuth()
   const [language, setLanguage] = useState<Language>('en')
   const [hospitals, setHospitals] = useState<{ id: string; name: string }[]>([])
@@ -167,6 +171,8 @@ export function NavigationPage() {
             setDestinationCode(stored ? prototypeDestination(stored) : 'MAIN_REGISTRATION')
             setNotice({ en: copy.en.demoRoute, hi: copy.hi.demoRoute, kind: 'demo' })
           }
+        } else if (requestedHospitalId && list.some((hospital) => hospital.id === requestedHospitalId)) {
+          setHospitalId(requestedHospitalId)
         } else if (checkpointCode) {
           const checkpoint = await getCheckpoint(checkpointCode)
           if (!active) return
@@ -183,7 +189,7 @@ export function NavigationPage() {
     }
     void initialise()
     return () => { active = false }
-  }, [appointmentId, checkpointCode, prototypeBookingId, session])
+  }, [appointmentId, checkpointCode, prototypeBookingId, requestedHospitalId, session])
 
   useEffect(() => {
     if (!hospitalId) return
@@ -195,14 +201,33 @@ export function NavigationPage() {
       setHospitalMap(data)
       setSourceCode((current) => data.checkpoints.some((item) => item.publicCode === current)
         ? current : data.checkpoints[0]?.publicCode ?? '')
-      setDestinationCode((current) => data.locations.some((item) => item.code === current)
-        ? current : '')
+      setDestinationCode((current) => {
+        if (data.locations.some((item) => item.code === current)) return current
+        if (requestedHospitalId) {
+          const exact = data.locations.find((item) =>
+            (!requestedBuilding || item.building.toLowerCase() === requestedBuilding.toLowerCase())
+            && (!requestedFloor || item.floorLabel.toLowerCase() === requestedFloor.toLowerCase())
+            && (!requestedRoom || item.roomNumber?.toLowerCase() === requestedRoom.toLowerCase()))
+          if (exact) return exact.code
+          const helpDesk = data.locations.find((item) => item.type === 'RECEPTION')
+            ?? data.locations.find((item) => item.type === 'REGISTRATION')
+          if (helpDesk) {
+            setNotice({
+              en: 'The diagnostic room is not verified on this map yet. Routing to the verified help desk instead.',
+              hi: 'जाँच कक्ष अभी इस मानचित्र पर सत्यापित नहीं है। इसके बदले सत्यापित सहायता डेस्क तक रास्ता दिखाया जा रहा है।',
+              kind: 'fallback',
+            })
+            return helpDesk.code
+          }
+        }
+        return ''
+      })
       setError('')
     }).catch((requestError) => {
       if (active) { setHospitalMap(null); setError(messageFromError(requestError)) }
     }).finally(() => { if (active) setLoading(false) })
     return () => { active = false }
-  }, [hospitalId])
+  }, [hospitalId, requestedBuilding, requestedFloor, requestedHospitalId, requestedRoom])
 
   const destinations = useMemo(() => hospitalMap?.locations.filter((location) =>
     destinationTypes.includes(location.type)) ?? [], [hospitalMap])

@@ -58,6 +58,7 @@ export type DiagnosticOrder = {
   procedureCode: string
   procedureName: string
   modality: DiagnosticModality
+  hospitalId: string
   hospitalName: string
   orderedByDoctor: string
   status: DiagnosticOrderStatus

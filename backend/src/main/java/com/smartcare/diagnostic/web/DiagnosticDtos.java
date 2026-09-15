@@ -85,7 +85,7 @@ public final class DiagnosticDtos {
 
     public record OrderResponse(UUID id, UUID appointmentId, String patientNumber, UUID procedureId,
                                 String procedureCode, String procedureName, DiagnosticModality modality,
-                                String hospitalName, String orderedByDoctor, DiagnosticOrderStatus status,
+                                UUID hospitalId, String hospitalName, String orderedByDoctor, DiagnosticOrderStatus status,
                                 DiagnosticPriority priority, String clinicalNote,
                                 String preparationInstructions, int turnaroundHours,
                                 BigDecimal fee, LocalDate scheduledDate, Integer queuePosition,

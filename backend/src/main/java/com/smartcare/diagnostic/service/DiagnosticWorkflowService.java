@@ -284,7 +284,7 @@ public class DiagnosticWorkflowService {
                                         value.getReferenceRange(), value.getFlag())).toList())).orElse(null);
         return new OrderResponse(order.getId(), order.getAppointment().getId(),
                 order.getPatient().getPatientNumber(), procedure.getId(), procedure.getCode(), procedure.getName(),
-                procedure.getModality(), procedure.getHospital().getName(), order.getOrderedByDoctor().getName(),
+                procedure.getModality(), procedure.getHospital().getId(), procedure.getHospital().getName(), order.getOrderedByDoctor().getName(),
                 order.getStatus(), order.getPriority(), order.getClinicalNote(),
                 procedure.getPreparationInstructions(), procedure.getTurnaroundHours(), procedure.getFee(),
                 order.getScheduledDate(), order.getQueuePosition(), procedure.getBuilding(), procedure.getFloorLabel(),

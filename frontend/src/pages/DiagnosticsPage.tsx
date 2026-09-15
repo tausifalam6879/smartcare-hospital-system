@@ -46,6 +46,14 @@ function iconFor(modality: DiagnosticModality) {
   return modality === 'LAB' ? FlaskConical : ScanLine
 }
 
+function diagnosticNavigationUrl(order: DiagnosticOrder) {
+  const params = new URLSearchParams({ hospital: order.hospitalId })
+  if (order.building) params.set('building', order.building)
+  if (order.floorLabel) params.set('floor', order.floorLabel)
+  if (order.roomNumber) params.set('room', order.roomNumber)
+  return `/navigate?${params.toString()}`
+}
+
 function displayDate(value: string) {
   return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(`${value}T12:00:00`))
 }
@@ -198,7 +206,7 @@ export function DiagnosticsPage() {
 
               {order.status === 'ORDERED' && <div className="flex flex-col gap-3 border-t border-slate-100 p-5 sm:flex-row sm:items-end sm:px-6"><label className="text-xs font-black text-slate-600">Choose service date<input type="date" min={new Date().toISOString().slice(0, 10)} value={dates[order.id] ?? tomorrow()} onChange={(event) => setDates((current) => ({ ...current, [order.id]: event.target.value }))} className="mt-2 h-11 w-full rounded-xl border border-slate-300 bg-white px-3 sm:w-52" /></label><button disabled={workingId === order.id} onClick={() => void schedule(order)} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white disabled:opacity-60">{workingId === order.id && <LoaderCircle className="size-4 animate-spin" />}Reserve capacity</button></div>}
 
-              {order.status === 'SCHEDULED' && <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 p-5 sm:px-6"><Link to="/navigate" className="inline-flex h-11 items-center gap-2 rounded-xl bg-care-600 px-4 text-sm font-black text-white"><MapPin className="size-4" />Navigate in hospital</Link><p className="text-xs text-slate-500">Arrive with the clinician order and follow the preparation instructions.</p></div>}
+              {order.status === 'SCHEDULED' && <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 p-5 sm:px-6"><Link to={diagnosticNavigationUrl(order)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-care-600 px-4 text-sm font-black text-white"><MapPin className="size-4" />Navigate to test room</Link><p className="text-xs text-slate-500">Arrive with the clinician order and follow the preparation instructions.</p></div>}
 
               {canCancel && <div className="border-t border-slate-100 px-5 py-3 text-right sm:px-6"><button disabled={workingId === order.id} onClick={() => void cancel(order)} className="inline-flex items-center gap-2 text-xs font-black text-rose-700 hover:underline disabled:opacity-50"><XCircle className="size-4" />Cancel diagnostic order</button></div>}
 

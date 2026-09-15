@@ -23,7 +23,7 @@ describe('DiagnosticsPage', () => {
     vi.mocked(getMyDiagnosticOrders).mockResolvedValue([{
       id: 'order-1', appointmentId: 'appointment-1', patientNumber: 'RVQ-1',
       procedureId: 'procedure-1', procedureCode: 'CBC', procedureName: 'Complete Blood Count',
-      modality: 'LAB', hospitalName: 'City General Hospital', orderedByDoctor: 'Dr. Asha Rao',
+      modality: 'LAB', hospitalId: 'hospital-1', hospitalName: 'City General Hospital', orderedByDoctor: 'Dr. Asha Rao',
       status: 'RESULT_VERIFIED', priority: 'ROUTINE', clinicalNote: 'Persistent fatigue',
       preparationInstructions: 'No fasting required.', turnaroundHours: 6, fee: 450,
       scheduledDate: '2026-08-23', queuePosition: 1, building: 'Diagnostics Block',
