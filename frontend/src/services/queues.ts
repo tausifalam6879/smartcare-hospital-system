@@ -32,8 +32,27 @@ export type PatientQueue = {
   lastUpdatedAt: string
 }
 
+export type PublicQueue = {
+  doctorId: string
+  doctorName: string
+  hospitalId: string
+  hospitalName: string
+  serviceDate: string
+  currentlyServingPosition?: number
+  currentlyServingToken?: string
+  checkedInWaiting: number
+  expectedConsultationMinutes: number
+  lastUpdatedAt: string
+}
+
 export async function checkInAppointment(appointmentId: string, channel: CheckInChannel = 'MOBILE_WEB') {
   return (await api.post<CheckIn>(`/api/v1/check-in/appointments/${appointmentId}`, { channel })).data
+}
+
+export async function serveNextPatient(doctorId: string, date: string) {
+  return (await api.post<PublicQueue>(`/api/v1/queues/${doctorId}/serve-next`, undefined, {
+    params: { date },
+  })).data
 }
 
 export async function getPatientQueue(appointmentId: string) {

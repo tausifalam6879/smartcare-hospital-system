@@ -37,6 +37,8 @@ import com.smartcare.medicalrecord.web.MedicalRecordDtos.VisitRecordRequest;
 import com.smartcare.medicalrecord.web.MedicalRecordDtos.VisitResponse;
 import com.smartcare.patient.domain.Patient;
 import com.smartcare.patient.repository.PatientRepository;
+import com.smartcare.notification.domain.NotificationType;
+import com.smartcare.notification.service.NotificationService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +66,7 @@ public class MedicalRecordService {
     private final PrivateDocumentStorage storage;
     private final AuditService audit;
     private final CareFollowUpService followUps;
+    private final NotificationService notifications;
     private final KnowledgeIndexStateRepository knowledgeIndexStates;
     private final Clock clock;
 
@@ -73,6 +76,7 @@ public class MedicalRecordService {
                                 PrescriptionRepository prescriptions, PrescriptionItemRepository prescriptionItems,
                                 PatientAllergyRepository allergies, MedicalDocumentRepository documents,
                                 PrivateDocumentStorage storage, AuditService audit, CareFollowUpService followUps,
+                                NotificationService notifications,
                                 KnowledgeIndexStateRepository knowledgeIndexStates, Clock clock) {
         this.patients = patients;
         this.doctors = doctors;
@@ -87,6 +91,7 @@ public class MedicalRecordService {
         this.storage = storage;
         this.audit = audit;
         this.followUps = followUps;
+        this.notifications = notifications;
         this.knowledgeIndexStates = knowledgeIndexStates;
         this.clock = clock;
     }
@@ -144,6 +149,12 @@ public class MedicalRecordService {
         }
         if (request.followUpDate() != null) {
             followUps.schedule(visit, request.followUpDate(), Boolean.TRUE.equals(request.medicationReminderEnabled()));
+        }
+        if (appointment.getStatus() == AppointmentStatus.IN_CONSULTATION) {
+            appointment.complete(now);
+            notifications.notifyAppointment(appointment, NotificationType.VISIT_COMPLETED, "record-finalized",
+                    "Consultation completed",
+                    "Your clinician finalized the visit record. Open Records for the documented care plan.");
         }
         audit.record("CLINICAL_VISIT_FINALIZED", "CLINICAL_VISIT", visit.getId(), appointment.getHospital().getId());
         return toResponse(visit);

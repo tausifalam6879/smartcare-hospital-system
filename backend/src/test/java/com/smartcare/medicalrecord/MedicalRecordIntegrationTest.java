@@ -1,6 +1,7 @@
 package com.smartcare.medicalrecord;
 
 import com.smartcare.appointment.domain.PaymentMethod;
+import com.smartcare.appointment.domain.AppointmentStatus;
 import com.smartcare.appointment.service.AppointmentService;
 import com.smartcare.appointment.web.AppointmentDtos.BookingRequest;
 import com.smartcare.audit.repository.AuditLogRepository;
@@ -26,6 +27,8 @@ import com.smartcare.medicalrecord.web.MedicalRecordDtos.PrescriptionItemRequest
 import com.smartcare.medicalrecord.web.MedicalRecordDtos.VisitRecordRequest;
 import com.smartcare.payment.service.PaymentService;
 import com.smartcare.queue.service.QueueService;
+import com.smartcare.notification.domain.NotificationType;
+import com.smartcare.notification.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,6 +60,7 @@ class MedicalRecordIntegrationTest {
     @Autowired AuthService auth;
     @Autowired AuditLogRepository auditLogs;
     @Autowired CareFollowUpService followUps;
+    @Autowired NotificationService notifications;
 
     @Test
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST"})
@@ -94,6 +98,10 @@ class MedicalRecordIntegrationTest {
         assertThat(visit.diagnosis()).contains("Viral");
         assertThat(visit.prescription().medicines()).extracting(item -> item.medicineName())
                 .containsExactly("Paracetamol");
+        assertThat(appointments.mine(patient.user().id())).singleElement()
+                .satisfies(item -> assertThat(item.status()).isEqualTo(AppointmentStatus.COMPLETED));
+        assertThat(notifications.mine(patient.user().id())).extracting(item -> item.type())
+                .contains(NotificationType.VISIT_COMPLETED);
         var followUp = followUps.mine(patient.user().id()).get(0);
         assertThat(followUp.followUpDate()).isEqualTo(today.plusDays(5));
         assertThat(followUp.medicationReminderEnabled()).isTrue();
