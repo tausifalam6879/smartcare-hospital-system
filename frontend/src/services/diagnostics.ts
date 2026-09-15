@@ -90,6 +90,15 @@ export async function getDiagnosticProcedures(hospitalId: string, modality?: Dia
   })).data
 }
 
+export async function createDiagnosticOrder(input: {
+  appointmentId: string
+  procedureId: string
+  priority: DiagnosticPriority
+  clinicalNote?: string
+}) {
+  return (await api.post<DiagnosticOrder>('/api/v1/diagnostics/orders', input)).data
+}
+
 export async function scheduleDiagnosticOrder(orderId: string, serviceDate: string) {
   return (await api.post<DiagnosticOrder>(`/api/v1/diagnostics/orders/${orderId}/schedule`, { serviceDate })).data
 }

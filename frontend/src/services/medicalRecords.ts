@@ -74,8 +74,23 @@ export async function getMyMedicalRecord() {
   return (await api.get<MedicalRecord>('/api/v1/medical-records/mine')).data
 }
 
-export async function finalizeClinicalVisit(input: { appointmentId: string; diagnosis: string; symptoms?: string; doctorNotes?: string; dischargeSummary?: string; followUpRecommendation?: string; followUpDate?: string; medicationReminderEnabled: boolean }) {
-  return (await api.post<ClinicalVisit>('/api/v1/medical-records/visits', { ...input, medicines: [], allergies: [] })).data
+export type VisitAllergyInput = { substance: string; reaction?: string; severity: AllergySeverity }
+export type FinalizeClinicalVisitInput = {
+  appointmentId: string
+  diagnosis: string
+  symptoms?: string
+  doctorNotes?: string
+  dischargeSummary?: string
+  followUpRecommendation?: string
+  prescriptionInstructions?: string
+  medicines: PrescriptionItem[]
+  allergies: VisitAllergyInput[]
+  followUpDate?: string
+  medicationReminderEnabled: boolean
+}
+
+export async function finalizeClinicalVisit(input: FinalizeClinicalVisitInput) {
+  return (await api.post<ClinicalVisit>('/api/v1/medical-records/visits', input)).data
 }
 
 export async function uploadMedicalDocument(input: {
