@@ -81,6 +81,7 @@ class AmbulanceWorkflowIntegrationTest {
         var assigned = ambulanceService.assign(dispatcher.user().id(), created.id(),
                 new AssignAmbulance(vehicle.id()));
         assertThat(assigned.status()).isEqualTo(AmbulanceRequestStatus.ASSIGNED);
+        assertThat(assigned.ambulance().crewContact()).isEqualTo("+919300009999");
         assertThat(assigned.dispatchedAt()).isNotNull();
         assertThat(ambulanceService.availability(hospital.id()).availableVehicles()).isZero();
 

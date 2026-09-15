@@ -283,7 +283,7 @@ public class AmbulanceService {
         Ambulance ambulance = request.getAmbulance();
         AssignedAmbulanceResponse assigned = ambulance == null ? null : new AssignedAmbulanceResponse(
                 ambulance.getId(), ambulance.getRegistrationNumber(), ambulance.getCallSign(),
-                ambulance.getStatus(), ambulance.getCurrentArea(), ambulance.getLocationUpdatedAt(),
+                ambulance.getStatus(), ambulance.getCrewContact(), ambulance.getCurrentArea(), ambulance.getLocationUpdatedAt(),
                 ambulance.isSynthetic());
         List<AmbulanceEventResponse> timeline = events.findAllByRequestIdOrderByEventAtAsc(request.getId()).stream()
                 .map(item -> new AmbulanceEventResponse(item.getFromStatus(), item.getToStatus(),

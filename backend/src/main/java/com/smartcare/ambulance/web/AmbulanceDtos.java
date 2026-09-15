@@ -74,7 +74,7 @@ public final class AmbulanceDtos {
     }
 
     public record AssignedAmbulanceResponse(UUID id, String registrationNumber, String callSign,
-                                            AmbulanceStatus status, String currentArea,
+                                            AmbulanceStatus status, String crewContact, String currentArea,
                                             Instant locationUpdatedAt, boolean synthetic) {
     }
 

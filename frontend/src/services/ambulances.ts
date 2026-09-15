@@ -59,7 +59,7 @@ export type AmbulanceRequest = {
   pickupLandmark?: string
   contactNumber: string
   assistanceNotes?: string
-  ambulance?: Pick<Ambulance, 'id' | 'registrationNumber' | 'callSign' | 'status' | 'currentArea' | 'locationUpdatedAt' | 'synthetic'>
+  ambulance?: Pick<Ambulance, 'id' | 'registrationNumber' | 'callSign' | 'status' | 'crewContact' | 'currentArea' | 'locationUpdatedAt' | 'synthetic'>
   statusUpdatedAt: string
   dispatchedAt?: string
   acknowledgedAt?: string
