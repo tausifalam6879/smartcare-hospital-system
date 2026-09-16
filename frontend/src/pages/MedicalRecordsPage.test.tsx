@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { api } from '../services/api'
+import { getMyDiagnosticOrders } from '../services/diagnostics'
 import { getMyMedicalRecord } from '../services/medicalRecords'
 import { MedicalRecordsPage } from './MedicalRecordsPage'
 
@@ -15,6 +16,8 @@ vi.mock('../services/medicalRecords', () => ({
   uploadMedicalDocument: vi.fn(),
   downloadMedicalDocument: vi.fn(),
 }))
+
+vi.mock('../services/diagnostics', () => ({ getMyDiagnosticOrders: vi.fn() }))
 
 describe('MedicalRecordsPage', () => {
   beforeEach(() => {
@@ -44,6 +47,18 @@ describe('MedicalRecordsPage', () => {
         assistantReadiness: 'READY_FOR_TEXT_CHECK',
       }],
     })
+    vi.mocked(getMyDiagnosticOrders).mockResolvedValue([{
+      id: 'order-1', appointmentId: 'appointment-1', patientNumber: 'SC-2026-0001',
+      procedureId: 'procedure-1', procedureCode: 'LAB-CBC', procedureName: 'Complete Blood Count',
+      modality: 'LAB', hospitalId: 'hospital-1', hospitalName: 'City General Hospital',
+      orderedByDoctor: 'Dr. Asha Rao', status: 'RESULT_VERIFIED', priority: 'ROUTINE',
+      turnaroundHours: 8, fee: 450, orderedAt: '2026-08-22T09:20:00Z',
+      resultVerifiedAt: '2026-08-22T11:00:00Z', result: {
+        id: 'result-1', summary: 'CBC verified within supplied reference ranges.', overallFlag: 'NORMAL',
+        verifiedBy: 'Lab Technician', verifiedAt: '2026-08-22T11:00:00Z',
+        items: [{ name: 'Haemoglobin', value: '13.4', unit: 'g/dL', referenceRange: '12.0-16.0', flag: 'NORMAL' }],
+      },
+    }])
   })
 
   it('renders the private longitudinal record and clinician-authored details', async () => {
@@ -55,6 +70,9 @@ describe('MedicalRecordsPage', () => {
     expect(screen.getByText(/Paracetamol · 500 mg/)).toBeInTheDocument()
     expect(screen.getByText('cbc-report.pdf')).toBeInTheDocument()
     expect(screen.getByText(/Assistant: Text checked when asked/i)).toBeInTheDocument()
+    expect(screen.getByText('Complete Blood Count')).toBeInTheDocument()
+    expect(screen.getByText(/CBC verified within supplied reference ranges/)).toBeInTheDocument()
+    expect(screen.getByText('13.4 g/dL')).toBeInTheDocument()
     expect(screen.getByText(/does not diagnose, prescribe or alter/i)).toBeInTheDocument()
   })
 })

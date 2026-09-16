@@ -1,11 +1,12 @@
 import {
-  AlertCircle, CalendarDays, CheckCircle2, ClipboardPlus, Download, FileImage,
+  AlertCircle, CalendarDays, CheckCircle2, ClipboardPlus, Download, FileImage, FlaskConical,
   FileText, HeartPulse, Hospital, LoaderCircle, LockKeyhole, Pill, Plus, ShieldCheck,
   Stethoscope, Upload, X,
 } from 'lucide-react'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { api, messageFromError } from '../services/api'
+import { getMyDiagnosticOrders, type DiagnosticOrder } from '../services/diagnostics'
 import {
   downloadMedicalDocument, getMyMedicalRecord, uploadMedicalDocument,
   type AllergySeverity, type DocumentType, type MedicalDocument, type MedicalRecord,
@@ -45,6 +46,7 @@ function fileSize(bytes: number) {
 export function MedicalRecordsPage() {
   const [record, setRecord] = useState<MedicalRecord | null>(null)
   const [hospitals, setHospitals] = useState<HospitalSummary[]>([])
+  const [diagnosticOrders, setDiagnosticOrders] = useState<DiagnosticOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [uploadOpen, setUploadOpen] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -61,10 +63,11 @@ export function MedicalRecordsPage() {
     setLoading(true)
     setError('')
     try {
-      const [recordData, hospitalResponse] = await Promise.all([
-        getMyMedicalRecord(), api.get<HospitalSummary[]>('/api/v1/hospitals'),
+      const [recordData, hospitalResponse, orderData] = await Promise.all([
+        getMyMedicalRecord(), api.get<HospitalSummary[]>('/api/v1/hospitals'), getMyDiagnosticOrders(),
       ])
       setRecord(recordData)
+      setDiagnosticOrders(orderData)
       setHospitals(hospitalResponse.data)
       setHospitalId((current) => current || hospitalResponse.data[0]?.id || '')
     } catch (requestError) {
@@ -77,6 +80,7 @@ export function MedicalRecordsPage() {
   useEffect(() => { void load() }, [])
 
   const activeAllergies = useMemo(() => record?.allergies.filter((item) => item.status === 'ACTIVE') ?? [], [record])
+  const verifiedDiagnostics = useMemo(() => diagnosticOrders.filter((item) => item.status === 'RESULT_VERIFIED' && item.result), [diagnosticOrders])
 
   async function upload(event: FormEvent) {
     event.preventDefault()
@@ -117,7 +121,7 @@ export function MedicalRecordsPage() {
       <section className="overflow-hidden bg-[linear-gradient(120deg,#071b35_0%,#0b315d_62%,#12549c_100%)] text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_.65fr] lg:px-8 lg:py-14">
           <div><div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-2 text-xs font-black uppercase tracking-[.18em] text-emerald-200"><LockKeyhole className="size-4" />Private patient record</div><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">Your health story, kept together</h1><p className="mt-4 max-w-2xl text-sm leading-7 text-blue-100/75 sm:text-base">Doctor-finalized visits, medicines, allergy warnings and your uploaded reports—available only after authorization.</p><div className="mt-4 flex flex-wrap items-center gap-3"><p className="font-mono text-xs font-bold text-care-200">Patient no. {record?.patientNumber}</p><Link to="/assistant" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-black text-white hover:bg-white/15">Ask this record →</Link><Link to="/diagnostics" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-black text-white hover:bg-white/15">Track tests & results →</Link></div></div>
-          <div className="grid grid-cols-3 gap-3 self-end">{[[record?.visits.length ?? 0, 'Visits'], [activeAllergies.length, 'Allergies'], [record?.documents.length ?? 0, 'Reports']].map(([count, label]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4 text-center backdrop-blur"><p className="text-3xl font-black">{count}</p><p className="mt-1 text-[11px] font-bold text-blue-100/60">{label}</p></div>)}</div>
+          <div className="grid grid-cols-2 gap-3 self-end sm:grid-cols-4 lg:grid-cols-2">{[[record?.visits.length ?? 0, 'Visits'], [activeAllergies.length, 'Allergies'], [verifiedDiagnostics.length, 'Verified results'], [record?.documents.length ?? 0, 'Files']].map(([count, label]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4 text-center backdrop-blur"><p className="text-3xl font-black">{count}</p><p className="mt-1 text-[11px] font-bold text-blue-100/60">{label}</p></div>)}</div>
         </div>
       </section>
 
@@ -149,6 +153,11 @@ export function MedicalRecordsPage() {
         <section className="mt-9">
           <div><p className="text-xs font-black uppercase tracking-[.18em] text-care-700">Longitudinal record</p><h2 className="mt-1 text-3xl font-black text-ink-950">Consultation timeline</h2></div>
           {record?.visits.length === 0 ? <div className="mt-5 rounded-[2rem] border border-dashed border-slate-300 bg-white p-10 text-center"><ClipboardPlus className="mx-auto size-10 text-slate-300" /><h3 className="mt-4 font-black text-ink-950">No finalized consultation notes yet</h3><p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500">Notes appear only after your linked doctor finalizes them for a real appointment. SmartCare does not generate diagnoses.</p><Link to="/dashboard" className="mt-5 inline-flex text-sm font-black text-care-700 hover:underline">Open My care →</Link></div> : <div className="mt-5 space-y-5">{record?.visits.map((visit) => <article key={visit.id} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm"><div className="flex flex-col gap-4 border-b border-slate-100 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div className="flex items-center gap-3"><span className="grid size-12 place-items-center rounded-2xl bg-care-600 text-white"><Stethoscope className="size-6" /></span><div><h3 className="font-black text-ink-950">{visit.doctorName}</h3><p className="text-sm font-semibold text-care-700">{visit.specialization} · {visit.hospitalName}</p></div></div><span className="inline-flex items-center gap-2 text-xs font-bold text-slate-500"><CalendarDays className="size-4" />{displayDate(visit.visitDate)}</span></div><div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-2"><div><p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Doctor-finalized diagnosis</p><p className="mt-2 font-bold leading-6 text-ink-950">{visit.diagnosis}</p>{visit.symptoms && <><p className="mt-5 text-[11px] font-black uppercase tracking-wider text-slate-400">Documented symptoms</p><p className="mt-2 text-sm leading-6 text-slate-600">{visit.symptoms}</p></>}{visit.doctorNotes && <><p className="mt-5 text-[11px] font-black uppercase tracking-wider text-slate-400">Clinical notes</p><p className="mt-2 text-sm leading-6 text-slate-600">{visit.doctorNotes}</p></>}</div><div>{visit.prescription ? <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><div className="flex items-center gap-2"><Pill className="size-5 text-emerald-700" /><h4 className="font-black text-emerald-950">Prescription</h4></div><div className="mt-4 space-y-3">{visit.prescription.medicines.map((medicine, index) => <div key={`${medicine.medicineName}-${index}`} className="rounded-xl bg-white p-3"><p className="font-black text-ink-950">{medicine.medicineName} · {medicine.dosage}</p><p className="mt-1 text-xs text-slate-600">{medicine.frequency} · {medicine.duration}{medicine.route ? ` · ${medicine.route}` : ''}</p>{medicine.instructions && <p className="mt-1 text-xs font-semibold text-emerald-800">{medicine.instructions}</p>}</div>)}</div>{visit.prescription.generalInstructions && <p className="mt-3 text-xs font-semibold text-emerald-900">Note: {visit.prescription.generalInstructions}</p>}</div> : <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">No structured prescription attached.</div>}{visit.followUpRecommendation && <div className="mt-4 rounded-2xl border border-violet-200 bg-violet-50 p-4"><p className="text-xs font-black uppercase tracking-wider text-violet-700">Follow-up</p><p className="mt-2 text-sm font-semibold leading-6 text-violet-950">{visit.followUpRecommendation}</p></div>}</div></div></article>)}</div>}
+        </section>
+
+        <section className="mt-10">
+          <div className="flex items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.18em] text-cyan-700">Authorized hospital results</p><h2 className="mt-1 text-3xl font-black text-ink-950">Verified diagnostic results</h2></div><Link to="/diagnostics" className="text-sm font-black text-care-700 hover:underline">Track all tests →</Link></div>
+          {verifiedDiagnostics.length === 0 ? <div className="mt-5 rounded-[2rem] border border-dashed border-slate-300 bg-white p-9 text-center"><FlaskConical className="mx-auto size-9 text-slate-300" /><h3 className="mt-3 font-black text-ink-950">No verified result released yet</h3><p className="mt-2 text-sm text-slate-500">Only results verified by authorized diagnostic staff appear in this health record.</p></div> : <div className="mt-5 grid gap-4 lg:grid-cols-2">{verifiedDiagnostics.map((order) => <article key={order.id} className="rounded-3xl border border-cyan-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex items-start justify-between gap-3"><div className="flex gap-3"><span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-cyan-50 text-cyan-700"><FlaskConical className="size-5" /></span><div><h3 className="font-black text-ink-950">{order.procedureName}</h3><p className="text-xs font-bold text-care-700">{order.procedureCode} · {order.hospitalName}</p></div></div><span className={`rounded-full px-2.5 py-1 text-[10px] font-black ${order.result?.overallFlag === 'CRITICAL' ? 'bg-rose-100 text-rose-800' : order.result?.overallFlag === 'ABNORMAL' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800'}`}>{order.result?.overallFlag}</span></div><p className="mt-4 text-sm font-semibold leading-6 text-slate-700">{order.result?.summary}</p>{order.result?.items.length ? <div className="mt-4 space-y-2">{order.result.items.map((item, index) => <div key={`${item.name}-${index}`} className="flex items-start justify-between gap-4 rounded-xl bg-slate-50 p-3 text-xs"><div><p className="font-black text-ink-950">{item.name}</p>{item.referenceRange && <p className="mt-1 text-slate-500">Reference: {item.referenceRange}</p>}</div><p className="text-right font-black text-slate-700">{item.value}{item.unit ? ` ${item.unit}` : ''}</p></div>)}</div> : null}<div className="mt-4 border-t border-slate-100 pt-3 text-[11px] text-slate-500"><p>Verified by {order.result?.verifiedBy}</p><p>{order.resultVerifiedAt ? new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(order.resultVerifiedAt)) : ''}</p></div></article>)}</div>}
         </section>
 
         <section className="mt-10">
