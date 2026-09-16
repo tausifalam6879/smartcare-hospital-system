@@ -9,6 +9,7 @@ import com.smartcare.auth.web.AuthResponse;
 import com.smartcare.auth.web.RegisterRequest;
 import com.smartcare.checkin.domain.CheckInChannel;
 import com.smartcare.checkin.service.CheckInService;
+import com.smartcare.common.error.ConflictException;
 import com.smartcare.doctor.service.DoctorService;
 import com.smartcare.doctor.web.DoctorDtos.DoctorRequest;
 import com.smartcare.doctor.web.DoctorDtos.ScheduleRequest;
@@ -30,6 +31,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -91,12 +93,13 @@ class LiveQueueCheckInIntegrationTest {
         assertThat(secondQueue.estimatedWaitMinutes()).isEqualTo(15);
         assertThat(notifications.unreadCount(second.user().id())).isGreaterThan(0);
 
-        var servingSecond = queues.serveNext(doctor.id(), visitDate);
-        assertThat(servingSecond.currentlyServingPosition()).isEqualTo(2);
+        assertThatThrownBy(() -> queues.serveNext(doctor.id(), visitDate))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("Finalize the current consultation record");
         assertThat(queues.patientSnapshot(first.user().id(), firstAppointment.id()).status())
-                .isEqualTo(AppointmentStatus.COMPLETED);
-        assertThat(queues.patientSnapshot(second.user().id(), secondAppointment.id()).status())
                 .isEqualTo(AppointmentStatus.IN_CONSULTATION);
+        assertThat(queues.patientSnapshot(second.user().id(), secondAppointment.id()).status())
+                .isEqualTo(AppointmentStatus.CHECKED_IN);
     }
 
     private AuthResponse patient(String digits, String label) {

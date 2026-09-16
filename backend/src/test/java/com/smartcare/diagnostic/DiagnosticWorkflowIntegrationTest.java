@@ -29,6 +29,8 @@ import com.smartcare.doctor.web.DoctorDtos.ScheduleRequest;
 import com.smartcare.hospital.service.HospitalService;
 import com.smartcare.hospital.web.HospitalDtos.DepartmentRequest;
 import com.smartcare.hospital.web.HospitalDtos.HospitalRequest;
+import com.smartcare.medicalrecord.service.MedicalRecordService;
+import com.smartcare.medicalrecord.web.MedicalRecordDtos.VisitRecordRequest;
 import com.smartcare.notification.domain.NotificationType;
 import com.smartcare.notification.service.NotificationService;
 import com.smartcare.payment.service.PaymentService;
@@ -63,6 +65,7 @@ class DiagnosticWorkflowIntegrationTest {
     @Autowired UserAccountRepository users;
     @Autowired AuditLogRepository auditLogs;
     @Autowired NotificationService notifications;
+    @Autowired MedicalRecordService medicalRecords;
 
     @Test
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST", "DOCTOR", "LAB_TECHNICIAN"})
@@ -103,6 +106,9 @@ class DiagnosticWorkflowIntegrationTest {
         queues.serveNext(doctor.id(), today);
         var firstOrder = diagnostics.createOrder(doctorAccount.user().id(), new CreateOrderRequest(
                 firstAppointment.id(), cbc.id(), DiagnosticPriority.ROUTINE, "Investigate persistent fatigue."));
+        medicalRecords.recordVisit(doctorAccount.user().id(), new VisitRecordRequest(firstAppointment.id(),
+                "Persistent fatigue", "Fatigue under investigation", null, null,
+                "Complete the ordered CBC.", null, List.of(), List.of(), null, false));
         queues.serveNext(doctor.id(), today);
         var secondOrder = diagnostics.createOrder(doctorAccount.user().id(), new CreateOrderRequest(
                 secondAppointment.id(), cbc.id(), DiagnosticPriority.ROUTINE, "Baseline blood count."));

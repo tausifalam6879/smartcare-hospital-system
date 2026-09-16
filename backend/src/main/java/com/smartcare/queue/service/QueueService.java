@@ -82,9 +82,7 @@ public class QueueService {
                 doctorId, date, AppointmentStatus.IN_CONSULTATION).orElse(null);
         Instant now = clock.instant();
         if (current != null) {
-            current.complete(now);
-            notifications.notifyAppointment(current, NotificationType.VISIT_COMPLETED, "completed",
-                    "Consultation completed", "Your SmartCare queue visit has been marked complete.");
+            throw new ConflictException("Finalize the current consultation record before calling the next patient.");
         }
         Appointment next = appointments.findFirstByDoctorIdAndServiceDateAndStatusOrderByQueuePositionAsc(
                 doctorId, date, AppointmentStatus.CHECKED_IN).orElse(null);
@@ -93,7 +91,7 @@ public class QueueService {
             notifications.notifyAppointment(next, NotificationType.NOW_SERVING, "now-serving",
                     "It is your turn", "Please proceed to " + roomLabel(next.getDoctor()) + ".");
             audit.record("QUEUE_CONSULTATION_STARTED", "APPOINTMENT", next.getId(), next.getHospital().getId());
-        } else if (current == null) {
+        } else {
             throw new ConflictException("No checked-in patient is waiting for this queue.");
         }
         List<Appointment> live = liveAppointments(doctorId, date);
