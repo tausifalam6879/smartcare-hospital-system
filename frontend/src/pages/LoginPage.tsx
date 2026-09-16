@@ -1,13 +1,13 @@
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { AuthShell } from '../components/AuthShell'
 import { isStaticDemo } from '../config/runtime'
 import { useAuth } from '../context/AuthContext'
 import { messageFromError } from '../services/api'
 
 export function LoginPage() {
-  const { login } = useAuth()
+  const { login, session } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [credential, setCredential] = useState('')
@@ -15,6 +15,8 @@ export function LoginPage() {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  if (session) return <Navigate to="/dashboard" replace />
 
   async function submit(event: FormEvent) {
     event.preventDefault()

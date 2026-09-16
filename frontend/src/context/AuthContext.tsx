@@ -1,6 +1,7 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { isStaticDemo } from '../config/runtime'
 import { api } from '../services/api'
+import { authExpiredEvent, authStorageKey, clearAuthSession, readAuthSession, writeAuthSession } from '../services/authStorage'
 
 type UserSummary = {
   id: string
@@ -36,8 +37,6 @@ type AuthContextValue = {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
-const storageKey = 'smartcare-session'
-
 function demoSession(displayName = 'Demo Patient', credential = 'demo@smartcare.health'): AuthSession {
   return {
     accessToken: 'github-pages-demo-session',
@@ -55,17 +54,17 @@ function demoSession(displayName = 'Demo Patient', credential = 'demo@smartcare.
 }
 
 function initialSession(): AuthSession | null {
-  const raw = sessionStorage.getItem(storageKey)
+  const raw = readAuthSession()
   if (!raw) return null
   try {
     const value = JSON.parse(raw) as AuthSession
     if (new Date(value.expiresAt).getTime() <= Date.now()) {
-      sessionStorage.removeItem(storageKey)
+      clearAuthSession()
       return null
     }
     return value
   } catch {
-    sessionStorage.removeItem(storageKey)
+    clearAuthSession()
     return null
   }
 }
@@ -73,8 +72,36 @@ function initialSession(): AuthSession | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(initialSession)
 
+  useEffect(() => {
+    const synchronize = () => setSession(initialSession())
+    const storageChanged = (event: StorageEvent) => {
+      if (event.key === authStorageKey) synchronize()
+    }
+    window.addEventListener('storage', storageChanged)
+    window.addEventListener(authExpiredEvent, synchronize)
+    return () => {
+      window.removeEventListener('storage', storageChanged)
+      window.removeEventListener(authExpiredEvent, synchronize)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!session) return
+    const remaining = new Date(session.expiresAt).getTime() - Date.now()
+    if (remaining <= 0) {
+      clearAuthSession()
+      setSession(null)
+      return
+    }
+    const timer = window.setTimeout(() => {
+      clearAuthSession()
+      setSession(null)
+    }, Math.min(remaining, 2_147_483_647))
+    return () => window.clearTimeout(timer)
+  }, [session])
+
   const persist = (next: AuthSession) => {
-    sessionStorage.setItem(storageKey, JSON.stringify(next))
+    writeAuthSession(JSON.stringify(next))
     setSession(next)
   }
 
@@ -97,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       persist(response.data)
     },
     logout() {
-      sessionStorage.removeItem(storageKey)
+      clearAuthSession()
       setSession(null)
     },
   }), [session])

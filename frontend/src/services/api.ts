@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { isStaticDemo } from '../config/runtime'
+import { authExpiredEvent, clearAuthSession, readAuthSession } from './authStorage'
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '',
@@ -46,18 +47,29 @@ function validationMessage(errors: ApiErrorBody['errors']) {
 }
 
 api.interceptors.request.use((config) => {
-  const raw = sessionStorage.getItem('smartcare-session')
+  const raw = readAuthSession()
   if (raw) {
     try {
       const session = JSON.parse(raw) as { accessToken?: string }
       if (session.accessToken) config.headers.Authorization = `Bearer ${session.accessToken}`
     } catch {
-      sessionStorage.removeItem('smartcare-session')
+      clearAuthSession()
     }
   }
   config.headers['X-Correlation-ID'] = crypto.randomUUID()
   return config
 })
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && readAuthSession()) {
+      clearAuthSession()
+      window.dispatchEvent(new Event(authExpiredEvent))
+    }
+    return Promise.reject(error)
+  },
+)
 
 export function messageFromError(error: unknown) {
   if (axios.isAxiosError(error)) {

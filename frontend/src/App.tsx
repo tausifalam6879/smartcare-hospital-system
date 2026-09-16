@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { MainLayout } from './components/MainLayout'
 import { useAuth } from './context/AuthContext'
@@ -25,7 +25,8 @@ import { DoctorConsultationPage } from './pages/DoctorConsultationPage'
 
 function Protected({ page }: { page: ReactNode }) {
   const { session } = useAuth()
-  return session ? page : <Navigate to="/login" replace />
+  const location = useLocation()
+  return session ? page : <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />
 }
 
 function PatientOrGuest({ page }: { page: ReactNode }) {
@@ -35,7 +36,8 @@ function PatientOrGuest({ page }: { page: ReactNode }) {
 
 function RoleProtected({ page, roles }: { page: ReactNode; roles: string[] }) {
   const { session } = useAuth()
-  if (!session) return <Navigate to="/login" replace />
+  const location = useLocation()
+  if (!session) return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />
   return session.user.roles.some((role) => roles.includes(role)) ? page : <Navigate to="/dashboard" replace />
 }
 
