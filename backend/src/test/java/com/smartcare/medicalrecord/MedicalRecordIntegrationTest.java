@@ -10,6 +10,7 @@ import com.smartcare.auth.web.AuthResponse;
 import com.smartcare.auth.web.RegisterRequest;
 import com.smartcare.checkin.domain.CheckInChannel;
 import com.smartcare.checkin.service.CheckInService;
+import com.smartcare.common.error.ConflictException;
 import com.smartcare.doctor.service.DoctorService;
 import com.smartcare.doctor.web.DoctorDtos.DoctorRequest;
 import com.smartcare.doctor.web.DoctorDtos.LinkAccountRequest;
@@ -107,6 +108,8 @@ class MedicalRecordIntegrationTest {
         assertThat(followUp.medicationReminderEnabled()).isTrue();
         assertThat(followUps.updateStatus(patient.user().id(), followUp.id(), FollowUpStatus.CONFIRMED).status())
                 .isEqualTo(FollowUpStatus.CONFIRMED);
+        assertThatThrownBy(() -> followUps.updateStatus(patient.user().id(), followUp.id(), FollowUpStatus.COMPLETED))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("scheduled date");
         assertThatThrownBy(() -> followUps.updateStatus(anotherPatient.user().id(), followUp.id(),
                 FollowUpStatus.COMPLETED)).isInstanceOf(com.smartcare.common.error.NotFoundException.class);
 

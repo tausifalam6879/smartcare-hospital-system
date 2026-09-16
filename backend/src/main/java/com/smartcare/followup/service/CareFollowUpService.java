@@ -2,6 +2,7 @@ package com.smartcare.followup.service;
 
 import com.smartcare.audit.service.AuditService;
 import com.smartcare.common.error.NotFoundException;
+import com.smartcare.common.error.ConflictException;
 import com.smartcare.followup.domain.CareFollowUp;
 import com.smartcare.followup.domain.FollowUpStatus;
 import com.smartcare.followup.repository.CareFollowUpRepository;
@@ -67,7 +68,15 @@ public class CareFollowUpService {
         Patient patient = requirePatient(userId);
         CareFollowUp followUp = followUps.findByIdAndPatientId(followUpId, patient.getId())
                 .orElseThrow(() -> new NotFoundException("Follow-up was not found."));
-        followUp.updateStatus(status, clock.instant());
+        if ((status == FollowUpStatus.COMPLETED || status == FollowUpStatus.MISSED)
+                && LocalDate.now(clock).isBefore(followUp.getFollowUpDate())) {
+            throw new ConflictException("A follow-up can be completed or missed only on or after its scheduled date.");
+        }
+        try {
+            followUp.updateStatus(status, clock.instant());
+        } catch (IllegalArgumentException exception) {
+            throw new ConflictException(exception.getMessage());
+        }
         audit.record("FOLLOW_UP_STATUS_UPDATED", "CARE_FOLLOW_UP", followUp.getId(), followUp.getHospital().getId());
         return response(followUp);
     }

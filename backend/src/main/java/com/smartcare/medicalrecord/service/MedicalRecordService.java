@@ -131,7 +131,8 @@ public class MedicalRecordService {
         ClinicalVisit visit = visits.save(new ClinicalVisit(appointment, recorder, clean(request.symptoms()),
                 request.diagnosis().trim(), clean(request.doctorNotes()), clean(request.dischargeSummary()),
                 clean(request.followUpRecommendation()), now));
-        if (request.medicines() != null && !request.medicines().isEmpty()) {
+        boolean hasPrescription = request.medicines() != null && !request.medicines().isEmpty();
+        if (hasPrescription) {
             Prescription prescription = prescriptions.save(new Prescription(visit,
                     clean(request.prescriptionInstructions()), now));
             int order = 1;
@@ -148,7 +149,8 @@ public class MedicalRecordService {
             }
         }
         if (request.followUpDate() != null) {
-            followUps.schedule(visit, request.followUpDate(), Boolean.TRUE.equals(request.medicationReminderEnabled()));
+            followUps.schedule(visit, request.followUpDate(), hasPrescription
+                    && Boolean.TRUE.equals(request.medicationReminderEnabled()));
         }
         if (appointment.getStatus() == AppointmentStatus.IN_CONSULTATION) {
             appointment.complete(now);

@@ -60,8 +60,8 @@ public class CareFollowUp extends AuditableEntity {
     }
 
     public void updateStatus(FollowUpStatus next, Instant respondedAt) {
-        if (status == FollowUpStatus.COMPLETED && next != FollowUpStatus.COMPLETED) {
-            throw new IllegalArgumentException("A completed follow-up cannot be changed.");
+        if ((status == FollowUpStatus.COMPLETED || status == FollowUpStatus.MISSED) && next != status) {
+            throw new IllegalArgumentException("A completed or missed follow-up cannot be changed.");
         }
         this.status = next;
         this.patientResponseAt = respondedAt;
