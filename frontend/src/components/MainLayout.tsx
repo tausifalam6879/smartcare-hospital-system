@@ -1,6 +1,6 @@
-import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Droplets, FileHeart, FlaskConical, Home, LayoutDashboard, LogIn, MapPin, Microscope, Navigation, Phone, Stethoscope, TicketCheck } from 'lucide-react'
+import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Droplets, FileHeart, FlaskConical, Home, LayoutDashboard, LogIn, LogOut, MapPin, Microscope, Navigation, Phone, Stethoscope, TicketCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isStaticDemo } from '../config/runtime'
 import { getUnreadCount } from '../services/notifications'
@@ -99,7 +99,8 @@ function ScrollToTop() {
 }
 
 export function MainLayout() {
-  const { session } = useAuth()
+  const { session, logout } = useAuth()
+  const navigate = useNavigate()
   const { pathname } = useLocation()
   const [unread, setUnread] = useState(0)
   const staffRole = session?.user.roles.find((role) => staffLinksByRole[role])
@@ -155,7 +156,7 @@ export function MainLayout() {
                 <>{isPatient && <NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink>}<NavLink to={workspacePath} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
                   <LayoutDashboard className="size-4 text-care-700" />
                   <span className="hidden sm:inline">{session.user.displayName.split(' ')[0]}</span>
-                </NavLink></>
+                </NavLink><button type="button" aria-label="Sign out" title="Sign out" onClick={() => { logout(); navigate('/login', { replace: true }) }} className="grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"><LogOut className="size-4" /></button></>
               ) : (
                 <NavLink to="/login" className="hidden items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 sm:flex">
                   <LogIn className="size-4" /> Sign in
