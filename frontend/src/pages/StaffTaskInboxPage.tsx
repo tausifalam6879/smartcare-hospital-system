@@ -7,9 +7,10 @@ import { getAmbulanceWorklist, type AmbulanceRequest } from '../services/ambulan
 import { getVerifiedDonorMatches, type BloodRequest, type DonorMatch } from '../services/bloodBank'
 import { verifyDiagnosticResult, type DiagnosticOrder, type DiagnosticResultFlag } from '../services/diagnostics'
 import { getNavigationHospitals } from '../services/navigation'
+import { localDateString } from '../utils/appointmentLifecycle'
 
 const operationalRoles = ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => localDateString()
 
 export function StaffTaskInboxPage() {
   const { session } = useAuth()

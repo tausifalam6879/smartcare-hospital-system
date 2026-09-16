@@ -39,6 +39,7 @@ import {
 import { createPaymentIntent, paymentStatusLabel, type Payment } from '../services/payments'
 import { createPrototypeBooking, updatePrototypeBooking, type PrototypeBooking } from '../services/prototypeBookings'
 import { predictWaitTime, type WaitTimePrediction } from '../services/waitTime'
+import { localDateString } from '../utils/appointmentLifecycle'
 
 type Hospital = { id: string; name: string; city: string }
 type Department = { id: string; name: string }
@@ -95,7 +96,7 @@ const bookingRules = [
 function tomorrow() {
   const date = new Date()
   date.setDate(date.getDate() + 1)
-  return date.toISOString().slice(0, 10)
+  return localDateString(date)
 }
 
 function readableDate(value: string) {
@@ -504,7 +505,7 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
               </select>
             </label>
             <label className="text-sm font-bold text-slate-700">Preferred date
-              <input required type="date" min={new Date().toISOString().slice(0, 10)} value={serviceDate} onChange={(event) => { setServiceDate(event.target.value); setResult(null); setPayment(null); setReferenceResult(null) }} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-ink-950" />
+              <input required type="date" min={localDateString()} value={serviceDate} onChange={(event) => { setServiceDate(event.target.value); setResult(null); setPayment(null); setReferenceResult(null) }} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-ink-950" />
             </label>
           </div>
 

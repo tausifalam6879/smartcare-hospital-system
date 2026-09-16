@@ -12,6 +12,7 @@ import {
   type DiagnosticOrderStatus, type DiagnosticProcedure, type DiagnosticResultFlag,
 } from '../services/diagnostics'
 import { getNavigationHospitals, type HospitalSummary } from '../services/navigation'
+import { localDateString } from '../utils/appointmentLifecycle'
 
 const statusLabels: Record<DiagnosticOrderStatus, string> = {
   ORDERED: 'Awaiting schedule',
@@ -65,7 +66,7 @@ function displayDateTime(value: string) {
 function tomorrow() {
   const date = new Date()
   date.setDate(date.getDate() + 1)
-  return date.toISOString().slice(0, 10)
+  return localDateString(date)
 }
 
 function procedureGuide(procedure: DiagnosticProcedure) {
@@ -204,7 +205,7 @@ export function DiagnosticsPage() {
 
               {order.preparationInstructions && <div className="border-t border-amber-100 bg-amber-50/60 px-5 py-3 text-xs leading-5 text-amber-950 sm:px-6"><strong>Preparation:</strong> {order.preparationInstructions}</div>}
 
-              {order.status === 'ORDERED' && <div className="flex flex-col gap-3 border-t border-slate-100 p-5 sm:flex-row sm:items-end sm:px-6"><label className="text-xs font-black text-slate-600">Choose service date<input type="date" min={new Date().toISOString().slice(0, 10)} value={dates[order.id] ?? tomorrow()} onChange={(event) => setDates((current) => ({ ...current, [order.id]: event.target.value }))} className="mt-2 h-11 w-full rounded-xl border border-slate-300 bg-white px-3 sm:w-52" /></label><button disabled={workingId === order.id} onClick={() => void schedule(order)} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white disabled:opacity-60">{workingId === order.id && <LoaderCircle className="size-4 animate-spin" />}Reserve capacity</button></div>}
+              {order.status === 'ORDERED' && <div className="flex flex-col gap-3 border-t border-slate-100 p-5 sm:flex-row sm:items-end sm:px-6"><label className="text-xs font-black text-slate-600">Choose service date<input type="date" min={localDateString()} value={dates[order.id] ?? tomorrow()} onChange={(event) => setDates((current) => ({ ...current, [order.id]: event.target.value }))} className="mt-2 h-11 w-full rounded-xl border border-slate-300 bg-white px-3 sm:w-52" /></label><button disabled={workingId === order.id} onClick={() => void schedule(order)} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-care-600 px-5 text-sm font-black text-white disabled:opacity-60">{workingId === order.id && <LoaderCircle className="size-4 animate-spin" />}Reserve capacity</button></div>}
 
               {order.status === 'SCHEDULED' && <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 p-5 sm:px-6"><Link to={diagnosticNavigationUrl(order)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-care-600 px-4 text-sm font-black text-white"><MapPin className="size-4" />Navigate to test room</Link><p className="text-xs text-slate-500">Arrive with the clinician order and follow the preparation instructions.</p></div>}
 

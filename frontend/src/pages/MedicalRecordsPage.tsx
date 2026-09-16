@@ -11,6 +11,7 @@ import {
   downloadMedicalDocument, getMyMedicalRecord, uploadMedicalDocument,
   type AllergySeverity, type DocumentType, type MedicalDocument, type MedicalRecord,
 } from '../services/medicalRecords'
+import { localDateString } from '../utils/appointmentLifecycle'
 
 type HospitalSummary = { id: string; name: string }
 
@@ -55,7 +56,7 @@ export function MedicalRecordsPage() {
   const [success, setSuccess] = useState('')
   const [hospitalId, setHospitalId] = useState('')
   const [documentType, setDocumentType] = useState<DocumentType>('LAB_REPORT')
-  const [documentDate, setDocumentDate] = useState(new Date().toISOString().slice(0, 10))
+  const [documentDate, setDocumentDate] = useState(localDateString())
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
 
@@ -144,7 +145,7 @@ export function MedicalRecordsPage() {
         {uploadOpen && <form onSubmit={upload} className="mt-5 grid gap-4 rounded-[2rem] border border-care-200 bg-white p-6 shadow-soft md:grid-cols-2 lg:grid-cols-4">
           <label className="text-xs font-black text-slate-600">Hospital<select required value={hospitalId} onChange={(event) => setHospitalId(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"><option value="">Choose hospital</option>{hospitals.map((hospital) => <option key={hospital.id} value={hospital.id}>{hospital.name}</option>)}</select></label>
           <label className="text-xs font-black text-slate-600">Document type<select value={documentType} onChange={(event) => setDocumentType(event.target.value as DocumentType)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm">{Object.entries(documentLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-          <label className="text-xs font-black text-slate-600">Report date<input required type="date" max={new Date().toISOString().slice(0, 10)} value={documentDate} onChange={(event) => setDocumentDate(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label>
+          <label className="text-xs font-black text-slate-600">Report date<input required type="date" max={localDateString()} value={documentDate} onChange={(event) => setDocumentDate(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label>
           <label className="text-xs font-black text-slate-600">Choose file<input required type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="mt-2 block h-12 w-full rounded-xl border border-slate-300 bg-white p-2 text-xs file:mr-2 file:rounded-lg file:border-0 file:bg-care-50 file:px-3 file:py-1.5 file:font-bold file:text-care-800" /></label>
           <label className="text-xs font-black text-slate-600 md:col-span-2 lg:col-span-3">Description (optional)<input value={description} maxLength={600} onChange={(event) => setDescription(event.target.value)} placeholder="e.g. CBC report from follow-up visit" className="mt-2 h-12 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label>
           <button disabled={!file || !hospitalId || uploading} className="inline-flex h-12 self-end items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-black text-white disabled:bg-slate-300">{uploading ? <LoaderCircle className="size-5 animate-spin" /> : <Upload className="size-5" />}Save securely</button>

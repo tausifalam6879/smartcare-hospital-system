@@ -5,15 +5,14 @@ import { isStaticDemo } from '../config/runtime'
 import { useAuth } from '../context/AuthContext'
 import { messageFromError } from '../services/api'
 import {
-  activeAppointmentStatuses,
   appointmentStatusLabel,
-  cancellableAppointmentStatuses,
   cancelAppointment,
   getMyAppointments,
   type Appointment,
 } from '../services/appointments'
 import { getMyPayments, paymentStatusLabel, type Payment } from '../services/payments'
 import { cancelPrototypeBooking, getPrototypeBookings, type PrototypeBooking } from '../services/prototypeBookings'
+import { canOpenAppointmentQueue, canPatientCancelAppointment, findNextAppointment, isCurrentAppointment } from '../utils/appointmentLifecycle'
 
 function displayDate(value: string) {
   return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(`${value}T12:00:00`))
@@ -40,8 +39,7 @@ export function DashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const nextAppointment = useMemo(() => appointments.find((appointment) =>
-    activeAppointmentStatuses.includes(appointment.status)), [appointments])
+  const nextAppointment = useMemo(() => findNextAppointment(appointments), [appointments])
   if (!session) return null
 
   async function cancel(id: string) {
@@ -79,7 +77,7 @@ export function DashboardPage() {
             <>
               <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-wider text-care-700">Next active booking</p><h2 className="mt-1 text-xl font-black text-ink-950">{nextAppointment.doctorName}</h2><p className="text-sm font-semibold text-slate-500">{nextAppointment.specialization}</p></div>{nextAppointment.queuePosition ? <div className="rounded-2xl bg-care-50 px-4 py-3 text-center"><p className="text-[10px] font-extrabold uppercase text-care-700">OPD no.</p><p className="text-3xl font-black text-care-800">{nextAppointment.queuePosition}</p></div> : <span className="grid size-12 place-items-center rounded-2xl bg-amber-50 text-amber-700"><Users className="size-6" /></span>}</div>
               <div className="mt-5 grid gap-3 text-sm text-slate-600 sm:grid-cols-2"><p className="flex gap-2"><CalendarDays className="size-4 shrink-0 text-slate-400" />{displayDate(nextAppointment.serviceDate)}</p><p className="flex gap-2"><TicketCheck className="size-4 shrink-0 text-slate-400" />{appointmentStatusLabel[nextAppointment.status]}</p><p className="flex gap-2"><MapPin className="size-4 shrink-0 text-slate-400" />{nextAppointment.hospitalName}</p><p className="flex gap-2"><Clock3 className="size-4 shrink-0 text-slate-400" />{nextAppointment.queuePosition ? `~${nextAppointment.estimatedWaitMinutes} min from queue start` : 'Promoted when capacity opens'}</p></div>
-              <div className="mt-5 flex flex-wrap gap-3 border-t border-slate-100 pt-4">{['CONFIRMED', 'CHECKED_IN', 'IN_CONSULTATION'].includes(nextAppointment.status) ? <Link to={`/queue/${nextAppointment.id}`} className="rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white">{nextAppointment.status === 'CONFIRMED' ? 'Check in & track queue' : 'Open live queue'}</Link> : <Link to="/booking" className="rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white">Book another visit</Link>}<Link to={`/navigate?appointment=${nextAppointment.id}`} className="inline-flex items-center gap-2 rounded-xl border border-care-300 bg-care-50 px-4 py-2.5 text-sm font-extrabold text-care-800"><Navigation className="size-4" />Navigate to room</Link>{cancellableAppointmentStatuses.includes(nextAppointment.status) && <button disabled={cancellingId === nextAppointment.id} onClick={() => void cancel(nextAppointment.id)} className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50">{cancellingId === nextAppointment.id && <LoaderCircle className="size-4 animate-spin" />}Cancel</button>}</div>
+              <div className="mt-5 flex flex-wrap gap-3 border-t border-slate-100 pt-4">{canOpenAppointmentQueue(nextAppointment) ? <Link to={`/queue/${nextAppointment.id}`} className="rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white">{nextAppointment.status === 'CONFIRMED' ? 'Check in & track queue' : 'Open live queue'}</Link> : <Link to="/booking" className="rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white">Book another visit</Link>}<Link to={`/navigate?appointment=${nextAppointment.id}`} className="inline-flex items-center gap-2 rounded-xl border border-care-300 bg-care-50 px-4 py-2.5 text-sm font-extrabold text-care-800"><Navigation className="size-4" />Navigate to room</Link>{canPatientCancelAppointment(nextAppointment) && <button disabled={cancellingId === nextAppointment.id} onClick={() => void cancel(nextAppointment.id)} className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50">{cancellingId === nextAppointment.id && <LoaderCircle className="size-4 animate-spin" />}Cancel</button>}</div>
             </>
           ) : (
             <><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Next appointment</p><h2 className="mt-1 text-xl font-black text-ink-950">No active booking</h2></div><span className="grid size-12 place-items-center rounded-2xl bg-blue-50 text-blue-700"><CalendarDays className="size-6" /></span></div><p className="mt-4 text-sm leading-6 text-slate-600">Choose a doctor and SmartCare will check real day capacity before issuing a position or waitlist entry.</p><Link to="/booking" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white"><Stethoscope className="size-4" /> Book OPD number</Link></>
@@ -107,11 +105,11 @@ export function DashboardPage() {
           const payment = paymentRecords.find((item) => item.appointmentId === appointment.id)
           return (
           <article key={appointment.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-start justify-between gap-4"><div><h3 className="font-black text-ink-950">{appointment.doctorName}</h3><p className="text-sm font-semibold text-care-700">{appointment.departmentName}</p></div><span className={`rounded-full px-3 py-1.5 text-[11px] font-extrabold ${activeAppointmentStatuses.includes(appointment.status) ? 'bg-care-50 text-care-800' : 'bg-slate-100 text-slate-600'}`}>{appointmentStatusLabel[appointment.status]}</span></div>
+            <div className="flex items-start justify-between gap-4"><div><h3 className="font-black text-ink-950">{appointment.doctorName}</h3><p className="text-sm font-semibold text-care-700">{appointment.departmentName}</p></div><span className={`rounded-full px-3 py-1.5 text-[11px] font-extrabold ${isCurrentAppointment(appointment) ? 'bg-care-50 text-care-800' : 'bg-slate-100 text-slate-600'}`}>{appointmentStatusLabel[appointment.status]}</span></div>
             <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-600"><p><span className="block text-slate-400">Visit date</span><strong>{displayDate(appointment.serviceDate)}</strong></p><p><span className="block text-slate-400">Queue</span><strong>{appointment.queuePosition ? `OPD ${appointment.queuePosition}` : 'Waitlist'}</strong></p><p><span className="block text-slate-400">Payment</span><strong>{appointment.paymentMethod === 'CASH' ? 'Cash at desk' : 'Online'}</strong></p><p><span className="block text-slate-400">Fee</span><strong className="inline-flex items-center"><IndianRupee className="size-3" />{appointment.amount.toLocaleString('en-IN')}</strong></p></div>
             {payment && <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs"><div className="flex items-center justify-between gap-2"><span className="font-extrabold text-slate-700">{paymentStatusLabel[payment.status]}</span>{payment.refundStatus && <span className="rounded-full bg-amber-100 px-2 py-1 font-bold text-amber-900">Refund {payment.refundStatus.toLowerCase()}</span>}</div>{payment.receiptNumber && <p className="mt-1 font-mono text-[11px] text-slate-500">Receipt {payment.receiptNumber}</p>}</div>}
-            {['CONFIRMED', 'CHECKED_IN', 'IN_CONSULTATION'].includes(appointment.status) && <div className="mt-4 flex flex-wrap gap-4"><Link to={`/queue/${appointment.id}`} className="inline-flex items-center gap-2 text-xs font-extrabold text-care-700 hover:underline"><TicketCheck className="size-4" />Open live queue</Link><Link to={`/navigate?appointment=${appointment.id}`} className="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-700 hover:underline"><Navigation className="size-4" />Navigate to room</Link></div>}
-            {cancellableAppointmentStatuses.includes(appointment.status) && <button disabled={cancellingId === appointment.id} onClick={() => void cancel(appointment.id)} className="mt-4 flex items-center gap-2 text-xs font-extrabold text-rose-700 hover:underline"><XCircle className="size-4" />Cancel this booking</button>}
+            {canOpenAppointmentQueue(appointment) && <div className="mt-4 flex flex-wrap gap-4"><Link to={`/queue/${appointment.id}`} className="inline-flex items-center gap-2 text-xs font-extrabold text-care-700 hover:underline"><TicketCheck className="size-4" />Open live queue</Link><Link to={`/navigate?appointment=${appointment.id}`} className="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-700 hover:underline"><Navigation className="size-4" />Navigate to room</Link></div>}
+            {canPatientCancelAppointment(appointment) && <button disabled={cancellingId === appointment.id} onClick={() => void cancel(appointment.id)} className="mt-4 flex items-center gap-2 text-xs font-extrabold text-rose-700 hover:underline"><XCircle className="size-4" />Cancel this booking</button>}
           </article>
         )})}</div>}
       </section>
