@@ -44,6 +44,7 @@ function RoleHome() {
   if (!session) return <Navigate to="/login" replace />
   const roles = session.user.roles
   if (roles.includes('DOCTOR')) return <Navigate to="/doctor/consultations" replace />
+  if (roles.some((role) => ['RECEPTIONIST', 'CASHIER'].includes(role))) return <Navigate to="/operations" replace />
   if (roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))) {
     return <Navigate to="/staff/tasks" replace />
   }
@@ -60,7 +61,7 @@ export function App() {
         <Route path="booking" element={<PatientOrGuest page={<QueueBookingPage />} />} />
         <Route path="dashboard" element={<Protected page={<RoleHome />} />} />
         <Route path="queue/:appointmentId" element={<RoleProtected roles={['PATIENT']} page={<LiveQueuePage />} />} />
-        <Route path="notifications" element={<Protected page={<NotificationsPage />} />} />
+        <Route path="notifications" element={<RoleProtected roles={['PATIENT']} page={<NotificationsPage />} />} />
         <Route path="records" element={<RoleProtected roles={['PATIENT']} page={<MedicalRecordsPage />} />} />
         <Route path="follow-ups" element={<RoleProtected roles={['PATIENT']} page={<CareFollowUpsPage />} />} />
         <Route path="doctor/consultations" element={<RoleProtected roles={['DOCTOR']} page={<DoctorConsultationPage />} />} />

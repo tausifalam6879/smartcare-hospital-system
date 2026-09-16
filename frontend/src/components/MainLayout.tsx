@@ -35,11 +35,21 @@ const patientFooterLinks = [
 const doctorLinks = [
   { to: '/', label: 'Home', icon: Home },
   { to: '/doctor/consultations', label: 'Consultations', icon: Stethoscope },
+  { to: '/operations', label: 'Day operations', icon: LayoutDashboard },
   { to: '/navigate', label: 'Navigate', icon: Navigation },
-  { to: '/notifications', label: 'Notifications', icon: Bell },
 ]
 
 const staffLinksByRole: Record<string, typeof patientDesktopLinks> = {
+  RECEPTIONIST: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
+  CASHIER: [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
+    { to: '/navigate', label: 'Navigate', icon: Navigation },
+  ],
   AMBULANCE_DISPATCHER: [
     { to: '/', label: 'Home', icon: Home },
     { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
@@ -95,24 +105,31 @@ export function MainLayout() {
   const staffRole = session?.user.roles.find((role) => staffLinksByRole[role])
   const isStaff = Boolean(staffRole)
   const isDoctor = Boolean(session?.user.roles.includes('DOCTOR'))
+  const isPatient = Boolean(session?.user.roles.includes('PATIENT') && !isDoctor && !isStaff)
+  const isFrontDesk = Boolean(session?.user.roles.some((role) => ['RECEPTIONIST', 'CASHIER'].includes(role)))
   const desktopLinks = isDoctor ? doctorLinks : staffRole ? staffLinksByRole[staffRole] : patientDesktopLinks
   const mobileLinks = (isDoctor || staffRole ? desktopLinks : patientMobileLinks).slice(0, 5)
-  const workspacePath = isDoctor ? '/doctor/consultations' : isStaff ? '/staff/tasks' : '/dashboard'
+  const workspacePath = isDoctor ? '/doctor/consultations' : isFrontDesk ? '/operations' : isStaff ? '/staff/tasks' : '/dashboard'
   const canUseAmbulance = !session || session.user.roles.some((role) => ['PATIENT', 'AMBULANCE_DISPATCHER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
   const footerLinks = isDoctor
-    ? [['/doctor/consultations', 'Finalize consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation'], ['/notifications', 'Notifications']]
+    ? [['/doctor/consultations', 'Finalize consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation']]
     : isStaff
-      ? [['/staff/tasks', 'My assigned work'], ...(session?.user.roles.some((role) => ['HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)) ? [['/operations', 'Hospital operations']] : []), ...(canUseAmbulance ? [['/ambulance', 'Ambulance coordination']] : []), ...(session?.user.roles.some((role) => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [['/blood-group-analysis', 'Blood-slide review']] : []), ['/navigate', 'Hospital navigation'], ['/notifications', 'Notifications']]
+      ? [...(!isFrontDesk ? [['/staff/tasks', 'My assigned work']] : []), ...(session?.user.roles.some((role) => ['RECEPTIONIST', 'CASHIER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)) ? [['/operations', 'Hospital operations']] : []), ...(canUseAmbulance ? [['/ambulance', 'Ambulance coordination']] : []), ...(session?.user.roles.some((role) => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [['/blood-group-analysis', 'Blood-slide review']] : []), ['/navigate', 'Hospital navigation']]
       : patientFooterLinks
+  const journeyLinks = isDoctor
+    ? [['/doctor/consultations', 'Clinical consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation']]
+    : isStaff
+      ? [['/', 'SmartCare home'], ['/hospitals', 'Hospital directory'], ['/navigate', 'Hospital navigation']]
+      : [['/notifications', 'Live queue · Available'], ['/navigate', 'QR hospital map · Available'], ['/diagnostics', 'Verified diagnostics · Available'], ['/blood-support', 'Verified blood support · Available'], ['/ambulance', 'Ambulance workflow · Available'], ['/assistant', 'Cited care assistant · Available']]
   useEffect(() => {
     if (isStaticDemo) { setUnread(0); return }
-    if (!session) { setUnread(0); return }
+    if (!session || !isPatient) { setUnread(0); return }
     let active = true
     const refresh = () => getUnreadCount().then((count) => { if (active) setUnread(count) }).catch(() => undefined)
     void refresh()
     const timer = window.setInterval(refresh, 30_000)
     return () => { active = false; window.clearInterval(timer) }
-  }, [session, pathname])
+  }, [isPatient, session, pathname])
   return (
     <div className="min-h-screen bg-white">
       <ScrollToTop />
@@ -135,7 +152,7 @@ export function MainLayout() {
             </nav>
             <div className="flex items-center gap-2">
               {session ? (
-                <><NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink><NavLink to={workspacePath} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
+                <>{isPatient && <NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink>}<NavLink to={workspacePath} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
                   <LayoutDashboard className="size-4 text-care-700" />
                   <span className="hidden sm:inline">{session.user.displayName.split(' ')[0]}</span>
                 </NavLink></>
@@ -168,7 +185,7 @@ export function MainLayout() {
           </div>
           <div>
             <h2 className="text-sm font-black">Care journey</h2>
-            <div className="mt-5 space-y-3 text-sm text-blue-100/70"><NavLink to="/#services" className="block hover:text-white">Services</NavLink><NavLink to="/#journey" className="block hover:text-white">How it works</NavLink><NavLink to="/notifications" className="block hover:text-white">Live queue · Available</NavLink><NavLink to="/navigate" className="block hover:text-white">QR hospital map · Available</NavLink><NavLink to="/diagnostics" className="block hover:text-white">Verified diagnostics · Available</NavLink><NavLink to="/blood-support" className="block hover:text-white">Verified blood support · Available</NavLink><NavLink to="/ambulance" className="block hover:text-white">Ambulance workflow · Available</NavLink><NavLink to="/assistant" className="block hover:text-white">Cited care assistant · Available</NavLink></div>
+            <div className="mt-5 space-y-3 text-sm text-blue-100/70">{journeyLinks.map(([to, label]) => <NavLink key={to} to={to} className="block hover:text-white">{label}</NavLink>)}</div>
           </div>
           <div>
             <h2 className="text-sm font-black">Patient support</h2>
