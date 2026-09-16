@@ -8,7 +8,8 @@ import { useAuth } from '../context/AuthContext'
 import { api, messageFromError } from '../services/api'
 import { appointmentStatusLabel } from '../services/appointments'
 import {
-  getMyRecoveryCases, getOperationsDashboard, markAppointmentNoShow, resolveRecovery,
+  confirmCashAppointment, getMyRecoveryCases, getOperationsDashboard, markAppointmentNoShow, resolveRecovery,
+  staffCheckInAppointment,
   updateDoctorDayStatus, type DoctorDayStatus, type OperationsDashboard, type RecoveryCase,
   type RecoveryChoice,
 } from '../services/operations'
@@ -148,7 +149,7 @@ function Metric({ label, value, icon: Icon, tone = 'blue' }: { label: string; va
   return <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span className={`grid size-9 place-items-center rounded-xl ${colors[tone]}`}><Icon className="size-4" /></span><p className="mt-4 text-2xl font-black text-ink-950">{value}</p><p className="text-xs font-bold text-slate-500">{label}</p></div>
 }
 
-function StaffOperations({ canManage }: { canManage: boolean }) {
+function StaffOperations({ canManage, canConfirmCash }: { canManage: boolean; canConfirmCash: boolean }) {
   const [hospitals, setHospitals] = useState<Hospital[]>([])
   const [hospitalId, setHospitalId] = useState('')
   const [date, setDate] = useState(localDate())
@@ -208,6 +209,17 @@ function StaffOperations({ canManage }: { canManage: boolean }) {
     finally { setSaving(false) }
   }
 
+  async function appointmentAction(action: 'cash' | 'check-in', appointmentId: string) {
+    setSaving(true)
+    setError('')
+    try {
+      if (action === 'cash') await confirmCashAppointment(appointmentId)
+      else await staffCheckInAppointment(appointmentId)
+      await refresh()
+    } catch (requestError) { setError(messageFromError(requestError)) }
+    finally { setSaving(false) }
+  }
+
   const metricData = useMemo(() => dashboard ? [
     ['Today appointments', dashboard.totalAppointments, CalendarClock, 'blue'],
     ['Checked in', dashboard.checkedIn, Users, 'emerald'],
@@ -232,7 +244,7 @@ function StaffOperations({ canManage }: { canManage: boolean }) {
 
         {canManage && <form onSubmit={saveStatus} className="mt-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:grid-cols-[1.2fr_1fr_1.5fr_auto]"><label className="text-xs font-bold text-slate-600">Doctor<select value={doctorId} onChange={(event) => setDoctorId(event.target.value)} required className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm">{doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{doctor.name} · {doctor.specialization}</option>)}</select></label><label className="text-xs font-bold text-slate-600">Operational status<select value={status} onChange={(event) => setStatus(event.target.value as DoctorDayStatus)} className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm">{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className="text-xs font-bold text-slate-600">Reason / patient guidance<input value={reason} onChange={(event) => setReason(event.target.value)} required={status !== 'ON_TIME'} maxLength={300} placeholder={status === 'ON_TIME' ? 'Optional' : 'Required for affected patients'} className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label><button disabled={saving || !doctorId} className="flex h-12 items-center justify-center gap-2 self-end rounded-xl bg-care-600 px-5 text-sm font-extrabold text-white disabled:opacity-60">{saving ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}Update</button><p className="text-xs leading-5 text-slate-500 lg:col-span-4">“Cancelled for today” creates a patient recovery case. It never silently transfers the appointment.</p></form>}
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><div className="flex items-center justify-between border-b border-slate-100 p-5"><div><p className="text-xs font-extrabold uppercase tracking-wider text-care-700">Live worklist</p><h2 className="mt-1 text-xl font-black text-ink-950">Patient queue</h2></div><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">{dashboard.queue.length} records</span></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500"><tr><th className="px-5 py-3">OPD</th><th className="px-5 py-3">Patient</th><th className="px-5 py-3">Doctor</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th>{canManage && <th className="px-5 py-3">Action</th>}</tr></thead><tbody className="divide-y divide-slate-100">{dashboard.queue.map((row) => <tr key={row.appointmentId}><td className="px-5 py-4 font-black text-care-700">{row.queuePosition ?? '—'}</td><td className="px-5 py-4 font-mono text-xs text-slate-600">{row.patientNumber}</td><td className="px-5 py-4 font-bold text-ink-950">{row.doctorName}</td><td className="px-5 py-4">{appointmentStatusLabel[row.status]}</td><td className="px-5 py-4">{row.paymentMethod === 'CASH' ? 'Cash' : 'Online'}</td>{canManage && <td className="px-5 py-4">{row.status === 'CONFIRMED' && date <= localDate() ? <button disabled={saving} onClick={() => void noShow(row.appointmentId)} className="text-xs font-extrabold text-rose-700 hover:underline">Mark no-show</button> : <span className="text-slate-300">—</span>}</td>}</tr>)}{dashboard.queue.length === 0 && <tr><td colSpan={canManage ? 6 : 5} className="px-5 py-10 text-center text-slate-500">No appointments for this view.</td></tr>}</tbody></table></div></section>
+        <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><div className="flex items-center justify-between border-b border-slate-100 p-5"><div><p className="text-xs font-extrabold uppercase tracking-wider text-care-700">Live worklist</p><h2 className="mt-1 text-xl font-black text-ink-950">Patient queue</h2></div><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">{dashboard.queue.length} records</span></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500"><tr><th className="px-5 py-3">OPD</th><th className="px-5 py-3">Patient</th><th className="px-5 py-3">Doctor</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th>{canManage && <th className="px-5 py-3">Action</th>}</tr></thead><tbody className="divide-y divide-slate-100">{dashboard.queue.map((row) => <tr key={row.appointmentId}><td className="px-5 py-4 font-black text-care-700">{row.queuePosition ?? '—'}</td><td className="px-5 py-4 font-mono text-xs text-slate-600">{row.patientNumber}</td><td className="px-5 py-4 font-bold text-ink-950">{row.doctorName}</td><td className="px-5 py-4">{appointmentStatusLabel[row.status]}</td><td className="px-5 py-4">{row.paymentMethod === 'CASH' ? 'Cash' : 'Online'}</td>{canManage && <td className="px-5 py-4"><div className="flex flex-wrap gap-3">{row.status === 'CASH_PENDING' && canConfirmCash && <button disabled={saving} onClick={() => void appointmentAction('cash', row.appointmentId)} className="text-xs font-extrabold text-emerald-700 hover:underline">Confirm cash</button>}{row.status === 'CONFIRMED' && date === localDate() && <button disabled={saving} onClick={() => void appointmentAction('check-in', row.appointmentId)} className="text-xs font-extrabold text-care-700 hover:underline">Check in</button>}{row.status === 'CONFIRMED' && date < localDate() && <button disabled={saving} onClick={() => void noShow(row.appointmentId)} className="text-xs font-extrabold text-rose-700 hover:underline">Mark no-show</button>}{!((row.status === 'CASH_PENDING' && canConfirmCash) || (row.status === 'CONFIRMED' && date <= localDate())) && <span className="text-slate-300">—</span>}</div></td>}</tr>)}{dashboard.queue.length === 0 && <tr><td colSpan={canManage ? 6 : 5} className="px-5 py-10 text-center text-slate-500">No appointments for this view.</td></tr>}</tbody></table></div></section>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/diagnostics" className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-extrabold text-cyan-800">Diagnostics</Link><Link to="/blood-support" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-extrabold text-rose-800">Blood support</Link><Link to="/ambulance" className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-extrabold text-red-800">Ambulance desk</Link></div>
       </>}
     </div>
@@ -244,5 +256,6 @@ export function OperationsPage() {
   if (!session) return null
   const isStaff = session.user.roles.some((role) => staffRoles.includes(role))
   const canManage = session.user.roles.some((role) => managingRoles.includes(role))
-  return isStaff ? <StaffOperations canManage={canManage} /> : <PatientRecovery />
+  const canConfirmCash = session.user.roles.some((role) => ['CASHIER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
+  return isStaff ? <StaffOperations canManage={canManage} canConfirmCash={canConfirmCash} /> : <PatientRecovery />
 }

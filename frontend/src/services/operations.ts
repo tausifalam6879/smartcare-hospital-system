@@ -93,6 +93,14 @@ export async function markAppointmentNoShow(appointmentId: string) {
   await api.post(`/api/v1/operations/appointments/${appointmentId}/no-show`)
 }
 
+export async function confirmCashAppointment(appointmentId: string) {
+  await api.post(`/api/v1/appointments/${appointmentId}/cash-confirmation`)
+}
+
+export async function staffCheckInAppointment(appointmentId: string) {
+  await api.post(`/api/v1/check-in/appointments/${appointmentId}`, { channel: 'RECEPTION_DESK' })
+}
+
 export async function getMyRecoveryCases() {
   return (await api.get<RecoveryCase[]>('/api/v1/operations/recovery/mine')).data
 }
