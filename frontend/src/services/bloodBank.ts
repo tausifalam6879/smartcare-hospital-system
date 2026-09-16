@@ -87,6 +87,22 @@ export async function getMyBloodRequests() {
   return (await api.get<BloodRequest[]>('/api/v1/blood-requests/mine')).data
 }
 
+export type CreateBloodRequestInput = {
+  patientNumber: string
+  hospitalId: string
+  appointmentId: string
+  bloodGroup: BloodGroup
+  component: BloodComponent
+  units: number
+  urgency: BloodRequest['urgency']
+  clinicalReason: string
+  idempotencyKey: string
+}
+
+export async function createBloodRequest(input: CreateBloodRequestInput) {
+  return (await api.post<BloodRequest>('/api/v1/blood-requests', input)).data
+}
+
 export async function getMyDonorConsent() {
   const response = await api.get<DonorOptIn | null>('/api/v1/blood-donors/me')
   return response.data || null

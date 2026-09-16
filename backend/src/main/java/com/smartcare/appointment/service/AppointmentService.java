@@ -411,7 +411,8 @@ public class AppointmentService {
         Doctor doctor = appointment.getDoctor();
         int estimated = appointment.getQueuePosition() == null ? 0
                 : Math.max(0, appointment.getQueuePosition() - 1) * doctor.getExpectedConsultationMinutes();
-        return new AppointmentResponse(appointment.getId(), doctor.getId(), doctor.getName(),
+        return new AppointmentResponse(appointment.getId(), appointment.getPatient().getPatientNumber(),
+                doctor.getId(), doctor.getName(),
                 doctor.getSpecialization(), appointment.getHospital().getId(), appointment.getHospital().getName(),
                 doctor.getDepartment().getName(), appointment.getServiceDate(), appointment.getQueuePosition(),
                 appointment.getStatus(), appointment.getPaymentMethod(), appointment.getAmount(),

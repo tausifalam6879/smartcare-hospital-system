@@ -40,6 +40,7 @@ public final class AppointmentDtos {
 
     public record AppointmentResponse(
             UUID id,
+            String patientNumber,
             UUID doctorId,
             String doctorName,
             String specialization,

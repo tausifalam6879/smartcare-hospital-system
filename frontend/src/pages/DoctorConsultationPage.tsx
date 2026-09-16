@@ -1,9 +1,10 @@
-import { CalendarCheck2, FlaskConical, LoaderCircle, Pill, ShieldAlert, Stethoscope, UserRoundCheck } from 'lucide-react'
+import { CalendarCheck2, Droplets, FlaskConical, LoaderCircle, Pill, ShieldAlert, Stethoscope, UserRoundCheck } from 'lucide-react'
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { messageFromError } from '../services/api'
 import { getDoctorAppointments, type Appointment } from '../services/appointments'
 import { createDiagnosticOrder, getDiagnosticProcedures, type DiagnosticPriority, type DiagnosticProcedure } from '../services/diagnostics'
+import { createBloodRequest, type BloodComponent, type BloodGroup } from '../services/bloodBank'
 import { finalizeClinicalVisit, type AllergySeverity } from '../services/medicalRecords'
 import { serveNextPatient } from '../services/queues'
 
@@ -26,8 +27,12 @@ export function DoctorConsultationPage() {
   const [procedures, setProcedures] = useState<DiagnosticProcedure[]>([]), [procedureId, setProcedureId] = useState('')
   const [diagnosticPriority, setDiagnosticPriority] = useState<DiagnosticPriority>('ROUTINE')
   const [diagnosticNote, setDiagnosticNote] = useState('')
+  const [bloodGroup, setBloodGroup] = useState<BloodGroup>('O_POSITIVE')
+  const [bloodComponent, setBloodComponent] = useState<BloodComponent>('PACKED_RED_CELLS')
+  const [bloodUnits, setBloodUnits] = useState(1), [bloodUrgency, setBloodUrgency] = useState<'ROUTINE' | 'URGENT' | 'EMERGENCY'>('URGENT')
+  const [bloodReason, setBloodReason] = useState('')
   const [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
-  const [calling, setCalling] = useState(false), [orderingTest, setOrderingTest] = useState(false)
+  const [calling, setCalling] = useState(false), [orderingTest, setOrderingTest] = useState(false), [requestingBlood, setRequestingBlood] = useState(false)
   const [error, setError] = useState(''), [success, setSuccess] = useState('')
 
   const loadAppointments = useCallback(async () => {
@@ -75,6 +80,23 @@ export function DoctorConsultationPage() {
     finally { setOrderingTest(false) }
   }
 
+  async function requestBloodSupport() {
+    if (!selectedAppointment || !bloodReason.trim()) return
+    setRequestingBlood(true); setError(''); setSuccess('')
+    try {
+      const request = await createBloodRequest({
+        patientNumber: selectedAppointment.patientNumber,
+        hospitalId: selectedAppointment.hospitalId,
+        appointmentId: selectedAppointment.id,
+        bloodGroup, component: bloodComponent, units: bloodUnits, urgency: bloodUrgency,
+        clinicalReason: bloodReason.trim(), idempotencyKey: crypto.randomUUID(),
+      })
+      setSuccess(`Blood-support request recorded: ${request.matchedUnits}/${request.requestedUnits} verified units matched.`)
+      setBloodReason(''); setBloodUnits(1); setBloodUrgency('URGENT')
+    } catch (cause) { setError(messageFromError(cause)) }
+    finally { setRequestingBlood(false) }
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault(); setSaving(true); setError(''); setSuccess('')
     try {
@@ -109,6 +131,7 @@ export function DoctorConsultationPage() {
           <section className="grid gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"><h2 className="flex items-center gap-2 font-black text-emerald-950"><Pill className="size-5" />Prescription (optional)</h2><div className="grid gap-3 md:grid-cols-4"><input value={medicineName} onChange={(e) => setMedicineName(e.target.value)} placeholder="Medicine name" className={inputClass} /><input required={!!medicineName} value={dosage} onChange={(e) => setDosage(e.target.value)} placeholder="Dose" className={inputClass} /><input required={!!medicineName} value={frequency} onChange={(e) => setFrequency(e.target.value)} placeholder="Frequency" className={inputClass} /><input required={!!medicineName} value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="Duration" className={inputClass} /></div><textarea value={prescriptionInstructions} onChange={(e) => setPrescriptionInstructions(e.target.value)} maxLength={1200} rows={2} placeholder="General instructions" className="rounded-xl border border-emerald-200 p-3 text-sm" /></section>
           <section className="grid gap-4 rounded-2xl border border-rose-200 bg-rose-50 p-5"><h2 className="font-black text-rose-950">Clinician-recorded allergy (optional)</h2><div className="grid gap-3 md:grid-cols-3"><input value={allergySubstance} onChange={(e) => setAllergySubstance(e.target.value)} placeholder="Substance or medicine" className={inputClass} /><input value={allergyReaction} onChange={(e) => setAllergyReaction(e.target.value)} placeholder="Reaction" className={inputClass} /><select value={allergySeverity} onChange={(e) => setAllergySeverity(e.target.value as AllergySeverity)} className={inputClass}><option value="LOW">Low</option><option value="MODERATE">Moderate</option><option value="HIGH">High</option><option value="CRITICAL">Critical</option></select></div></section>
           <section className="grid gap-4 rounded-2xl border border-cyan-200 bg-cyan-50 p-5"><h2 className="flex items-center gap-2 font-black text-cyan-950"><FlaskConical className="size-5" />Diagnostic order (optional)</h2><div className="grid gap-3 md:grid-cols-[1fr_10rem]"><select value={procedureId} onChange={(e) => setProcedureId(e.target.value)} disabled={!appointmentId} className={inputClass}><option value="">Choose hospital-published test</option>{procedures.map((procedure) => <option key={procedure.id} value={procedure.id}>{procedure.name} · {procedure.modality}</option>)}</select><select value={diagnosticPriority} onChange={(e) => setDiagnosticPriority(e.target.value as DiagnosticPriority)} className={inputClass}><option value="ROUTINE">Routine</option><option value="URGENT">Urgent</option></select></div><textarea value={diagnosticNote} onChange={(e) => setDiagnosticNote(e.target.value)} maxLength={2000} rows={2} placeholder="Clinical reason" className="rounded-xl border border-cyan-200 p-3 text-sm" /><button type="button" disabled={!appointmentId || !procedureId || orderingTest} onClick={() => void orderDiagnostic()} className="min-h-11 rounded-xl bg-cyan-800 text-sm font-black text-white disabled:opacity-45">{orderingTest ? 'Ordering…' : 'Create diagnostic order'}</button><p className="text-xs text-cyan-900">The patient schedules it; lab staff releases only an authorized verified result.</p></section>
+          <section className="grid gap-4 rounded-2xl border border-rose-200 bg-rose-50 p-5"><h2 className="flex items-center gap-2 font-black text-rose-950"><Droplets className="size-5" />Blood support request (when clinically required)</h2><div className="grid gap-3 md:grid-cols-4"><select value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value as BloodGroup)} className={inputClass}><option value="A_POSITIVE">A+</option><option value="A_NEGATIVE">A−</option><option value="B_POSITIVE">B+</option><option value="B_NEGATIVE">B−</option><option value="AB_POSITIVE">AB+</option><option value="AB_NEGATIVE">AB−</option><option value="O_POSITIVE">O+</option><option value="O_NEGATIVE">O−</option></select><select value={bloodComponent} onChange={(e) => setBloodComponent(e.target.value as BloodComponent)} className={inputClass}><option value="WHOLE_BLOOD">Whole blood</option><option value="PACKED_RED_CELLS">Packed red cells</option><option value="PLATELETS">Platelets</option><option value="FRESH_FROZEN_PLASMA">Fresh frozen plasma</option></select><input type="number" min={1} max={20} value={bloodUnits} onChange={(e) => setBloodUnits(Math.max(1, Math.min(20, Number(e.target.value) || 1)))} className={inputClass} aria-label="Required units" /><select value={bloodUrgency} onChange={(e) => setBloodUrgency(e.target.value as typeof bloodUrgency)} className={inputClass}><option value="ROUTINE">Routine</option><option value="URGENT">Urgent</option><option value="EMERGENCY">Emergency</option></select></div><textarea value={bloodReason} onChange={(e) => setBloodReason(e.target.value)} maxLength={2000} rows={2} placeholder="Required clinical reason" className="rounded-xl border border-rose-200 p-3 text-sm" /><button type="button" disabled={!selectedAppointment || !bloodReason.trim() || requestingBlood} onClick={() => void requestBloodSupport()} className="min-h-11 rounded-xl bg-rose-700 text-sm font-black text-white disabled:opacity-45">{requestingBlood ? 'Submitting…' : 'Send to blood-bank staff'}</button><p className="text-xs text-rose-900">The selected group is a clinician-entered requirement, not an automated blood-group diagnosis. Only recently verified inventory can be reserved.</p></section>
           <label className="text-sm font-bold">Follow-up recommendation<textarea value={recommendation} onChange={(e) => setRecommendation(e.target.value)} maxLength={2000} rows={3} className="mt-2 w-full rounded-xl border border-slate-300 p-3" /></label>
           <div className="grid gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 md:grid-cols-2"><label className="text-sm font-bold text-violet-950"><CalendarCheck2 className="mr-2 inline size-5" />Follow-up date<input type="date" min={new Date().toISOString().slice(0, 10)} value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} className={`mt-2 w-full ${inputClass}`} /></label><label className="self-end rounded-xl bg-white p-4 text-sm font-bold text-violet-950"><span className="flex items-center gap-3"><input type="checkbox" checked={reminder && Boolean(medicineName.trim())} onChange={(e) => setReminder(e.target.checked)} disabled={!followUpDate || !medicineName.trim()} className="size-5" />Enable medication reminder</span><span className="mt-2 block text-[11px] font-medium text-violet-700">Available only when a structured prescription and follow-up date are recorded.</span></label></div>
           <button disabled={saving || !appointmentId} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-care-700 font-black text-white disabled:opacity-50">{saving ? <LoaderCircle className="size-5 animate-spin" /> : <Stethoscope className="size-5" />}Finalize visit</button>

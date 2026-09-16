@@ -5,6 +5,7 @@ export type AppointmentStatus = 'WAITLISTED' | 'RESERVED_PENDING_PAYMENT' | 'CAS
 
 export type Appointment = {
   id: string
+  patientNumber: string
   doctorId: string
   doctorName: string
   specialization: string
