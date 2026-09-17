@@ -51,6 +51,14 @@ public class AmbulanceService {
     private static final Set<Role> OPERATIONAL_REQUEST_ROLES = Set.of(
             Role.DOCTOR, Role.RECEPTIONIST, Role.BLOOD_BANK_STAFF,
             Role.AMBULANCE_DISPATCHER, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
+    private static final Set<AmbulanceRequestStatus> ACTIVE_REQUEST_STATUSES = Set.of(
+            AmbulanceRequestStatus.REQUESTED,
+            AmbulanceRequestStatus.ASSIGNED,
+            AmbulanceRequestStatus.ACKNOWLEDGED,
+            AmbulanceRequestStatus.EN_ROUTE_TO_PATIENT,
+            AmbulanceRequestStatus.PATIENT_PICKED_UP,
+            AmbulanceRequestStatus.EN_ROUTE_TO_HOSPITAL,
+            AmbulanceRequestStatus.ARRIVED);
 
     private final AmbulanceRepository ambulances;
     private final AmbulanceRequestRepository requests;
@@ -164,6 +172,11 @@ public class AmbulanceService {
         }
         if (input.transportType() == TransportType.BLOOD_TRANSPORT && !dispatcherOrStaff) {
             throw new AccessDeniedException("Blood transport requires authorized operational staff.");
+        }
+        if (patient != null && input.transportType() == TransportType.PATIENT_TRANSPORT
+                && requests.existsByPatientIdAndTransportTypeAndStatusIn(
+                patient.getId(), TransportType.PATIENT_TRANSPORT, ACTIVE_REQUEST_STATUSES)) {
+            throw new ConflictException("This patient already has an active ambulance request. Open the existing request for updates.");
         }
 
         Instant now = clock.instant();

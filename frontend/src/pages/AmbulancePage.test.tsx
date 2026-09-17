@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   createAmbulanceRequest, getAmbulanceAvailability, getMyAmbulanceRequests,
 } from '../services/ambulances'
@@ -32,6 +32,7 @@ const request = {
 }
 
 describe('AmbulancePage', () => {
+  afterEach(cleanup)
   beforeEach(() => {
     vi.mocked(getNavigationHospitals).mockResolvedValue([{
       id: 'hospital-1', code: 'SC', name: 'City General Hospital', city: 'Delhi',
@@ -54,10 +55,20 @@ describe('AmbulancePage', () => {
 
     const submit = screen.getByRole('button', { name: /Submit for dispatcher review/i })
     expect(submit).toBeDisabled()
+    expect(screen.getByText(/already have an active ambulance request/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('checkbox'))
+    expect(submit).toBeDisabled()
+    expect(createAmbulanceRequest).not.toHaveBeenCalled()
+  })
+
+  it('submits a new request when no active request exists', async () => {
+    vi.mocked(getMyAmbulanceRequests).mockResolvedValue([])
+    render(<MemoryRouter><AmbulancePage /></MemoryRouter>)
+
+    const submit = await screen.findByRole('button', { name: /Submit for dispatcher review/i })
     fireEvent.change(screen.getByLabelText(/Pickup address/i), { target: { value: '55 Community Road, Delhi' } })
     fireEvent.click(screen.getByRole('checkbox'))
     fireEvent.click(submit)
-
     expect(await screen.findByRole('status')).toHaveTextContent(/waiting for authorized dispatcher review/i)
     expect(createAmbulanceRequest).toHaveBeenCalledWith(expect.objectContaining({
       hospitalId: 'hospital-1', transportType: 'PATIENT_TRANSPORT',

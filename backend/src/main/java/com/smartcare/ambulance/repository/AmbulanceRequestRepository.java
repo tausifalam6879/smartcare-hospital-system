@@ -2,6 +2,7 @@ package com.smartcare.ambulance.repository;
 
 import com.smartcare.ambulance.domain.AmbulanceRequest;
 import com.smartcare.ambulance.domain.AmbulanceRequestStatus;
+import com.smartcare.ambulance.domain.TransportType;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -9,11 +10,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface AmbulanceRequestRepository extends JpaRepository<AmbulanceRequest, UUID> {
     Optional<AmbulanceRequest> findByRequestedByIdAndIdempotencyKey(UUID requestedById, String idempotencyKey);
+    boolean existsByPatientIdAndTransportTypeAndStatusIn(UUID patientId,
+                                                          TransportType transportType,
+                                                          Collection<AmbulanceRequestStatus> statuses);
     List<AmbulanceRequest> findAllByPatientIdOrderByCreatedAtDesc(UUID patientId);
     List<AmbulanceRequest> findAllByHospitalIdOrderByCreatedAtDesc(UUID hospitalId);
     List<AmbulanceRequest> findAllByHospitalIdAndStatusOrderByCreatedAtDesc(UUID hospitalId,

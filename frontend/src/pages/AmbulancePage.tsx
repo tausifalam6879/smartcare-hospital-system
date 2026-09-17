@@ -155,6 +155,7 @@ export function AmbulancePage() {
 
   const availableFleet = useMemo(() => fleet.filter((item) => item.status === 'AVAILABLE'), [fleet])
   const activeCount = useMemo(() => requests.filter((item) => !['COMPLETED', 'CANCELLED'].includes(item.status)).length, [requests])
+  const hasActivePatientRequest = !isDispatcher && requests.some((item) => !['COMPLETED', 'CANCELLED'].includes(item.status))
 
   if (loading) return <div className="grid min-h-[65vh] place-items-center bg-slate-50"><div className="flex items-center gap-3 text-sm font-bold text-slate-500"><LoaderCircle className="size-6 animate-spin text-red-600" />Opening ambulance coordination...</div></div>
 
@@ -198,6 +199,7 @@ export function AmbulancePage() {
           <div className="grid gap-7 lg:grid-cols-[.88fr_1.12fr]">
             <form onSubmit={submitRequest} className="h-fit rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <div className="flex items-start gap-3"><span className="grid size-11 shrink-0 place-items-center rounded-xl bg-red-50 text-red-700"><Siren className="size-5" /></span><div><h2 className="text-xl font-black text-ink-950">Request patient transport</h2><p className="mt-1 text-sm leading-6 text-slate-600">Creates a dispatch request—not a confirmed ambulance.</p></div></div>
+              {hasActivePatientRequest && <p className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">You already have an active ambulance request. Track it in the timeline instead of creating a duplicate. Contact the hospital desk if its details must change.</p>}
               <div className="mt-6 space-y-5">
                 <label className="block text-sm font-black text-ink-950">Priority
                   <select value={priority} onChange={(event) => setPriority(event.target.value as AmbulancePriority)} className="mt-2 min-h-12 w-full rounded-xl border border-slate-300 px-4 font-semibold outline-none focus:border-care-500"><option value="EMERGENCY">Emergency</option><option value="URGENT">Urgent</option><option value="SCHEDULED">Scheduled transport</option></select>
@@ -215,7 +217,7 @@ export function AmbulancePage() {
                   <textarea maxLength={500} value={assistanceNotes} onChange={(event) => setAssistanceNotes(event.target.value)} rows={2} placeholder="Stairs, gate access or mobility support—do not enter detailed diagnosis" className="mt-2 w-full rounded-xl border border-slate-300 p-4 outline-none focus:border-care-500" />
                 </label>
                 <label className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950"><input type="checkbox" checked={understood} onChange={(event) => setUnderstood(event.target.checked)} className="mt-1 size-4" /><span>I understand that submitting does not assign a vehicle. I will use official emergency services if immediate help is needed.</span></label>
-                <button disabled={!understood || working === 'create'} className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-red-700 px-5 text-sm font-black text-white shadow-lg shadow-red-800/15 hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50">{working === 'create' ? <LoaderCircle className="size-5 animate-spin" /> : <Ambulance className="size-5" />}Submit for dispatcher review</button>
+                <button disabled={hasActivePatientRequest || !understood || working === 'create'} className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-red-700 px-5 text-sm font-black text-white shadow-lg shadow-red-800/15 hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50">{working === 'create' ? <LoaderCircle className="size-5 animate-spin" /> : <Ambulance className="size-5" />}Submit for dispatcher review</button>
               </div>
             </form>
             <RequestList requests={requests} working={working} onCancel={(request) => perform(`cancel:${request.id}`, () => cancelAmbulanceRequest(request.id, 'Cancelled by patient before dispatch.'))} />

@@ -70,6 +70,9 @@ class AmbulanceWorkflowIntegrationTest {
         assertThat(created.ambulance()).isNull();
         assertThat(created.timeline()).singleElement()
                 .satisfies(event -> assertThat(event.toStatus()).isEqualTo(AmbulanceRequestStatus.REQUESTED));
+        assertThatThrownBy(() -> ambulanceService.createRequest(owner.user().id(),
+                request(hospital.id(), "amb-request-new-key")))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("already has an active ambulance request");
 
         assertThatThrownBy(() -> ambulanceService.createRequest(owner.user().id(), new CreateAmbulanceRequest(
                 hospital.id(), null, TransportType.BLOOD_TRANSPORT, AmbulancePriority.EMERGENCY,
