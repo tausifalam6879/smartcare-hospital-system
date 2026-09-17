@@ -71,7 +71,7 @@ class DiagnosticWorkflowIntegrationTest {
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST", "DOCTOR", "LAB_TECHNICIAN"})
     void diagnosticOrdersAreCapacitySafePatientIsolatedAndReleasedOnlyAfterVerification() {
         LocalDate today = LocalDate.now();
-        LocalDate diagnosticDate = today.plusDays(1);
+        LocalDate diagnosticDate = today;
         var hospital = hospitals.create(new HospitalRequest("SC-DIAG-1", "Diagnostic Test Hospital",
                 "8 Evidence Road", "Delhi", "Delhi", "110001", "+911112345688", "Asia/Kolkata", true));
         var department = hospitals.createDepartment(hospital.id(),
@@ -121,12 +121,18 @@ class DiagnosticWorkflowIntegrationTest {
         assertThatThrownBy(() -> diagnostics.schedule(other.user().id(), secondOrder.id(),
                 new ScheduleOrderRequest(diagnosticDate)))
                 .isInstanceOf(ConflictException.class).hasMessageContaining("fully booked");
+        diagnostics.schedule(other.user().id(), secondOrder.id(), new ScheduleOrderRequest(today.plusDays(1)));
+        assertThatThrownBy(() -> diagnostics.collect(labAccount.user().id(), secondOrder.id()))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("future date");
         assertThatThrownBy(() -> diagnostics.cancel(other.user().id(), firstOrder.id(),
                 new com.smartcare.diagnostic.web.DiagnosticDtos.CancelOrderRequest(null)))
                 .isInstanceOf(AccessDeniedException.class);
 
         diagnostics.collect(labAccount.user().id(), firstOrder.id());
         diagnostics.start(labAccount.user().id(), firstOrder.id());
+        assertThat(diagnostics.worklist(labAccount.user().id(), hospital.id(), today.plusDays(1)))
+                .extracting(order -> order.id())
+                .contains(firstOrder.id());
         var verified = diagnostics.verifyResult(labAccount.user().id(), firstOrder.id(),
                 new VerifyResultRequest("CBC completed and verified by diagnostic staff.",
                         "Haemoglobin 13.4 g/dL; total leukocyte count 7,200 /uL.",

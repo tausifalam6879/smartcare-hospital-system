@@ -54,6 +54,10 @@ import java.util.UUID;
 public class DiagnosticWorkflowService {
     private static final Set<Role> DIAGNOSTIC_STAFF_ROLES = Set.of(
             Role.LAB_TECHNICIAN, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
+    private static final Set<DiagnosticOrderStatus> OPEN_WORKLIST_STATUSES = Set.of(
+            DiagnosticOrderStatus.SCHEDULED,
+            DiagnosticOrderStatus.SAMPLE_COLLECTED,
+            DiagnosticOrderStatus.IN_PROGRESS);
 
     private final DiagnosticProcedureRepository procedures;
     private final DiagnosticDayLedgerRepository ledgers;
@@ -219,7 +223,8 @@ public class DiagnosticWorkflowService {
         requireDiagnosticStaff(staffUserId);
         requireHospital(hospitalId);
         audit.record("DIAGNOSTIC_WORKLIST_VIEWED", "HOSPITAL", hospitalId, hospitalId);
-        return orders.findAllByProcedureHospitalIdAndScheduledDateOrderByQueuePositionAsc(hospitalId, serviceDate)
+        return orders.findAllByProcedureHospitalIdAndScheduledDateLessThanEqualAndStatusInOrderByScheduledDateAscQueuePositionAsc(
+                        hospitalId, serviceDate, OPEN_WORKLIST_STATUSES)
                 .stream().map(this::toResponse).toList();
     }
 
@@ -227,6 +232,9 @@ public class DiagnosticWorkflowService {
     public OrderResponse collect(UUID staffUserId, UUID orderId) {
         requireDiagnosticStaff(staffUserId);
         DiagnosticOrder order = requireOrderForUpdate(orderId);
+        if (order.getScheduledDate() != null && LocalDate.now(clock).isBefore(order.getScheduledDate())) {
+            throw new ConflictException("This diagnostic service is scheduled for a future date.");
+        }
         transition(() -> order.collectSample(clock.instant()));
         audit.record("DIAGNOSTIC_SAMPLE_COLLECTED", "DIAGNOSTIC_ORDER", order.getId(),
                 order.getProcedure().getHospital().getId());
