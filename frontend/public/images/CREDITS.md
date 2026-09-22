@@ -9,3 +9,5 @@ The interface uses locally stored editorial photography released under the Unspl
 The photographs are used as representative interface imagery and do not imply an affiliation with SmartCare.
 
 `smartcare-queue-workstation.png` is a project-specific SmartCare interface visual supplied by the project owner.
+
+`smartcare-clinical-team.png` is an original AI-generated project illustration created for the SmartCare sidebar; it does not depict real clinicians.

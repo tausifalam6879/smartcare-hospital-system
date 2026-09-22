@@ -26,7 +26,7 @@ import { useAuth } from '../context/AuthContext'
 import { indiaFacilities, type IndiaFacility } from '../data/indiaFacilities'
 import { projectDoctors } from '../data/projectDoctorProfiles'
 import { api, messageFromError } from '../services/api'
-import { isStaticDemo } from '../config/runtime'
+import { isStaticDemo, publicAsset } from '../config/runtime'
 import {
   appointmentStatusLabel,
   cancelAppointment,
@@ -465,9 +465,11 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
 
   return (
     <div className="bg-[#f4f8fc]">
-      <section className="border-b border-blue-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-          <div className="max-w-4xl">
+      <section className="relative overflow-hidden border-b border-blue-100 bg-gradient-to-r from-blue-50 via-indigo-50 to-white">
+        <img src={publicAsset('images/smartcare-clinical-team.png')} alt="SmartCare clinical team" className="absolute inset-y-0 right-0 hidden h-full w-[43%] object-cover object-top opacity-90 md:block" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50/95 to-white/10" />
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+          <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-care-50 px-3 py-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-care-800"><ShieldCheck className="size-4" /> Capacity checked before issue</span>
             <p className="mt-6 text-xs font-extrabold uppercase tracking-[.22em] text-care-700">Fair OPD access</p>
             <h1 className="mt-3 text-4xl font-black tracking-[-0.04em] text-ink-950 sm:text-5xl">Book a protected OPD number</h1>
@@ -535,8 +537,8 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
           <p className="mt-3 text-center text-xs leading-5 text-slate-500">{selectedReferenceFacility ? 'Project booking is saved in this browser session. Demo payment collects no real money.' : 'No card is charged on this screen. Online status changes only after trusted payment verification.'}</p>
         </form>
 
-        <div className="space-y-5">
-          <div className="overflow-hidden rounded-[1.75rem] bg-ink-950 p-6 text-white shadow-[0_20px_55px_-32px_rgba(9,45,87,.6)] sm:p-8" aria-live="polite">
+        <div className="flex flex-col gap-5">
+          <div className="overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-blue-950 to-indigo-950 p-6 text-white shadow-[0_20px_55px_-32px_rgba(9,45,87,.6)] sm:p-8" aria-live="polite">
             <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-extrabold uppercase tracking-[.18em] text-blue-300">Booking result</p><h2 className="mt-2 text-2xl font-black">Your queue status</h2></div><TicketCheck className="size-8 text-blue-300" /></div>
             {referenceResult ? (
               <div className="mt-7 rounded-2xl border border-amber-300/25 bg-white/10 p-5">
@@ -609,7 +611,7 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
             )}
           </div>
 
-          {selectedDoctor && <div className="rounded-2xl border border-slate-200 bg-white p-5"><p className="text-xs font-extrabold uppercase tracking-wider text-care-700">{selectedReferenceFacility ? 'Prototype care profile' : 'Selected care team'}</p><h3 className="mt-2 font-black text-ink-950">{selectedDoctor.name}</h3><p className="text-sm text-slate-600">{selectedDoctor.specialization} · {selectedDoctor.departmentName}</p><p className="mt-3 flex items-center gap-1 text-sm font-bold text-slate-700"><IndianRupee className="size-4" />{selectedDoctor.consultationFee.toLocaleString('en-IN')}</p>{selectedReferenceProfile && <><p className="mt-3 text-sm font-semibold text-slate-700">{selectedReferenceProfile.availability}</p><p className="mt-2 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">{selectedReferenceProfile.note}</p></>}</div>}
+          {selectedDoctor && <div className="order-first rounded-2xl border border-blue-100 bg-white p-5 shadow-sm"><p className="text-xs font-extrabold uppercase tracking-wider text-blue-700">{selectedReferenceFacility ? 'Prototype care profile' : 'Appointment summary'}</p><div className="mt-4 flex items-center gap-4"><span className="grid size-14 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-lg font-black text-white">{selectedDoctor.name.replace(/^Dr\.\s*/, '').split(' ').map((part) => part[0]).join('').slice(0, 2)}</span><div><h3 className="font-black text-ink-950">{selectedDoctor.name}</h3><p className="text-sm text-slate-600">{selectedDoctor.specialization} · {selectedDoctor.departmentName}</p></div></div><div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-blue-50 p-3 text-xs text-slate-600"><p><span className="block text-slate-400">Preferred date</span><strong>{readableDate(serviceDate)}</strong></p><p><span className="block text-slate-400">Consultation fee</span><strong className="inline-flex items-center"><IndianRupee className="size-3" />{selectedDoctor.consultationFee.toLocaleString('en-IN')}</strong></p></div>{selectedReferenceProfile && <><p className="mt-3 text-sm font-semibold text-slate-700">{selectedReferenceProfile.availability}</p><p className="mt-2 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">{selectedReferenceProfile.note}</p></>}</div>}
         </div>
       </section>
 
