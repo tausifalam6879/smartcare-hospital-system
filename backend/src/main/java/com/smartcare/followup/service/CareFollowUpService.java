@@ -1,5 +1,7 @@
 package com.smartcare.followup.service;
 
+import com.smartcare.common.time.HospitalDate;
+
 import com.smartcare.audit.service.AuditService;
 import com.smartcare.common.error.NotFoundException;
 import com.smartcare.common.error.ConflictException;
@@ -69,7 +71,7 @@ public class CareFollowUpService {
         CareFollowUp followUp = followUps.findByIdAndPatientId(followUpId, patient.getId())
                 .orElseThrow(() -> new NotFoundException("Follow-up was not found."));
         if ((status == FollowUpStatus.COMPLETED || status == FollowUpStatus.MISSED)
-                && LocalDate.now(clock).isBefore(followUp.getFollowUpDate())) {
+                && HospitalDate.today(clock, followUp.getHospital()).isBefore(followUp.getFollowUpDate())) {
             throw new ConflictException("A follow-up can be completed or missed only on or after its scheduled date.");
         }
         try {
@@ -82,7 +84,7 @@ public class CareFollowUpService {
     }
 
     private FollowUpResponse response(CareFollowUp item) {
-        boolean overdue = item.getFollowUpDate().isBefore(LocalDate.now(clock))
+        boolean overdue = item.getFollowUpDate().isBefore(HospitalDate.today(clock, item.getHospital()))
                 && item.getStatus() != FollowUpStatus.COMPLETED;
         return new FollowUpResponse(item.getId(), item.getClinicalVisit().getId(),
                 item.getClinicalVisit().getVisitDate(), item.getFollowUpDate(), item.getHospital().getName(),

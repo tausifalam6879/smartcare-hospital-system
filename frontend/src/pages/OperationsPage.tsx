@@ -1,10 +1,12 @@
 import {
   Activity, AlertTriangle, Ambulance, BellRing, CalendarClock, CheckCircle2, Clock3,
-  Droplets, FlaskConical, LoaderCircle, RefreshCw, ShieldCheck, Stethoscope, Users,
+  Droplets, FlaskConical, LoaderCircle, MapPin, RefreshCw, ShieldCheck, Stethoscope, Users,
 } from 'lucide-react'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { publicAsset } from '../config/runtime'
+import { IdentityAvatar } from '../components/IdentityAvatar'
 import { api, messageFromError } from '../services/api'
 import { appointmentStatusLabel } from '../services/appointments'
 import {
@@ -144,9 +146,9 @@ function PatientRecovery() {
   )
 }
 
-function Metric({ label, value, icon: Icon, tone = 'blue' }: { label: string; value: number; icon: typeof Activity; tone?: 'blue' | 'amber' | 'red' | 'emerald' }) {
-  const colors = { blue: 'bg-blue-50 text-blue-700', amber: 'bg-amber-50 text-amber-700', red: 'bg-rose-50 text-rose-700', emerald: 'bg-emerald-50 text-emerald-700' }
-  return <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span className={`grid size-9 place-items-center rounded-xl ${colors[tone]}`}><Icon className="size-4" /></span><p className="mt-4 text-2xl font-black text-ink-950">{value}</p><p className="text-xs font-bold text-slate-500">{label}</p></div>
+function Metric({ label, value, icon: Icon, tone = 'blue' }: { label: string; value: number; icon: typeof Activity; tone?: 'blue' | 'amber' | 'red' | 'violet' }) {
+  const colors = { blue: 'bg-blue-50 text-blue-700', amber: 'bg-amber-50 text-amber-700', red: 'bg-rose-50 text-rose-700', violet: 'bg-violet-50 text-violet-700' }
+  return <div className="group rounded-2xl border border-blue-100 bg-white p-4 shadow-[0_12px_30px_-24px_rgba(30,64,175,.55)] transition hover:-translate-y-0.5 hover:border-blue-200"><div className="flex items-start justify-between gap-3"><span className={`grid size-10 place-items-center rounded-xl ${colors[tone]}`}><Icon className="size-5" /></span><p className="text-2xl font-black text-ink-950">{value}</p></div><p className="mt-4 text-xs font-extrabold uppercase tracking-wide text-slate-500">{label}</p></div>
 }
 
 function StaffOperations({
@@ -200,6 +202,19 @@ function StaffOperations({
 
   useEffect(() => { void refresh() }, [hospitalId, date])
 
+  useEffect(() => {
+    if (!hospitalId || saving) return
+    let active = true
+    const refreshQuietly = () => {
+      if (document.hidden) return
+      getOperationsDashboard(hospitalId, date).then(data => { if (active) setDashboard(data) })
+        .catch(cause => { if (active) setError(messageFromError(cause)) })
+    }
+    const timer = window.setInterval(refreshQuietly, 15000)
+    window.addEventListener('focus', refreshQuietly)
+    return () => { active = false; window.clearInterval(timer); window.removeEventListener('focus', refreshQuietly) }
+  }, [hospitalId, date, saving])
+
   async function saveStatus(event: FormEvent) {
     event.preventDefault()
     setSaving(true)
@@ -234,35 +249,51 @@ function StaffOperations({
 
   const metricData = useMemo(() => dashboard ? [
     ['Today appointments', dashboard.totalAppointments, CalendarClock, 'blue'],
-    ['Checked in', dashboard.checkedIn, Users, 'emerald'],
+    ['Checked in', dashboard.checkedIn, Users, 'violet'],
     ['In consultation', dashboard.inConsultation, Stethoscope, 'blue'],
     ['Waitlisted', dashboard.waitlisted, Clock3, 'amber'],
     ['No-shows', dashboard.noShows, AlertTriangle, 'red'],
     ['Pending payments', dashboard.pendingPayments, Activity, 'amber'],
     ['Diagnostic load', dashboard.diagnosticLoad, FlaskConical, 'blue'],
     ['Blood alerts', dashboard.bloodInventoryAlerts, Droplets, 'red'],
-    ['Ambulances available', dashboard.ambulancesAvailable, Ambulance, 'emerald'],
+    ['Ambulances available', dashboard.ambulancesAvailable, Ambulance, 'violet'],
     ['Notification failures', dashboard.globalNotificationFailures ?? 0, BellRing, 'red'],
   ] as const : [], [dashboard])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-xs font-extrabold uppercase tracking-[.2em] text-care-700">Hospital operations</p><h1 className="mt-2 text-4xl font-black tracking-tight text-ink-950">Today’s care flow</h1><p className="mt-2 text-slate-600">Queues, disruptions and clinical support load in one role-aware view.</p></div><div className="grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-slate-600">Hospital<select value={hospitalId} onChange={(event) => setHospitalId(event.target.value)} className="mt-1.5 h-11 w-full min-w-52 rounded-xl border border-slate-300 bg-white px-3 text-sm">{hospitals.map((hospital) => <option key={hospital.id} value={hospital.id}>{hospital.name}</option>)}</select></label><label className="text-xs font-bold text-slate-600">Service date<input type="date" value={date} onChange={(event) => setDate(event.target.value)} className="mt-1.5 h-11 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label></div></div>
+      <section className="relative overflow-hidden rounded-[2rem] border border-blue-100 bg-[#eef6ff] shadow-[0_22px_60px_-38px_rgba(30,64,175,.55)]">
+        <img src={publicAsset('images/smartcare-emergency-banner.png')} alt="Ambulance outside a modern hospital emergency entrance" className="absolute inset-y-0 right-0 hidden h-full w-[62%] object-cover lg:block" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#eef6ff] via-[#eef6ff]/95 to-[#eef6ff]/10" />
+        <div className="relative max-w-2xl px-6 py-8 sm:px-8 lg:py-10">
+          <p className="text-xs font-extrabold uppercase tracking-[.2em] text-blue-700">Hospital operations</p>
+          <h1 className="mt-2 text-3xl font-black tracking-tight text-ink-950 sm:text-4xl">Care flow, clearly coordinated</h1>
+          <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600">Live queues, doctor availability, emergency support and patient actions in one role-aware workspace.</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <label className="text-xs font-bold text-slate-700">Hospital<select value={hospitalId} onChange={(event) => setHospitalId(event.target.value)} className="mt-1.5 h-11 w-full rounded-xl border border-white/80 bg-white/95 px-3 text-sm shadow-sm">{hospitals.map((hospital) => <option key={hospital.id} value={hospital.id}>{hospital.name}</option>)}</select></label>
+            <label className="text-xs font-bold text-slate-700">Service date<input type="date" value={date} onChange={(event) => setDate(event.target.value)} className="mt-1.5 h-11 w-full rounded-xl border border-white/80 bg-white/95 px-3 text-sm shadow-sm" /></label>
+          </div>
+          <p className="mt-4 flex items-center gap-2 text-xs font-bold text-blue-800"><MapPin className="size-4" />Showing the selected hospital’s live operational data</p>
+        </div>
+      </section>
       {error && <p role="alert" className="mt-6 rounded-2xl bg-rose-50 p-4 text-sm font-semibold text-rose-800">{error}</p>}
       {loading && <div className="mt-8 flex items-center gap-2 text-sm font-bold text-slate-500"><LoaderCircle className="size-5 animate-spin" />Refreshing operational view…</div>}
       {dashboard && <>
-        <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">{metricData.map(([label, value, Icon, tone]) => <Metric key={label} label={label} value={value} icon={Icon} tone={tone} />)}</div>
-        <div className="mt-4 flex flex-wrap gap-3 rounded-2xl bg-ink-950 p-4 text-sm font-bold text-white"><span>{dashboard.activeDoctors} active doctors</span><span className="text-slate-500">•</span><span>{dashboard.delayedOrUnavailableDoctors} delayed/unavailable</span><span className="text-slate-500">•</span><span>Average recorded wait {dashboard.averageRecordedWaitMinutes} min</span></div>
+        <nav aria-label="Hospital service shortcuts" className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {isDoctor && <Link to="/doctor/consultations" className="flex items-center gap-3 rounded-2xl border border-blue-100 bg-white p-4 shadow-sm"><span className="grid size-11 place-items-center rounded-xl bg-blue-50 text-blue-700"><Stethoscope className="size-5" /></span><span><strong className="block text-sm text-ink-950">Doctor consultations</strong><span className="text-xs text-slate-500">Queue and clinical visit</span></span></Link>}
+          {canOpenClinicalTasks && <Link to="/staff/tasks" className="flex items-center gap-3 rounded-2xl border border-violet-100 bg-white p-4 shadow-sm"><span className="grid size-11 place-items-center rounded-xl bg-violet-50 text-violet-700"><FlaskConical className="size-5" /></span><span><strong className="block text-sm text-ink-950">Diagnostics &amp; blood</strong><span className="text-xs text-slate-500">Open staff tasks</span></span></Link>}
+          {canOpenAmbulanceDesk && <Link to="/ambulance" className="flex items-center gap-3 rounded-2xl border border-rose-100 bg-white p-4 shadow-sm"><span className="grid size-11 place-items-center rounded-xl bg-rose-50 text-rose-700"><Ambulance className="size-5" /></span><span><strong className="block text-sm text-ink-950">Ambulance desk</strong><span className="text-xs text-slate-500">Emergency dispatch</span></span></Link>}
+          <a href="#patient-queue" className="flex items-center gap-3 rounded-2xl border border-amber-100 bg-white p-4 shadow-sm"><span className="grid size-11 place-items-center rounded-xl bg-amber-50 text-amber-700"><Users className="size-5" /></span><span><strong className="block text-sm text-ink-950">Patient queue</strong><span className="text-xs text-slate-500">Check in and payment</span></span></a>
+          <Link to="/navigate" className="flex items-center gap-3 rounded-2xl border border-cyan-100 bg-white p-4 shadow-sm"><span className="grid size-11 place-items-center rounded-xl bg-cyan-50 text-cyan-700"><MapPin className="size-5" /></span><span><strong className="block text-sm text-ink-950">Hospital navigation</strong><span className="text-xs text-slate-500">Rooms and directions</span></span></Link>
+        </nav>
+        <div className="mt-8 flex items-end justify-between gap-4"><div><p className="text-xs font-extrabold uppercase tracking-[.18em] text-blue-700">Today at a glance</p><h2 className="mt-1 text-2xl font-black text-ink-950">Operational overview</h2></div><span className="hidden rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 sm:inline">Live hospital data</span></div>
+        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">{metricData.slice(0, 5).map(([label, value, Icon, tone]) => <Metric key={label} label={label} value={value} icon={Icon} tone={tone} />)}</div>
+        <details className="group mt-3 rounded-2xl border border-blue-100 bg-white p-4"><summary className="cursor-pointer list-none text-sm font-black text-blue-700">More operational details <span className="group-open:hidden">↓</span><span className="hidden group-open:inline">↑</span></summary><div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 md:grid-cols-3 lg:grid-cols-5">{metricData.slice(5).map(([label, value, Icon, tone]) => <Metric key={label} label={label} value={value} icon={Icon} tone={tone} />)}</div></details>
+        <div className="mt-4 grid gap-3 rounded-2xl border border-indigo-100 bg-indigo-950 p-4 text-sm font-bold text-white sm:grid-cols-3"><span><strong className="text-xl">{dashboard.activeDoctors}</strong><br /><span className="text-indigo-200">Active doctors</span></span><span><strong className="text-xl">{dashboard.delayedOrUnavailableDoctors}</strong><br /><span className="text-indigo-200">Delayed or unavailable</span></span><span><strong className="text-xl">{dashboard.averageRecordedWaitMinutes} min</strong><br /><span className="text-indigo-200">Average recorded wait</span></span></div>
 
         {canManage && <form onSubmit={saveStatus} className="mt-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:grid-cols-[1.2fr_1fr_1.5fr_auto]"><label className="text-xs font-bold text-slate-600">Doctor<select value={doctorId} onChange={(event) => setDoctorId(event.target.value)} required className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm">{doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{doctor.name} · {doctor.specialization}</option>)}</select></label><label className="text-xs font-bold text-slate-600">Operational status<select value={status} onChange={(event) => setStatus(event.target.value as DoctorDayStatus)} className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm">{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className="text-xs font-bold text-slate-600">Reason / patient guidance<input value={reason} onChange={(event) => setReason(event.target.value)} required={status !== 'ON_TIME'} maxLength={300} placeholder={status === 'ON_TIME' ? 'Optional' : 'Required for affected patients'} className="mt-1.5 h-12 w-full rounded-xl border border-slate-300 px-3 text-sm" /></label><button disabled={saving || !doctorId} className="flex h-12 items-center justify-center gap-2 self-end rounded-xl bg-care-600 px-5 text-sm font-extrabold text-white disabled:opacity-60">{saving ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}Update</button><p className="text-xs leading-5 text-slate-500 lg:col-span-4">“Cancelled for today” creates a patient recovery case. It never silently transfers the appointment.</p></form>}
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><div className="flex items-center justify-between border-b border-slate-100 p-5"><div><p className="text-xs font-extrabold uppercase tracking-wider text-care-700">Live worklist</p><h2 className="mt-1 text-xl font-black text-ink-950">Patient queue</h2></div><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">{dashboard.queue.length} records</span></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500"><tr><th className="px-5 py-3">OPD</th><th className="px-5 py-3">Patient</th><th className="px-5 py-3">Doctor</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th>{canManage && <th className="px-5 py-3">Action</th>}</tr></thead><tbody className="divide-y divide-slate-100">{dashboard.queue.map((row) => <tr key={row.appointmentId}><td className="px-5 py-4 font-black text-care-700">{row.queuePosition ?? '—'}</td><td className="px-5 py-4 font-mono text-xs text-slate-600">{row.patientNumber}</td><td className="px-5 py-4 font-bold text-ink-950">{row.doctorName}</td><td className="px-5 py-4">{appointmentStatusLabel[row.status]}</td><td className="px-5 py-4">{row.paymentMethod === 'CASH' ? 'Cash' : 'Online'}</td>{canManage && <td className="px-5 py-4"><div className="flex flex-wrap gap-3">{row.status === 'CASH_PENDING' && canConfirmCash && <button disabled={saving} onClick={() => void appointmentAction('cash', row.appointmentId)} className="text-xs font-extrabold text-emerald-700 hover:underline">Confirm cash</button>}{row.status === 'CONFIRMED' && date === localDate() && <button disabled={saving} onClick={() => void appointmentAction('check-in', row.appointmentId)} className="text-xs font-extrabold text-care-700 hover:underline">Check in</button>}{row.status === 'CONFIRMED' && date < localDate() && <button disabled={saving} onClick={() => void noShow(row.appointmentId)} className="text-xs font-extrabold text-rose-700 hover:underline">Mark no-show</button>}{!((row.status === 'CASH_PENDING' && canConfirmCash) || (row.status === 'CONFIRMED' && date <= localDate())) && <span className="text-slate-300">—</span>}</div></td>}</tr>)}{dashboard.queue.length === 0 && <tr><td colSpan={canManage ? 6 : 5} className="px-5 py-10 text-center text-slate-500">No appointments for this view.</td></tr>}</tbody></table></div></section>
-        <nav aria-label="Related staff workspaces" className="mt-6 flex flex-wrap gap-3">
-          {isDoctor && <Link to="/doctor/consultations" className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-extrabold text-cyan-800">Doctor consultations</Link>}
-          {canOpenClinicalTasks && <Link to="/staff/tasks" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-extrabold text-rose-800">Diagnostics &amp; blood tasks</Link>}
-          {canOpenAmbulanceDesk && <Link to="/ambulance" className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-extrabold text-red-800">Ambulance desk</Link>}
-          <Link to="/navigate" className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-700">Hospital navigation</Link>
-        </nav>
+        <section id="patient-queue" className="mt-8 overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-[0_18px_45px_-34px_rgba(30,64,175,.65)]"><div className="flex items-center justify-between border-b border-slate-100 p-5"><div><p className="text-xs font-extrabold uppercase tracking-wider text-blue-700">Live worklist</p><h2 className="mt-1 text-xl font-black text-ink-950">Patient queue</h2><p className="mt-1 text-xs text-slate-500">Patient IDs protect identities in this shared view.</p></div><span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">{dashboard.queue.length} records</span></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500"><tr><th className="px-5 py-3">OPD</th><th className="px-5 py-3">Patient</th><th className="px-5 py-3">Doctor</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Payment</th>{(canManage || canConfirmCash) && <th className="px-5 py-3">Action</th>}</tr></thead><tbody className="divide-y divide-slate-100">{dashboard.queue.map((row) => <tr key={row.appointmentId} className="transition hover:bg-blue-50/40"><td className="px-5 py-4 font-black text-blue-700">{row.queuePosition ?? '—'}</td><td className="px-5 py-4"><div className="flex items-center gap-3"><IdentityAvatar size="sm" /><span className="font-mono text-xs text-slate-600">{row.patientNumber}</span></div></td><td className="px-5 py-4 font-bold text-ink-950">{row.doctorName}</td><td className="px-5 py-4">{appointmentStatusLabel[row.status]}</td><td className="px-5 py-4">{row.paymentMethod === 'CASH' ? 'Cash' : 'Online'}</td>{(canManage || canConfirmCash) && <td className="px-5 py-4"><div className="flex flex-wrap gap-3">{row.status === 'CASH_PENDING' && canConfirmCash && <button disabled={saving} onClick={() => void appointmentAction('cash', row.appointmentId)} className="text-xs font-extrabold text-blue-700 hover:underline">Confirm cash</button>}{canManage && row.status === 'CONFIRMED' && date === localDate() && <button disabled={saving} onClick={() => void appointmentAction('check-in', row.appointmentId)} className="text-xs font-extrabold text-blue-700 hover:underline">Check in</button>}{canManage && row.status === 'CONFIRMED' && date < localDate() && <button disabled={saving} onClick={() => void noShow(row.appointmentId)} className="text-xs font-extrabold text-rose-700 hover:underline">Mark no-show</button>}{!((row.status === 'CASH_PENDING' && canConfirmCash) || (canManage && row.status === 'CONFIRMED' && date <= localDate())) && <span className="text-slate-300">—</span>}</div></td>}</tr>)}{dashboard.queue.length === 0 && <tr><td colSpan={canManage || canConfirmCash ? 6 : 5} className="px-5 py-10 text-center text-slate-500">No appointments for this view.</td></tr>}</tbody></table></div></section>
       </>}
     </div>
   )

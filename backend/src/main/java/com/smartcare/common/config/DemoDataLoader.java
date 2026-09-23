@@ -122,11 +122,22 @@ public class DemoDataLoader implements ApplicationRunner {
         demoStaff("+919999990202", "Demo Lab Technician", "DemoLab@2026", Role.LAB_TECHNICIAN);
         demoStaff("+919999990203", "Demo Blood Bank Staff", "DemoBlood@2026", Role.BLOOD_BANK_STAFF);
         demoStaff("+919999990204", "Demo Hospital Administrator", "DemoAdmin@2026", Role.HOSPITAL_ADMIN);
+        demoStaff("+919999990207", "Demo Office Clerk", "DemoOffice@2026", Role.RECEPTIONIST, Role.CASHIER);
+        demoStaff("+919999990208", "Demo Receptionist", "DemoReception@2026", Role.RECEPTIONIST);
+        demoStaff("+919999990209", "Demo Cashier", "DemoCashier@2026", Role.CASHIER);
     }
 
     private void seedDemoDoctorAccounts() {
         linkDemoDoctor("+919999990205", "Dr. Ananya Mehta", "SC-DMC-1042");
         linkDemoDoctor("+919999990206", "Dr. Isha Kapoor", "SC-DEMO-DER-801");
+        linkDemoDoctor("+919999990210", "Dr. Arjun Rao", "SC-DMC-2087");
+        linkDemoDoctor("+919999990211", "Dr. Kavya Nair", "SC-DEMO-NEU-301");
+        linkDemoDoctor("+919999990212", "Dr. Rohan Singh", "SC-DEMO-ORT-401");
+        linkDemoDoctor("+919999990213", "Dr. Meera Iyer", "SC-DEMO-PED-501");
+        linkDemoDoctor("+919999990214", "Dr. Sana Ahmed", "SC-DEMO-OBG-601");
+        linkDemoDoctor("+919999990215", "Dr. Vivek Das", "SC-DEMO-ENT-701");
+        linkDemoDoctor("+919999990216", "Dr. Aditya Sen", "SC-DEMO-ONC-901");
+        linkDemoDoctor("+919999990217", "Dr. Nidhi Verma", "SC-DEMO-EYE-101");
     }
 
     private void linkDemoDoctor(String mobile, String name, String registrationNumber) {
@@ -139,9 +150,9 @@ public class DemoDataLoader implements ApplicationRunner {
         });
     }
 
-    private void demoStaff(String mobile, String displayName, String password, Role role) {
+    private void demoStaff(String mobile, String displayName, String password, Role... roles) {
         users.findByCredential(mobile).orElseGet(() -> users.save(new UserAccount(mobile, null,
-                passwordEncoder.encode(password), displayName, "en", Set.of(role))));
+                passwordEncoder.encode(password), displayName, "en", Set.of(roles))));
     }
 
     private void seedCareDirectory(Hospital hospital) {

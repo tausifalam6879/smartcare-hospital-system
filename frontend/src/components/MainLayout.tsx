@@ -1,4 +1,4 @@
-import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Clock3, Droplets, FileHeart, FlaskConical, Home, Languages, LayoutDashboard, LogIn, LogOut, MapPin, Microscope, Navigation, Phone, Stethoscope, TicketCheck } from 'lucide-react'
+import { Ambulance, Bell, Building2, CalendarDays, ClipboardList, Droplets, FileHeart, FlaskConical, Home, Languages, LogIn, LogOut, Menu, Navigation, Search, Stethoscope, TicketCheck, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -6,239 +6,82 @@ import { useLanguage } from '../context/LanguageContext'
 import { isStaticDemo, publicAsset } from '../config/runtime'
 import { getUnreadCount } from '../services/notifications'
 import { BrandMark } from './BrandMark'
+import { IdentityAvatar } from './IdentityAvatar'
 
-const patientDesktopLinks = [
-  { to: '/', label: 'Home', icon: Home },
-  { to: '/hospitals', label: 'Hospitals', icon: Building2 },
-  { to: '/booking', label: 'Book OPD', icon: TicketCheck },
-  { to: '/navigate', label: 'Navigate', icon: Navigation },
-  { to: '/diagnostics', label: 'Tests', icon: FlaskConical },
-  { to: '/records', label: 'Records', icon: FileHeart },
-  { to: '/blood-support', label: 'Blood', icon: Droplets },
-  { to: '/dashboard', label: 'My care', icon: CalendarDays },
+const patientLinks = [
+  { to: '/', label: 'Home', hi: 'होम', icon: Home },
+  { to: '/dashboard', label: 'My care', hi: 'मेरी देखभाल', icon: CalendarDays },
+  { to: '/booking', label: 'Book appointment', hi: 'अपॉइंटमेंट बुक करें', icon: TicketCheck },
+  { to: '/doctors', label: 'Find a doctor', hi: 'डॉक्टर खोजें', icon: Stethoscope },
+  { to: '/hospitals', label: 'Hospitals', hi: 'अस्पताल', icon: Building2 },
+  { to: '/navigate', label: 'Indoor navigation', hi: 'अस्पताल में रास्ता', icon: Navigation },
+  { to: '/diagnostics', label: 'Tests & reports', hi: 'जाँच और रिपोर्ट', icon: FlaskConical },
+  { to: '/records', label: 'Health records', hi: 'स्वास्थ्य रिकॉर्ड', icon: FileHeart },
+  { to: '/blood-support', label: 'Blood support', hi: 'रक्त सहायता', icon: Droplets },
+  { to: '/ambulance', label: 'Ambulance support', hi: 'एम्बुलेंस सहायता', icon: Ambulance },
+  { to: '/follow-ups', label: 'Follow-ups', hi: 'फ़ॉलो-अप', icon: CalendarDays },
+  { to: '/assistant', label: 'Care assistant', hi: 'देखभाल सहायक', icon: FileHeart },
+  { to: '/blood-group-analysis', label: 'Blood-slide review', hi: 'ब्लड-स्लाइड जाँच', icon: FlaskConical },
+  { to: '/operations', label: 'Booking changes', hi: 'बुकिंग बदलाव', icon: ClipboardList },
 ]
-
-const patientMobileLinks = [
-  { to: '/', label: 'Home', icon: Home },
-  { to: '/booking', label: 'Book OPD', icon: TicketCheck },
-  { to: '/navigate', label: 'Navigate', icon: Navigation },
-  { to: '/records', label: 'Records', icon: FileHeart },
-  { to: '/dashboard', label: 'My care', icon: CalendarDays },
-]
-
-const patientFooterLinks = [
-  ['/booking', 'Book OPD number'], ['/hospitals', 'India hospital directory'], ['/doctors', 'Find a doctor'],
-  ['/ambulance', 'Ambulance coordination'], ['/navigate', 'Hospital navigation'], ['/diagnostics', 'Diagnostics & results'],
-  ['/blood-support', 'Blood support'], ['/blood-group-analysis', 'Blood-slide review'], ['/records', 'My health record'],
-  ['/follow-ups', 'Follow-ups & reminders'], ['/assistant', 'Care assistant'], ['/operations', 'Appointment recovery'], ['/dashboard', 'My care'],
-]
-
-const doctorLinks = [
-  { to: '/', label: 'Home', icon: Home },
-  { to: '/doctor/consultations', label: 'Consultations', icon: Stethoscope },
-  { to: '/operations', label: 'Day operations', icon: LayoutDashboard },
-  { to: '/navigate', label: 'Navigate', icon: Navigation },
-]
-
-const hindiLabels: Record<string, string> = {
-  Home: 'होम', Hospitals: 'अस्पताल', 'Book OPD': 'OPD बुक करें', Navigate: 'रास्ता', Tests: 'जाँच',
-  Records: 'रिकॉर्ड', Blood: 'रक्त', 'My care': 'मेरी देखभाल', Consultations: 'परामर्श',
-  'Day operations': 'आज का कार्य', Operations: 'संचालन', 'My tasks': 'मेरे कार्य', Dispatch: 'डिस्पैच',
-  'Slide review': 'स्लाइड जाँच', Ambulance: 'एम्बुलेंस',
-}
-
-const staffLinksByRole: Record<string, typeof patientDesktopLinks> = {
-  RECEPTIONIST: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  CASHIER: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  AMBULANCE_DISPATCHER: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
-    { to: '/ambulance', label: 'Dispatch', icon: Ambulance },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  LAB_TECHNICIAN: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
-    { to: '/blood-group-analysis', label: 'Slide review', icon: Microscope },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  BLOOD_BANK_STAFF: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
-    { to: '/blood-group-analysis', label: 'Slide review', icon: Microscope },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  HOSPITAL_ADMIN: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
-    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
-    { to: '/ambulance', label: 'Ambulance', icon: Ambulance },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-  SUPER_ADMIN: [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/staff/tasks', label: 'My tasks', icon: ClipboardList },
-    { to: '/operations', label: 'Operations', icon: LayoutDashboard },
-    { to: '/ambulance', label: 'Ambulance', icon: Ambulance },
-    { to: '/navigate', label: 'Navigate', icon: Navigation },
-  ],
-}
-
-function navClass({ isActive }: { isActive: boolean }) {
-  return `relative flex items-center gap-2 px-3 py-7 text-sm font-bold transition after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full ${
-    isActive ? 'text-care-700 after:bg-care-600' : 'text-slate-600 after:bg-transparent hover:text-ink-950'
-  }`
-}
-
-function workspaceNavClass({ isActive }: { isActive: boolean }) {
-  return `flex min-h-12 items-center gap-3 rounded-xl px-4 text-sm font-extrabold transition ${
-    isActive ? 'bg-gradient-to-r from-blue-700 to-indigo-600 text-white shadow-md shadow-blue-800/15' : 'text-slate-600 hover:bg-blue-50 hover:text-ink-950'
-  }`
-}
-
-function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-  return null
-}
-
 export function MainLayout() {
   const { session, logout } = useAuth()
   const { language, setLanguage, text } = useLanguage()
-  const navigate = useNavigate()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const [drawer, setDrawer] = useState(false)
+  const [search, setSearch] = useState('')
   const [unread, setUnread] = useState(0)
-  const staffRole = session?.user.roles.find((role) => staffLinksByRole[role])
-  const isStaff = Boolean(staffRole)
-  const isDoctor = Boolean(session?.user.roles.includes('DOCTOR'))
-  const isPatient = Boolean(session?.user.roles.includes('PATIENT') && !isDoctor && !isStaff)
-  const isFrontDesk = Boolean(session?.user.roles.some((role) => ['RECEPTIONIST', 'CASHIER'].includes(role)))
-  const desktopLinks = isDoctor ? doctorLinks : staffRole ? staffLinksByRole[staffRole] : patientDesktopLinks
-  const mobileLinks = (isDoctor || staffRole ? desktopLinks : patientMobileLinks).slice(0, 5)
-  const workspacePath = isDoctor ? '/doctor/consultations' : isFrontDesk ? '/operations' : isStaff ? '/staff/tasks' : '/dashboard'
-  const canUseAmbulance = !session || session.user.roles.some((role) => ['PATIENT', 'AMBULANCE_DISPATCHER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
-  const footerLinks = isDoctor
-    ? [['/doctor/consultations', 'Finalize consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation']]
-    : isStaff
-      ? [...(!isFrontDesk ? [['/staff/tasks', 'My assigned work']] : []), ...(session?.user.roles.some((role) => ['RECEPTIONIST', 'CASHIER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role)) ? [['/operations', 'Hospital operations']] : []), ...(canUseAmbulance ? [['/ambulance', 'Ambulance coordination']] : []), ...(session?.user.roles.some((role) => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [['/blood-group-analysis', 'Blood-slide review']] : []), ['/navigate', 'Hospital navigation']]
-      : patientFooterLinks
-  const journeyLinks = isDoctor
-    ? [['/doctor/consultations', 'Clinical consultations'], ['/operations', 'Doctor day operations'], ['/navigate', 'Hospital navigation']]
-    : isStaff
-      ? [['/', 'SmartCare home'], ['/hospitals', 'Hospital directory'], ['/navigate', 'Hospital navigation']]
-      : [['/notifications', 'Live queue · Available'], ['/navigate', 'QR hospital map · Available'], ['/diagnostics', 'Verified diagnostics · Available'], ['/blood-support', 'Verified blood support · Available'], ['/ambulance', 'Ambulance workflow · Available'], ['/assistant', 'Cited care assistant · Available']]
+  const roles = session?.user.roles ?? []
+  const doctor = roles.includes('DOCTOR')
+  const staff = roles.some(role => ['RECEPTIONIST', 'CASHIER', 'HOSPITAL_ADMIN', 'SUPER_ADMIN', 'AMBULANCE_DISPATCHER', 'LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role))
+  const patient = Boolean(session && !doctor && !staff)
+  const admin = roles.some(role => ['HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
+  const desk = roles.some(role => ['RECEPTIONIST', 'CASHIER'].includes(role))
+  const workspace = doctor ? '/doctor/consultations' : admin || desk ? '/operations' : staff ? '/staff/tasks' : '/dashboard'
+  const links = doctor ? [
+    { to: '/doctor/consultations', label: 'Consultations', hi: 'परामर्श', icon: Stethoscope },
+    { to: '/operations', label: 'Day operations', hi: 'आज का कार्य', icon: ClipboardList }, patientLinks[5],
+  ] : staff ? [
+    ...(admin || desk ? [{ to: '/operations', label: 'Operations overview', hi: 'संचालन', icon: Home }] : []),
+    ...(!desk ? [{ to: '/staff/tasks', label: 'My tasks', hi: 'मेरे कार्य', icon: ClipboardList }] : []),
+    ...(admin || roles.includes('AMBULANCE_DISPATCHER') ? [patientLinks[9]] : []),
+    ...(roles.some(role => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [{ to: '/blood-group-analysis', label: 'Slide review', hi: 'स्लाइड जाँच', icon: FlaskConical }] : []), patientLinks[5],
+  ] : patientLinks
+  const results = search.trim() ? links.filter(link => `${link.label} ${link.hi}`.toLowerCase().includes(search.toLowerCase())) : []
+  useEffect(() => { window.scrollTo(0, 0); setDrawer(false); setSearch('') }, [pathname])
   useEffect(() => {
-    if (isStaticDemo) { setUnread(0); return }
-    if (!session || !isPatient) { setUnread(0); return }
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setDrawer(false); setSearch('') } }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [])
+  useEffect(() => {
+    if (!patient || isStaticDemo) { setUnread(0); return }
     let active = true
-    const refresh = () => getUnreadCount().then((count) => { if (active) setUnread(count) }).catch(() => undefined)
+    const refresh = () => getUnreadCount().then(count => { if (active) setUnread(count) }).catch(() => undefined)
     void refresh()
-    const timer = window.setInterval(refresh, 30_000)
+    const timer = window.setInterval(refresh, 30000)
     return () => { active = false; window.clearInterval(timer) }
-  }, [isPatient, session, pathname])
-  return (
-    <div className="min-h-screen bg-white">
-      <ScrollToTop />
-      {session && <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r border-slate-200 bg-white px-4 py-5 shadow-[12px_0_40px_-32px_rgba(9,45,87,.35)] lg:flex">
-        <NavLink to={workspacePath} className="px-2 py-1"><BrandMark /></NavLink>
-        <nav className="mt-8 grid gap-1.5" aria-label="Workspace navigation">
-          {desktopLinks.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'} className={workspaceNavClass}><Icon className="size-5 shrink-0" />{language === 'hi' ? hindiLabels[label] ?? label : label}</NavLink>)}
-        </nav>
-        <div className="mt-auto overflow-hidden rounded-2xl border border-indigo-100 bg-indigo-50">
-          <img src={publicAsset('images/smartcare-clinical-team.png')} alt="SmartCare clinical team illustration" className="h-36 w-full object-cover object-top" />
-          <div className="p-4"><p className="font-black text-ink-950">{text('Care that stays connected', 'जुड़ी हुई देखभाल')}</p><p className="mt-1 text-xs leading-5 text-slate-600">{text('Your role shows only the tools you need.', 'आपकी भूमिका के अनुसार केवल ज़रूरी साधन दिखते हैं।')}</p></div>
-        </div>
-      </aside>}
-      <header className={`sticky top-0 z-40 shadow-[0_1px_0_rgba(15,23,42,.08)] ${session ? 'lg:ml-64' : ''}`}>
-        <div className={`bg-ink-950 text-white ${session ? 'lg:hidden' : ''}`}>
-          <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-[11px] font-bold sm:px-6 lg:px-8">
-            {canUseAmbulance ? <NavLink to="/ambulance" className="flex items-center gap-2 text-blue-100 transition hover:text-white"><Ambulance className="size-3.5 text-red-400" /><span>{text('Emergency care is always prioritized · Ambulance coordination', 'आपातकालीन देखभाल हमेशा प्राथमिकता है · एम्बुलेंस समन्वय')}</span></NavLink> : <span className="flex items-center gap-2 text-blue-100"><Ambulance className="size-3.5 text-red-400" /><span>{text('Emergency care is always prioritized', 'आपातकालीन देखभाल हमेशा प्राथमिकता है')}</span></span>}
-            <button type="button" onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} className="ml-2 flex shrink-0 items-center gap-1 rounded-lg border border-white/15 px-2 py-1 text-[10px] font-black text-blue-100 md:hidden" aria-label={text('Switch to Hindi', 'अंग्रेज़ी में बदलें')}><Languages className="size-3" />{language === 'en' ? 'हिं' : 'EN'}</button>
-            <div className="hidden items-center gap-5 text-blue-100 md:flex"><span className="flex items-center gap-1.5"><Clock3 className="size-3.5" />{text('24/7 patient guidance', '24/7 रोगी सहायता')}</span><span className="flex items-center gap-1.5"><MapPin className="size-3.5" />{text('Hospital locations', 'अस्पताल स्थान')}</span></div>
-          </div>
-        </div>
-        <div className="bg-white/95 backdrop-blur-xl">
-          <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <NavLink to="/" className={`rounded-xl ${session ? 'lg:hidden' : ''}`}><BrandMark /></NavLink>
-            {session && <div className="hidden lg:block"><p className="text-xs font-extrabold uppercase tracking-[.18em] text-care-700">{isDoctor ? text('Doctor workspace', 'डॉक्टर कार्यक्षेत्र') : isStaff ? text('Staff workspace', 'स्टाफ कार्यक्षेत्र') : text('Patient workspace', 'रोगी कार्यक्षेत्र')}</p><p className="mt-1 text-sm font-bold text-slate-500">{text('Care, queue and hospital services', 'देखभाल, कतार और अस्पताल सेवाएँ')}</p></div>}
-            <nav className={`hidden items-center ${session ? '' : 'lg:flex'}`} aria-label="Primary navigation">
-              {desktopLinks.map(({ to, label, icon: Icon }) => (
-                <NavLink key={to} to={to} end={to === '/'} className={navClass}>
-                  <Icon className="size-4" />{language === 'hi' ? hindiLabels[label] ?? label : label}
-                </NavLink>
-              ))}
-            </nav>
-            <div className="flex items-center gap-2">
-              <div className="hidden items-center rounded-xl border border-slate-200 bg-slate-50 p-1 sm:flex" aria-label="Language">
-                <Languages className="mx-1 size-4 text-slate-500" />
-                <button type="button" onClick={() => setLanguage('en')} aria-pressed={language === 'en'} className={`rounded-lg px-2 py-1.5 text-xs font-black ${language === 'en' ? 'bg-white text-care-700 shadow-sm' : 'text-slate-500'}`}>EN</button>
-                <button type="button" onClick={() => setLanguage('hi')} aria-pressed={language === 'hi'} className={`rounded-lg px-2 py-1.5 text-xs font-black ${language === 'hi' ? 'bg-white text-care-700 shadow-sm' : 'text-slate-500'}`}>हिं</button>
-              </div>
-              {session ? (
-                <>{isPatient && <NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-care-300 hover:bg-care-50 hover:text-care-700"><Bell className="size-4" />{unread > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black leading-5 text-white">{unread > 99 ? '99+' : unread}</span>}</NavLink>}<NavLink to={workspacePath} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-bold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
-                  <LayoutDashboard className="size-4 text-care-700" />
-                  <span className="hidden sm:inline">{session.user.displayName.split(' ')[0]}</span>
-                </NavLink><button type="button" aria-label="Sign out" title="Sign out" onClick={() => { logout(); navigate('/login', { replace: true }) }} className="grid size-11 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"><LogOut className="size-4" /></button></>
-              ) : (
-                <NavLink to="/login" className="hidden items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 sm:flex">
-                  <LogIn className="size-4" /> {text('Sign in', 'साइन इन')}
-                </NavLink>
-              )}
-              {!session || (!isDoctor && !isStaff) ? <NavLink to="/booking" className="flex items-center gap-2 rounded-xl bg-care-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-md shadow-blue-700/15 transition hover:bg-care-700">
-                <TicketCheck className="size-4" /><span className="hidden xs:inline">{text('Book OPD number', 'OPD नंबर बुक करें')}</span><span className="xs:hidden">{text('Book OPD', 'OPD बुक करें')}</span>
-              </NavLink> : null}
-            </div>
-          </div>
-        </div>
+  }, [patient, pathname])
+  const roleLabel = doctor ? text('Doctor workspace', 'डॉक्टर कार्यक्षेत्र') : staff ? text('Hospital team', 'अस्पताल टीम') : text('Your care companion', 'आपकी देखभाल का साथी')
+  return <div className="care-shell">
+    {drawer && <button className="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-sm lg:hidden" aria-label="Close navigation" onClick={() => setDrawer(false)} />}
+    <aside className={`care-sidebar ${drawer ? 'is-open' : ''}`}>
+      <div className="flex items-center justify-between px-3 pb-7 pt-3"><NavLink to={session ? workspace : '/'}><BrandMark /></NavLink><button onClick={() => setDrawer(false)} aria-label="Close menu" className="lg:hidden"><X className="size-5" /></button></div>
+      <p className="mb-3 px-4 text-[10px] font-bold uppercase tracking-[.2em] text-slate-400">{text('Your workspace', 'आपका कार्यक्षेत्र')}</p>
+      <nav aria-label="Workspace navigation" className="grid gap-1">{links.map(({ to, label, hi, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `care-nav-link ${isActive ? 'is-active' : ''}`}><Icon className="size-5 shrink-0" /><span>{language === 'hi' ? hi : label}</span></NavLink>)}</nav>
+      <div className="mt-auto pt-7"><div className="overflow-hidden rounded-2xl bg-gradient-to-b from-blue-50 to-indigo-50 text-center"><img src={publicAsset('images/smartcare-clinical-team.png')} alt="SmartCare care team" className="h-32 w-full object-cover object-top" /><div className="px-3 py-4"><p className="text-sm font-bold text-blue-950">{text('Together for better care', 'बेहतर देखभाल के लिए साथ')}</p><p className="mt-1 text-xs text-blue-600">Care · Connect · Heal</p></div></div></div>
+    </aside>
+    <div className="care-content">
+      <header className="care-topbar">
+        <button aria-label="Open navigation" onClick={() => setDrawer(true)} className="grid size-10 shrink-0 place-items-center rounded-xl text-blue-800 hover:bg-white lg:hidden"><Menu className="size-5" /></button>
+        <div className="relative min-w-0 flex-1 max-w-xl"><label className="flex h-11 items-center gap-3 rounded-xl border border-blue-100 bg-white/80 px-4"><Search className="size-5 shrink-0 text-blue-500" /><input value={search} onChange={event => setSearch(event.target.value)} aria-label="Search services" placeholder={text('Search appointments, doctors, services…', 'अपॉइंटमेंट, डॉक्टर, सेवाएँ खोजें…')} className="min-w-0 w-full bg-transparent text-sm outline-none" /></label>{search && <div className="absolute inset-x-0 top-13 z-50 rounded-xl border border-blue-100 bg-white p-2 shadow-xl">{results.length ? results.map(link => <NavLink className="block rounded-lg px-3 py-3 text-sm hover:bg-blue-50" key={link.to} to={link.to}>{language === 'hi' ? link.hi : link.label}</NavLink>) : <p className="px-3 py-3 text-sm text-slate-500">{text('No matching services', 'कोई सेवा नहीं मिली')}</p>}</div>}</div>
+        <button onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} aria-label="Switch language" className="flex items-center gap-1 rounded-xl px-2 py-2 text-xs font-bold text-blue-800"><Languages className="size-4" />{language === 'en' ? 'हिं' : 'EN'}</button>
+        {patient && <NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative p-2 text-blue-800"><Bell className="size-5" />{unread > 0 && <span className="absolute right-0 top-0 size-2 rounded-full bg-rose-500" />}</NavLink>}
+        {session ? <><NavLink to={workspace} className="flex items-center gap-3"><IdentityAvatar name={session.user.displayName} size="sm" /><span className="hidden xl:block"><strong className="block text-sm text-blue-950">{session.user.displayName}</strong><span className="text-xs text-slate-500">{roleLabel}</span></span></NavLink><button aria-label="Sign out" onClick={() => { logout(); navigate('/login', { replace: true }) }} className="p-2 text-slate-500 hover:text-rose-600"><LogOut className="size-4" /></button></> : <NavLink to="/login" className="flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white"><LogIn className="size-4" /><span className="hidden sm:inline">{text('Sign in', 'साइन इन')}</span></NavLink>}
       </header>
-
-      {isStaticDemo && <div className="border-y border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs font-bold text-amber-950">Public portfolio prototype · Sample browser data only · Backend-only medical workflows are not active on GitHub Pages.</div>}
-      <main className={`safe-bottom bg-[#f4f9fd] md:pb-0 ${session ? 'lg:ml-64' : ''}`}><Outlet /></main>
-
-      {!session && <footer className="bg-[#071b35] text-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.2fr_.8fr_.8fr_1fr] lg:px-8 lg:py-16">
-          <div>
-            <BrandMark inverted />
-            <p className="mt-5 max-w-sm text-sm leading-6 text-blue-100/70">Care made clear, queues made fair and journeys kept connected—from OPD booking to hospital navigation.</p>
-            <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-bold text-blue-100/70"><span className="rounded-full border border-white/10 px-3 py-1.5">Privacy-first</span><span className="rounded-full border border-white/10 px-3 py-1.5">Clinician-led</span><span className="rounded-full border border-white/10 px-3 py-1.5">Accessible</span></div>
-          </div>
-          <div>
-            <h2 className="text-sm font-black">{isDoctor ? 'Doctor workspace' : isStaff ? 'Staff workspace' : 'Patient links'}</h2>
-            <div className="mt-5 space-y-3 text-sm text-blue-100/70">{footerLinks.map(([to, label]) => <NavLink key={to} to={to} className="block hover:text-white">{label}</NavLink>)}</div>
-          </div>
-          <div>
-            <h2 className="text-sm font-black">Care journey</h2>
-            <div className="mt-5 space-y-3 text-sm text-blue-100/70">{journeyLinks.map(([to, label]) => <NavLink key={to} to={to} className="block hover:text-white">{label}</NavLink>)}</div>
-          </div>
-          <div>
-            <h2 className="text-sm font-black">Patient support</h2>
-            <div className="mt-5 space-y-4 text-sm text-blue-100/70"><p className="flex gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-blue-300" />Contact your hospital care desk</p><p className="flex gap-3"><TicketCheck className="mt-0.5 size-4 shrink-0 text-blue-300" />Capacity-based OPD booking and fair waitlist</p><p className="flex gap-3"><Ambulance className="mt-0.5 size-4 shrink-0 text-red-400" />For emergencies, contact local emergency services immediately.</p></div>
-          </div>
-        </div>
-        <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 pb-24 pt-5 text-xs text-blue-100/55 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:pb-5 lg:px-8"><p>© 2026 SmartCare. Navigate · Queue · Care.</p><p>Medical decisions remain with qualified care teams.</p></div>
-        </div>
-      </footer>}
-
-      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-slate-200 bg-white/95 px-1 pt-2 pb-[calc(.5rem+env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
-        {mobileLinks.map(({ to, label, icon: Icon }) => (
-          <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) =>
-            `flex min-h-13 flex-col items-center justify-center gap-1 rounded-xl text-xs font-bold ${isActive ? 'text-care-700' : 'text-slate-500'}`
-          }>
-            <Icon className="size-5" />{language === 'hi' ? hindiLabels[label] ?? label : label}
-          </NavLink>
-        ))}
-      </nav>
+      {isStaticDemo && <p className="mx-5 rounded-xl bg-amber-50 p-3 text-xs text-amber-900">Public portfolio prototype · Sample data</p>}
+      <main className="care-page"><Outlet /></main>
     </div>
-  )
+  </div>
 }

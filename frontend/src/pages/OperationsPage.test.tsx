@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getMyRecoveryCases, getOperationsDashboard } from '../services/operations'
+import { confirmCashAppointment, getMyRecoveryCases, getOperationsDashboard } from '../services/operations'
 import { OperationsPage } from './OperationsPage'
 
 const authState = vi.hoisted(() => ({ roles: ['PATIENT'] as string[] }))
@@ -22,10 +22,28 @@ vi.mock('../services/api', () => ({
 vi.mock('../services/operations', () => ({
   getMyRecoveryCases: vi.fn(), resolveRecovery: vi.fn(), getOperationsDashboard: vi.fn(),
   updateDoctorDayStatus: vi.fn(), markAppointmentNoShow: vi.fn(),
+  confirmCashAppointment: vi.fn().mockResolvedValue({}), staffCheckInAppointment: vi.fn(),
 }))
 
 describe('OperationsPage', () => {
   afterEach(cleanup)
+
+  it('lets a cashier confirm cash without offering clinical or check-in controls', async () => {
+    authState.roles = ['CASHIER']
+    vi.mocked(getOperationsDashboard).mockResolvedValue({
+      hospitalId: 'hospital-1', hospitalName: 'City General Hospital', serviceDate: '2026-09-24',
+      totalAppointments: 1, checkedIn: 0, inConsultation: 0, waitlisted: 0, noShows: 0, confirmed: 0, completed: 0,
+      pendingPayments: 1, diagnosticLoad: 0, bloodInventoryAlerts: 0, ambulancesAvailable: 0,
+      ambulancesOutOfService: 0, globalNotificationFailures: 0, activeDoctors: 1,
+      delayedOrUnavailableDoctors: 0, averageRecordedWaitMinutes: 0, doctorStatuses: [],
+      queue: [{ appointmentId: 'cash-1', patientNumber: 'TEST-P1', doctorId: 'doctor-1', doctorName: 'Dr. Care', queuePosition: 1, status: 'CASH_PENDING', paymentMethod: 'CASH' }],
+    })
+    render(<MemoryRouter><OperationsPage /></MemoryRouter>)
+    fireEvent.click(await screen.findByRole('button', { name: 'Confirm cash' }))
+    expect(confirmCashAppointment).toHaveBeenCalledWith('cash-1')
+    expect(screen.queryByRole('button', { name: 'Check in' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Update' })).not.toBeInTheDocument()
+  })
 
   beforeEach(() => {
     authState.roles = ['PATIENT']

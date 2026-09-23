@@ -1,9 +1,11 @@
-import { CalendarCheck2, Droplets, FlaskConical, LoaderCircle, Pill, ShieldAlert, Stethoscope, UserRoundCheck } from 'lucide-react'
+import { CalendarCheck2, ClipboardList, Droplets, FlaskConical, LoaderCircle, Pill, ShieldAlert, Stethoscope, UserRoundCheck } from 'lucide-react'
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { IdentityAvatar } from '../components/IdentityAvatar'
 import { useAuth } from '../context/AuthContext'
 import { publicAsset } from '../config/runtime'
 import { messageFromError } from '../services/api'
-import { getDoctorAppointments, type Appointment } from '../services/appointments'
+import { appointmentStatusLabel, getDoctorAppointments, type Appointment } from '../services/appointments'
 import { createDiagnosticOrder, getDiagnosticProcedures, type DiagnosticPriority, type DiagnosticProcedure } from '../services/diagnostics'
 import { createBloodRequest, type BloodComponent, type BloodGroup } from '../services/bloodBank'
 import { finalizeClinicalVisit, type AllergySeverity } from '../services/medicalRecords'
@@ -40,7 +42,7 @@ export function DoctorConsultationPage() {
   const loadAppointments = useCallback(async () => {
     const data = await getDoctorAppointments()
     setAppointments(data)
-    setAppointmentId((current) => current || data.find((item) => item.status === 'IN_CONSULTATION')?.id || '')
+    setAppointmentId((current) => data.some(item => item.id === current && item.status === 'IN_CONSULTATION' && item.serviceDate === localDateString()) ? current : data.find((item) => item.status === 'IN_CONSULTATION' && item.serviceDate === localDateString())?.id || '')
   }, [])
 
   useEffect(() => {
@@ -48,9 +50,18 @@ export function DoctorConsultationPage() {
     loadAppointments().catch((cause) => setError(messageFromError(cause))).finally(() => setLoading(false))
   }, [isDoctor, loadAppointments])
 
-  const eligible = useMemo(() => appointments.filter((item) => item.status === 'IN_CONSULTATION'), [appointments])
-  const activeConsultation = appointments.find((item) => item.status === 'IN_CONSULTATION')
-  const nextCheckedIn = appointments.find((item) => item.status === 'CHECKED_IN')
+  useEffect(() => {
+    if (!isDoctor || saving || calling) return
+    const refresh = () => { if (!document.hidden) void loadAppointments().catch(cause => setError(messageFromError(cause))) }
+    const timer = window.setInterval(refresh, 15000)
+    window.addEventListener('focus', refresh)
+    return () => { window.clearInterval(timer); window.removeEventListener('focus', refresh) }
+  }, [isDoctor, saving, calling, loadAppointments])
+
+  const todayAppointments = useMemo(() => appointments.filter((item) => item.serviceDate === localDateString()).sort((a, b) => (a.queuePosition ?? Number.MAX_SAFE_INTEGER) - (b.queuePosition ?? Number.MAX_SAFE_INTEGER)), [appointments])
+  const eligible = useMemo(() => todayAppointments.filter((item) => item.status === 'IN_CONSULTATION'), [todayAppointments])
+  const activeConsultation = todayAppointments.find((item) => item.status === 'IN_CONSULTATION')
+  const nextCheckedIn = todayAppointments.find((item) => item.status === 'CHECKED_IN')
   const selectedAppointment = appointments.find((item) => item.id === appointmentId)
 
   useEffect(() => {
@@ -119,14 +130,15 @@ export function DoctorConsultationPage() {
   }
 
   if (!isDoctor) return <div className="mx-auto max-w-3xl px-4 py-16"><div className="rounded-3xl border border-amber-200 bg-amber-50 p-8 text-center"><ShieldAlert className="mx-auto size-9 text-amber-700" /><h1 className="mt-4 text-2xl font-black">Doctor access required</h1></div></div>
-  return <div className="min-h-screen bg-[#f4f9fd]">
-    <section className="relative overflow-hidden border-b border-cyan-100 bg-gradient-to-r from-cyan-50 via-blue-50 to-white"><img src={publicAsset('images/doctor-consultation.jpg')} alt="Doctor consultation workspace" className="absolute inset-y-0 right-0 hidden h-full w-[46%] object-cover opacity-90 md:block" /><div className="absolute inset-0 bg-gradient-to-r from-cyan-50 via-blue-50/95 to-white/10" /><div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14"><p className="text-xs font-black uppercase tracking-[.18em] text-care-700">Doctor workspace</p><h1 className="mt-2 max-w-2xl text-4xl font-black text-ink-950">Consultation, record & next patient</h1><p className="mt-3 max-w-xl text-sm text-slate-600">Only clinician-entered findings, orders and guidance are stored.</p></div></section>
+  return <div className="doctor-workspace min-h-screen bg-[#f4f9fd]">
+    <section className="relative overflow-hidden border-b border-blue-100 bg-gradient-to-r from-blue-50 via-indigo-50 to-white"><img src={publicAsset('images/smartcare-clinical-team.png')} alt="SmartCare care team" className="absolute inset-y-0 right-0 hidden h-full w-[46%] object-cover object-top opacity-90 md:block" /><div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50/95 to-white/10" /><div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14"><p className="text-xs font-black uppercase tracking-[.18em] text-blue-700">Doctor workspace</p><h1 className="mt-2 max-w-2xl text-4xl font-black text-ink-950">Today's patients and consultations</h1><p className="mt-3 max-w-xl text-sm text-slate-600">Check the live queue, call the next patient and complete the clinical visit from one place.</p></div></section>
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {error && <p role="alert" className="mb-5 rounded-2xl bg-rose-50 p-4 font-bold text-rose-800">{error}</p>}
       {success && <p className="mb-5 rounded-2xl bg-emerald-50 p-4 font-bold text-emerald-800">{success}</p>}
       {loading ? <LoaderCircle className="mx-auto size-7 animate-spin text-care-600" /> : <>
-        <section className="mb-5 grid gap-3 sm:grid-cols-3"><div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs font-bold text-slate-500">Today's appointments</p><p className="mt-2 text-3xl font-black text-ink-950">{appointments.length}</p></div><div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 shadow-sm"><p className="text-xs font-bold text-blue-700">Checked in & waiting</p><p className="mt-2 text-3xl font-black text-blue-800">{appointments.filter((item) => item.status === 'CHECKED_IN').length}</p></div><div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 shadow-sm"><p className="text-xs font-bold text-indigo-700">Completed visits</p><p className="mt-2 text-3xl font-black text-indigo-800">{appointments.filter((item) => item.status === 'COMPLETED').length}</p></div></section>
+        <section className="mb-5 grid gap-3 sm:grid-cols-3"><div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs font-bold text-slate-500">Today's appointments</p><p className="mt-2 text-3xl font-black text-ink-950">{todayAppointments.length}</p></div><div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 shadow-sm"><p className="text-xs font-bold text-blue-700">Checked in & waiting</p><p className="mt-2 text-3xl font-black text-blue-800">{todayAppointments.filter((item) => item.status === 'CHECKED_IN').length}</p></div><div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 shadow-sm"><p className="text-xs font-bold text-indigo-700">Completed visits</p><p className="mt-2 text-3xl font-black text-indigo-800">{todayAppointments.filter((item) => item.status === 'COMPLETED').length}</p></div></section>
         <section className="mb-5 flex flex-col gap-4 rounded-2xl border border-care-200 bg-care-50 p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-black uppercase tracking-wider text-care-700">Live OPD handoff</p><p className="mt-1 font-black text-ink-950">{activeConsultation ? 'Finalize the current consultation before calling another patient.' : nextCheckedIn ? `OPD ${nextCheckedIn.queuePosition ?? '—'} is checked in and waiting.` : 'No checked-in patient is waiting.'}</p></div><button type="button" disabled={!nextCheckedIn || !!activeConsultation || calling} onClick={() => void callNext()} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-care-700 px-5 text-sm font-black text-white disabled:opacity-45">{calling ? <LoaderCircle className="size-5 animate-spin" /> : <UserRoundCheck className="size-5" />}Call next patient</button></section>
+        <section className="mb-5 overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-5"><div><p className="text-xs font-black uppercase tracking-[.15em] text-blue-700">Live worklist</p><h2 className="mt-1 text-xl font-black text-ink-950">Patient queue</h2><p className="mt-1 text-xs text-slate-500">Patient numbers protect identities in this shared view.</p></div><Link to="/operations" className="inline-flex items-center gap-2 rounded-xl border border-blue-200 px-3 py-2 text-xs font-black text-blue-700"><ClipboardList className="size-4" />Day operations</Link></div><div className="overflow-x-auto"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-blue-50/60 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-5 py-3">OPD</th><th className="px-5 py-3">Patient</th><th className="px-5 py-3">Department</th><th className="px-5 py-3">Status</th></tr></thead><tbody className="divide-y divide-slate-100">{todayAppointments.map((item) => <tr key={item.id} className="hover:bg-blue-50/40"><td className="px-5 py-3 font-black text-blue-700">{item.queuePosition ?? '—'}</td><td className="px-5 py-3"><span className="flex items-center gap-3"><IdentityAvatar size="sm" /><span className="font-mono text-xs text-slate-700">{item.patientNumber}</span></span></td><td className="px-5 py-3 text-slate-600">{item.departmentName}</td><td className="px-5 py-3 font-bold text-slate-700">{appointmentStatusLabel[item.status]}</td></tr>)}{todayAppointments.length === 0 && <tr><td colSpan={4} className="px-5 py-8 text-center text-slate-500">No patient visits scheduled for today.</td></tr>}</tbody></table></div></section>
         <form onSubmit={submit} className="grid gap-5 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <label className="text-sm font-bold">Current consultation<select required disabled={eligible.length === 0} value={appointmentId} onChange={(event) => setAppointmentId(event.target.value)} className={`mt-2 w-full disabled:cursor-not-allowed disabled:bg-slate-100 ${inputClass}`}><option value="">{eligible.length === 0 ? 'No patient is currently in consultation' : 'Choose patient appointment'}</option>{eligible.map((item) => <option key={item.id} value={item.id}>{item.patientNumber} · {item.serviceDate} · {item.departmentName} · OPD {item.queuePosition ?? '—'}</option>)}</select></label>
           {eligible.length === 0 && <p className="rounded-xl bg-amber-50 p-3 text-sm font-semibold leading-6 text-amber-900">No form can be opened yet. The patient must have today’s confirmed appointment, complete check-in at the operations desk, and then be called using <strong>Call next patient</strong>.</p>}

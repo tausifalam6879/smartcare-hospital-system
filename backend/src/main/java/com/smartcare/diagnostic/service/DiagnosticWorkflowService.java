@@ -1,5 +1,7 @@
 package com.smartcare.diagnostic.service;
 
+import com.smartcare.common.time.HospitalDate;
+
 import com.smartcare.appointment.domain.Appointment;
 import com.smartcare.appointment.domain.AppointmentStatus;
 import com.smartcare.appointment.repository.AppointmentRepository;
@@ -109,7 +111,7 @@ public class DiagnosticWorkflowService {
     @Transactional(readOnly = true)
     public AvailabilityResponse availability(UUID procedureId, LocalDate serviceDate) {
         DiagnosticProcedure procedure = requireActiveProcedure(procedureId);
-        requireCurrentOrFutureDate(serviceDate);
+        requireCurrentOrFutureDate(serviceDate, procedure.getHospital());
         DiagnosticDayLedger ledger = ledgers.findByProcedureIdAndServiceDate(procedureId, serviceDate).orElse(null);
         int capacity = ledger == null ? procedure.getDailyCapacity() : ledger.getEffectiveCapacity();
         int reserved = ledger == null ? 0 : ledger.getActiveCount();
@@ -172,9 +174,9 @@ public class DiagnosticWorkflowService {
     @Transactional
     public OrderResponse schedule(UUID userId, UUID orderId, ScheduleOrderRequest request) {
         Patient patient = requirePatient(userId);
-        requireCurrentOrFutureDate(request.serviceDate());
         DiagnosticOrder order = requireOrderForUpdate(orderId);
         requireOwner(patient, order);
+        requireCurrentOrFutureDate(request.serviceDate(), order.getProcedure().getHospital());
         if (order.getStatus() == DiagnosticOrderStatus.SCHEDULED
                 && request.serviceDate().equals(order.getScheduledDate())) return toResponse(order);
         if (order.getStatus() != DiagnosticOrderStatus.ORDERED) {
@@ -232,7 +234,7 @@ public class DiagnosticWorkflowService {
     public OrderResponse collect(UUID staffUserId, UUID orderId) {
         requireDiagnosticStaff(staffUserId);
         DiagnosticOrder order = requireOrderForUpdate(orderId);
-        if (order.getScheduledDate() != null && LocalDate.now(clock).isBefore(order.getScheduledDate())) {
+        if (order.getScheduledDate() != null && HospitalDate.today(clock, order.getProcedure().getHospital()).isBefore(order.getScheduledDate())) {
             throw new ConflictException("This diagnostic service is scheduled for a future date.");
         }
         transition(() -> order.collectSample(clock.instant()));
@@ -347,8 +349,8 @@ public class DiagnosticWorkflowService {
         return user;
     }
 
-    private void requireCurrentOrFutureDate(LocalDate date) {
-        if (date == null || date.isBefore(LocalDate.now(clock))) {
+    private void requireCurrentOrFutureDate(LocalDate date, Hospital hospital) {
+        if (date == null || date.isBefore(HospitalDate.today(clock, hospital))) {
             throw new IllegalArgumentException("Diagnostic service date cannot be in the past.");
         }
     }

@@ -1,5 +1,7 @@
 package com.smartcare.bloodbank.service;
 
+import com.smartcare.common.time.HospitalDate;
+
 import com.smartcare.appointment.domain.Appointment;
 import com.smartcare.appointment.repository.AppointmentRepository;
 import com.smartcare.audit.service.AuditService;
@@ -166,7 +168,7 @@ public class BloodBankService {
         requireHospital(hospitalId);
         Instant now = clock.instant();
         Instant cutoff = now.minus(properties.verificationMaxAge());
-        LocalDate today = LocalDate.now(clock);
+        LocalDate today = HospitalDate.today(clock, requireHospital(hospitalId));
         List<BloodInventoryBatch> rows = inventory.findAllByBloodBankHospitalIdAndBloodGroupAndComponent(
                 hospitalId, bloodGroup, component);
         List<AvailabilityResponse> response = bloodBanks
@@ -353,7 +355,7 @@ public class BloodBankService {
         Instant now = clock.instant();
         List<BloodInventoryBatch> candidates = inventory.findEligibleForUpdate(request.getHospital().getId(),
                 request.getBloodGroup(), request.getComponent(), InventoryVerificationStatus.VERIFIED,
-                now.minus(properties.verificationMaxAge()), LocalDate.now(clock));
+                now.minus(properties.verificationMaxAge()), HospitalDate.today(clock, request.getHospital()));
         Map<UUID, BloodAllocation> existing = new HashMap<>();
         allocations.findAllByRequestIdAndStatus(request.getId(), BloodAllocationStatus.RESERVED)
                 .forEach(item -> existing.put(item.getInventoryBatch().getId(), item));

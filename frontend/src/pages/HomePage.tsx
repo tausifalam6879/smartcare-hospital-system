@@ -1,213 +1,50 @@
-import {
-  ArrowRight,
-  Bot,
-  CalendarPlus,
-  Check,
-  ChevronRight,
-  ClipboardCheck,
-  Droplets,
-  FlaskConical,
-  HeartHandshake,
-  Languages,
-  MapPinned,
-  Navigation,
-  ShieldCheck,
-  Siren,
-  Stethoscope,
-  TicketCheck,
-  Users,
-} from 'lucide-react'
-import { publicAsset } from '../config/runtime'
-import { Link } from 'react-router-dom'
-import { ActionCard } from '../components/ActionCard'
+import { ArrowRight, Ambulance, CalendarDays, FileHeart, FlaskConical, MapPin, Stethoscope, TicketCheck, Droplets, Clock3, ShieldCheck } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { useLanguage } from '../context/LanguageContext'
+import { publicAsset, isStaticDemo } from '../config/runtime'
+import { api } from '../services/api'
+import { IdentityAvatar } from '../components/IdentityAvatar'
 
-const actions = [
-  { title: 'Book OPD number', description: 'Choose a doctor and date, then protect your queue position fairly.', icon: TicketCheck, to: '/booking', tone: 'care' as const },
-  { title: 'Find a doctor', description: 'Search verified doctors by hospital, department or speciality.', icon: Stethoscope, to: '/doctors', tone: 'blue' as const },
-  { title: 'My queue', description: 'See people ahead, expected wait time and status updates in one view.', icon: TicketCheck, status: 'Phase 4', tone: 'amber' as const },
-  { title: 'Hospital navigation', description: 'Follow clear indoor directions using verified QR checkpoints.', icon: MapPinned, status: 'Phase 5', tone: 'blue' as const },
-  { title: 'Health records', description: 'Keep doctor-finalized visits, medicines, allergies and uploaded reports private.', icon: FlaskConical, to: '/records', status: 'Available', tone: 'care' as const },
-  { title: 'Care assistant', description: 'Ask your private care record and inspect the authorized source behind each answer.', icon: Bot, to: '/assistant', status: 'Available', tone: 'blue' as const },
-  { title: 'Diagnostics & results', description: 'Schedule clinician-ordered lab or imaging services and view staff-verified results.', icon: FlaskConical, to: '/diagnostics', status: 'Available', tone: 'care' as const },
-  { title: 'Blood availability', description: 'View authorized inventory with a clear last-verified timestamp.', icon: Droplets, to: '/blood-support', status: 'Available', tone: 'rose' as const },
-  { title: 'Ambulance coordination', description: 'Request transport and follow dispatcher-confirmed handoffs without automatic dispatch.', icon: Siren, to: '/ambulance', status: 'Available', tone: 'rose' as const },
-]
-
-const journey = [
-  { number: '01', title: 'Find your care team', body: 'Search verified hospitals, departments and doctors before you leave home.' },
-  { number: '02', title: 'Arrive prepared', body: 'Keep appointment details, documents and arrival guidance together.' },
-  { number: '03', title: 'Move without confusion', body: 'Follow queue updates and hospital-maintained directions at every step.' },
-  { number: '04', title: 'Continue after the visit', body: 'Track tests, reports and the next action in one private patient space.' },
-]
-
-const values = [
-  { icon: ShieldCheck, title: 'Private by design', body: 'Patient-level access, clear roles and auditable actions protect sensitive care data.', tone: 'bg-blue-500' },
-  { icon: HeartHandshake, title: 'Human-led care', body: 'Clinical decisions, triage and overrides always remain with qualified hospital staff.', tone: 'bg-emerald-500' },
-  { icon: Navigation, title: 'Verified guidance', body: 'Directions come from hospital-maintained locations and QR checkpoints—not guesswork.', tone: 'bg-violet-500' },
-  { icon: Languages, title: 'Easy to understand', body: 'Plain language, large controls and multilingual-ready experiences reduce anxiety.', tone: 'bg-amber-500' },
-]
-
+type Doctor = { id: string; name: string; specialization: string; consultationFee: number; hospitalName: string }
 export function HomePage() {
-  return (
-    <>
-      <section className="relative overflow-hidden bg-[#f2f7fc]">
-        <div className="pointer-events-none absolute -left-32 top-8 size-96 rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="pointer-events-none absolute -right-28 bottom-0 size-[30rem] rounded-full bg-cyan-100/60 blur-3xl" />
-
-        <div className="relative mx-auto grid max-w-[90rem] items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[.92fr_1.08fr] lg:px-8 lg:py-20">
-          <div className="z-10 max-w-2xl lg:py-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/90 px-3.5 py-2 text-xs font-extrabold uppercase tracking-[.13em] text-care-700 shadow-sm">
-              <ShieldCheck className="size-4" /> Built for Indian OPD workflows
-            </div>
-            <h1 className="text-balance mt-6 text-[2.75rem] font-black leading-[1.03] tracking-[-0.045em] text-ink-950 sm:text-6xl lg:text-[4.4rem]">
-              Care made clear.<br />
-              <span className="text-care-600">Queues made fair. Journeys connected.</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-              SmartCare brings advance OPD-number booking, live queue status, indoor navigation and the next care step into one patient journey.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="/booking" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-care-600 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:bg-care-700">
-                Book OPD number <ArrowRight className="size-5" />
-              </Link>
-              <Link to="/doctors" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-extrabold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
-                Find a doctor
-              </Link>
-              <Link to="/hospitals" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-extrabold text-ink-950 transition hover:border-care-300 hover:bg-care-50">
-                Explore hospitals
-              </Link>
-            </div>
-
-            <div className="mt-8 grid max-w-lg grid-cols-2 gap-x-6 gap-y-3 text-sm font-bold text-slate-600 sm:grid-cols-3">
-              {['Advance OPD token', 'Fair waitlist', 'QR navigation'].map((item) => (
-                <span key={item} className="flex items-center gap-2"><Check className="size-4 text-emerald-600" />{item}</span>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-3xl lg:mr-0">
-            <div className="relative overflow-hidden rounded-[2rem] bg-slate-900 shadow-[0_35px_80px_-28px_rgba(9,45,87,.4)]">
-              <img
-                src={publicAsset('images/smartcare-queue-workstation.png')}
-                alt="SmartCare OPD queue workstation showing a confirmed token and estimated wait"
-                className="h-[28rem] w-full object-cover object-center sm:h-[34rem] lg:h-[38rem]"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:-mt-4 lg:px-8 lg:pb-0">
-          <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_22px_60px_-30px_rgba(9,45,87,.35)] sm:grid-cols-3">
-            {[
-              [CalendarPlus, 'Book OPD number', 'Reserve before reaching hospital', '/booking'],
-              [Users, 'Check my queue', 'Number, patients ahead & wait time', '/dashboard'],
-              [MapPinned, 'Scan & navigate', 'Verified hospital checkpoints', '#journey'],
-            ].map(([Icon, title, body, to], index) => {
-              const ItemIcon = Icon as typeof Stethoscope
-              const className = `group flex items-center gap-4 p-5 transition hover:bg-blue-50/60 sm:p-6 ${index !== 2 ? 'border-b border-slate-200 sm:border-b-0 sm:border-r' : ''}`
-              const content = <><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-care-50 text-care-700"><ItemIcon className="size-6" /></span><div><p className="font-black text-ink-950">{title as string}</p><p className="mt-0.5 text-xs leading-5 text-slate-500">{body as string}</p></div><ChevronRight className="ml-auto size-5 text-slate-300 transition group-hover:translate-x-1 group-hover:text-care-600" /></>
-              return (typeof to === 'string' && to.startsWith('/')
-                ? <Link key={title as string} to={to} className={className}>{content}</Link>
-                : <a key={title as string} href={to as string} className={className}>{content}</a>
-              )
-            })}
-          </div>
-        </div>
+  const { session } = useAuth()
+  const { text, language } = useLanguage()
+  const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [status, setStatus] = useState('loading')
+  useEffect(() => {
+    if (isStaticDemo) { setStatus('empty'); return }
+    let active = true
+    api.get<{ content: Doctor[] }>('/api/v1/doctors', { params: { size: 4 } }).then(({ data }) => { if (active) { setDoctors(data.content); setStatus('ready') } }).catch(() => { if (active) setStatus('error') })
+    return () => { active = false }
+  }, [])
+  if (session) return <Navigate to="/dashboard" replace />
+  const services = [
+    { title: text('Book appointment', 'अपॉइंटमेंट बुक करें'), detail: text('Choose your doctor', 'अपना डॉक्टर चुनें'), icon: CalendarDays, to: '/booking', tone: 'bg-blue-50 text-blue-600' },
+    { title: text('Find a doctor', 'डॉक्टर खोजें'), detail: text('Care by specialty', 'विशेषज्ञ की देखभाल'), icon: Stethoscope, to: '/doctors', tone: 'bg-violet-50 text-violet-600' },
+    { title: text('Tests & reports', 'जाँच और रिपोर्ट'), detail: text('Your results together', 'सभी नतीजे एक जगह'), icon: FlaskConical, to: '/diagnostics', tone: 'bg-cyan-50 text-cyan-600' },
+    { title: text('Indoor navigation', 'अस्पताल में रास्ता'), detail: text('Find your way easily', 'आसानी से रास्ता खोजें'), icon: MapPin, to: '/navigate', tone: 'bg-amber-50 text-amber-600' },
+    { title: text('Ambulance support', 'एम्बुलेंस सहायता'), detail: text('Connect with the care desk', 'केयर डेस्क से जुड़ें'), icon: Ambulance, to: '/ambulance', tone: 'bg-rose-50 text-rose-600' },
+  ]
+  return <div className="space-y-5">
+    <div className="grid gap-4 xl:grid-cols-[1fr_245px]">
+      <section className="relative min-h-64 overflow-hidden rounded-[20px] border border-white bg-blue-100">
+        <img src={publicAsset('images/smartcare-clinical-team.png')} alt="SmartCare healthcare team" className="absolute inset-y-0 right-0 h-full w-1/2 object-cover object-top" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e3efff] via-[#e3efff]/95 to-transparent" />
+        <div className="relative max-w-xl p-7 sm:p-9"><p className="text-sm font-medium text-blue-700">{text('Welcome to your care companion', 'आपके देखभाल साथी में स्वागत है')}</p><h1 className="mt-2 text-4xl font-bold tracking-tight text-blue-950 sm:text-5xl">SmartCare<span className="text-blue-500">.</span></h1><p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">{text('Your appointments, hospital visits and next care step. All in one place.', 'आपके अपॉइंटमेंट, अस्पताल विज़िट और देखभाल का अगला कदम। सब एक जगह।')}</p><Link to="/booking" className="mt-5 inline-flex items-center gap-3 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white">{text('Book an appointment', 'अपॉइंटमेंट बुक करें')}<ArrowRight className="size-4" /></Link></div>
       </section>
-
-      <section className="bg-white py-14 sm:py-20" id="services">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[.22em] text-care-700">Everything you need</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.035em] text-ink-950 sm:text-4xl">Your complete hospital journey, connected</h2>
-            <p className="mt-4 text-base leading-7 text-slate-600">Start with the verified doctor directory today. Each upcoming feature is clearly labelled while it is being prepared.</p>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {actions.map((action) => <ActionCard key={action.title} {...action} />)}
-          </div>
-        </div>
-      </section>
-
-      <section className="overflow-hidden bg-[#f3f7fb] py-14 sm:py-20" id="journey">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.04fr_.96fr] lg:px-8">
-          <div className="relative min-h-[31rem] sm:min-h-[36rem]">
-            <img src={publicAsset('images/hospital-lobby.jpg')} alt="Bright hospital reception and wayfinding area" className="absolute left-0 top-0 h-[82%] w-[82%] rounded-[1.75rem] object-cover shadow-[0_26px_60px_-30px_rgba(9,45,87,.45)]" />
-            <img src={publicAsset('images/medical-centre.jpg')} alt="Modern medical centre exterior" className="absolute bottom-0 right-0 h-[48%] w-[55%] rounded-[1.5rem] border-[6px] border-[#f3f7fb] object-cover shadow-[0_24px_50px_-26px_rgba(9,45,87,.5)]" />
-            <div className="absolute bottom-7 left-5 max-w-[15rem] rounded-2xl bg-care-700 p-5 text-white shadow-xl sm:left-8">
-              <Navigation className="size-7 text-blue-200" />
-              <p className="mt-4 text-lg font-black">Know where to go next.</p>
-              <p className="mt-1 text-xs leading-5 text-blue-100">Verified checkpoints replace confusing indoor guesswork.</p>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-[.22em] text-care-700">Plan your journey</p>
-            <h2 className="text-balance mt-3 text-3xl font-black tracking-[-0.035em] text-ink-950 sm:text-4xl">From finding a doctor to getting home, stay one step ahead.</h2>
-            <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">SmartCare connects the practical steps around care so patients and families spend less energy figuring out the system.</p>
-            <div className="mt-8 space-y-2">
-              {journey.map((item) => (
-                <div key={item.number} className="group grid grid-cols-[3rem_1fr] gap-4 rounded-2xl border border-transparent p-3 transition hover:border-blue-100 hover:bg-white">
-                  <span className="grid size-12 place-items-center rounded-xl bg-white text-sm font-black text-care-700 shadow-sm">{item.number}</span>
-                  <div className="pt-1"><h3 className="font-black text-ink-950">{item.title}</h3><p className="mt-1 text-sm leading-6 text-slate-600">{item.body}</p></div>
-                </div>
-              ))}
-            </div>
-            <Link to="/register" className="mt-7 inline-flex items-center gap-2 rounded-xl bg-care-600 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-700/15 transition hover:bg-care-700">
-              Start your patient journey <ArrowRight className="size-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-ink-950 py-14 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[.22em] text-blue-300">Built around trust</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.035em] sm:text-4xl">Technology that respects how care really works</h2>
-            <p className="mt-4 text-base leading-7 text-blue-100/75">Thoughtful safeguards keep information useful for patients and accountable to hospitals.</p>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map(({ icon: Icon, title, body, tone }) => (
-              <article key={title} className="rounded-2xl border border-white/10 bg-white/[.07] p-6 backdrop-blur-sm transition hover:-translate-y-1 hover:bg-white/[.1]">
-                <span className={`grid size-12 place-items-center rounded-xl text-white ${tone}`}><Icon className="size-6" /></span>
-                <h3 className="mt-5 text-lg font-black">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-blue-100/75">{body}</p>
-              </article>
-            ))}
-          </div>
-          <div className="mt-8 grid grid-cols-2 gap-3 border-t border-white/10 pt-8 text-center sm:grid-cols-4">
-            {[
-              [Users, 'Patient-first'],
-              [ClipboardCheck, 'Auditable'],
-              [ShieldCheck, 'Role protected'],
-              [Stethoscope, 'Clinician led'],
-            ].map(([Icon, label]) => {
-              const ItemIcon = Icon as typeof Users
-              return <div key={label as string} className="flex items-center justify-center gap-2 text-sm font-bold text-blue-100"><ItemIcon className="size-4 text-blue-300" />{label as string}</div>
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-14 sm:py-20" id="support">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-[2rem] bg-care-700 px-6 py-12 shadow-[0_30px_70px_-35px_rgba(9,45,87,.55)] sm:px-12 lg:px-16">
-            <div className="absolute inset-0 opacity-20 [background:radial-gradient(circle_at_85%_30%,white,transparent_28%)]" />
-            <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
-              <div className="max-w-2xl text-white">
-                <p className="text-xs font-extrabold uppercase tracking-[.2em] text-blue-200">Ready when you are</p>
-                <h2 className="mt-3 text-3xl font-black tracking-[-0.03em] sm:text-4xl">A calmer hospital visit starts before you arrive.</h2>
-                <p className="mt-4 text-base leading-7 text-blue-100">Find verified care now, or create your secure patient space for the journey ahead.</p>
-              </div>
-              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <Link to="/doctors" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-care-800 shadow-lg transition hover:-translate-y-0.5">Find a doctor <ArrowRight className="size-4" /></Link>
-                <Link to="/register" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-white/20">Create account</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  )
+      <aside className="care-panel hidden flex-col justify-between xl:flex"><p className="flex items-center gap-2 text-xs font-semibold text-blue-800"><CalendarDays className="size-4" />{new Date().toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-IN', { weekday: 'short', day: 'numeric', month: 'long' })}</p><div><span className="text-5xl text-blue-200">“</span><p className="text-lg font-medium leading-7 text-blue-950">{text('A little clarity. A lot more care.', 'स्पष्ट जानकारी। बेहतर देखभाल।')}</p><p className="mt-4 text-right text-xs font-semibold text-blue-600">— SmartCare</p></div></aside>
+    </div>
+    <nav aria-label="Quick care services" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">{services.map(({ title, detail, icon: Icon, to, tone }) => <Link key={to} to={to} className="care-panel flex items-center gap-3 transition hover:-translate-y-1 hover:shadow-md"><span className={`grid size-12 shrink-0 place-items-center rounded-2xl ${tone}`}><Icon className="size-6" /></span><span><strong className="block text-sm text-blue-950">{title}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{detail}</span></span></Link>)}</nav>
+    <div className="grid gap-4 xl:grid-cols-[1.1fr_1fr_1fr]">
+      <section className="care-panel"><div className="care-panel-heading"><span className="flex items-center gap-2"><Stethoscope className="size-5 text-blue-600" />{text('Meet your care team', 'अपनी देखभाल टीम से मिलें')}</span><Link to="/doctors" className="text-xs text-blue-600">{text('View all', 'सभी देखें')} →</Link></div>{doctors.map(doctor => <Link to="/doctors" key={doctor.id} className="flex items-center gap-3 border-b border-blue-50 py-3 last:border-0"><IdentityAvatar name={doctor.name} /><span className="min-w-0 flex-1"><strong className="block truncate text-sm text-blue-950">{doctor.name}</strong><span className="block text-xs text-slate-500">{doctor.specialization}</span></span><span className="text-xs font-semibold text-blue-600">₹{doctor.consultationFee.toLocaleString('en-IN')}</span></Link>)}{!doctors.length && <p className="py-8 text-sm text-slate-500">{status === 'loading' ? text('Loading care team…', 'टीम लोड हो रही है…') : text('Browse the doctor directory to find your care team.', 'अपनी टीम खोजने के लिए डॉक्टर डायरेक्टरी खोलें।')}</p>}</section>
+      <section className="care-panel"><div className="care-panel-heading"><span className="flex items-center gap-2"><TicketCheck className="size-5 text-violet-600" />{text('Your next visit', 'आपकी अगली विज़िट')}</span></div><div className="rounded-xl bg-blue-50 p-5"><CalendarDays className="size-9 text-blue-400" /><h2 className="mt-4 text-lg font-semibold text-blue-950">{text('Your care, at a glance', 'आपकी देखभाल, एक नज़र में')}</h2><p className="mt-2 text-sm leading-6 text-slate-500">{text('Sign in to see your appointment, OPD number and the next action for your visit.', 'अपॉइंटमेंट, OPD नंबर और अगला कदम देखने के लिए साइन इन करें।')}</p><Link to="/dashboard" className="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm font-semibold text-blue-700">{text('Open My care', 'मेरी देखभाल खोलें')}<ArrowRight className="size-4" /></Link></div></section>
+      <section className="care-panel"><div className="care-panel-heading"><span className="flex items-center gap-2"><MapPin className="size-5 text-cyan-600" />{text('Hospital navigation', 'अस्पताल में रास्ता')}</span></div><img src={publicAsset('images/hospital-lobby.jpg')} alt="Hospital reception and indoor corridors" className="h-36 w-full rounded-xl object-cover" /><p className="mt-4 text-sm leading-6 text-slate-500">{text('Find departments, consultation rooms and services from your hospital checkpoint.', 'अस्पताल के चेकपॉइंट से विभाग, परामर्श कक्ष और सेवाएँ खोजें।')}</p><Link to="/navigate" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600">{text('Find my route', 'मेरा रास्ता खोजें')}<ArrowRight className="size-4" /></Link></section>
+    </div>
+    <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+      <section className="care-panel"><div className="care-panel-heading">{text('Everything for your care', 'आपकी देखभाल के लिए सब कुछ')}</div><div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{[{ to: '/records', label: text('Health records', 'स्वास्थ्य रिकॉर्ड'), Icon: FileHeart }, { to: '/follow-ups', label: text('Follow-ups', 'फ़ॉलो-अप'), Icon: Clock3 }, { to: '/blood-support', label: text('Blood support', 'रक्त सहायता'), Icon: Droplets }, { to: '/assistant', label: text('Care assistant', 'देखभाल सहायक'), Icon: ShieldCheck }].map(({ to, label, Icon }) => <Link to={to} key={to} className="rounded-xl bg-blue-50/70 p-4 text-center text-xs font-semibold text-blue-900"><Icon className="mx-auto mb-3 size-7 text-blue-500" />{label}</Link>)}</div></section>
+      <section className="relative overflow-hidden rounded-2xl border border-white bg-rose-50 p-6"><img src={publicAsset('images/smartcare-emergency-banner.png')} alt="Hospital ambulance" className="absolute inset-y-0 right-0 h-full w-1/2 object-cover" /><div className="absolute inset-0 bg-gradient-to-r from-rose-50 via-rose-50/90 to-transparent" /><div className="relative max-w-[65%]"><h2 className="text-lg font-semibold text-blue-950">{text('Ambulance support', 'एम्बुलेंस सहायता')}</h2><p className="mt-2 text-xs leading-5 text-slate-600">{text('Connect with your hospital transport team.', 'अपनी अस्पताल परिवहन टीम से जुड़ें।')}</p><Link to="/ambulance" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-rose-600">{text('Open support', 'सहायता खोलें')}<ArrowRight className="size-4" /></Link></div></section>
+    </div>
+  </div>
 }

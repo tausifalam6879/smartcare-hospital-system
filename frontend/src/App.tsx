@@ -47,7 +47,8 @@ function RoleHome() {
   const roles = session.user.roles
   if (roles.includes('DOCTOR')) return <Navigate to="/doctor/consultations" replace />
   if (roles.some((role) => ['RECEPTIONIST', 'CASHIER'].includes(role))) return <Navigate to="/operations" replace />
-  if (roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))) {
+  if (roles.some((role) => ['HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))) return <Navigate to="/operations" replace />
+  if (roles.some((role) => ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN'].includes(role))) {
     return <Navigate to="/staff/tasks" replace />
   }
   return <DashboardPage />

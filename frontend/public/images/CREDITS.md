@@ -11,3 +11,5 @@ The photographs are used as representative interface imagery and do not imply an
 `smartcare-queue-workstation.png` is a project-specific SmartCare interface visual supplied by the project owner.
 
 `smartcare-clinical-team.png` is an original AI-generated project illustration created for the SmartCare sidebar; it does not depict real clinicians.
+
+`smartcare-emergency-banner.png` is an original AI-generated project image created for the SmartCare operations hero; it does not depict a real hospital or ambulance provider.

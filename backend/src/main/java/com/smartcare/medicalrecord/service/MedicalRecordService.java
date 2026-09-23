@@ -1,5 +1,7 @@
 package com.smartcare.medicalrecord.service;
 
+import com.smartcare.common.time.HospitalDate;
+
 import com.smartcare.ai.domain.KnowledgeSourceType;
 import com.smartcare.ai.repository.KnowledgeIndexStateRepository;
 import com.smartcare.appointment.domain.Appointment;
@@ -170,7 +172,7 @@ public class MedicalRecordService {
                 .orElseThrow(() -> new AccessDeniedException("Patient account is unavailable."));
         Hospital hospital = hospitals.findById(hospitalId).filter(Hospital::isActive)
                 .orElseThrow(() -> new NotFoundException("Hospital was not found."));
-        if (documentDate.isAfter(LocalDate.now(clock))) {
+        if (documentDate.isAfter(HospitalDate.today(clock, hospital))) {
             throw new IllegalArgumentException("Document date cannot be in the future.");
         }
         String filename = safeFilename(file.getOriginalFilename());
