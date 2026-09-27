@@ -88,6 +88,34 @@
 .doctor-workspace form { border-radius:18px; }
 @media (max-width:1023px) { .care-sidebar { visibility:hidden; transform:translateX(-280px); transition:transform .2s,visibility .2s; } .care-sidebar.is-open { visibility:visible; transform:translateX(0); } .care-content { margin-left:0; } .care-topbar { padding:10px 12px; gap:6px; height:70px; } .care-page { padding:0 12px 20px; } }
 
+/* Desktop hero: reserve separate columns instead of fading faces behind copy. */
+@media (min-width: 1024px) {
+  .home-care-banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    background: #e3efff;
+  }
+  .home-care-banner-image {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+    object-position: center;
+    align-self: end;
+  }
+  .home-care-banner-overlay { display: none; }
+  .home-care-banner-copy {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    padding: 32px 24px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

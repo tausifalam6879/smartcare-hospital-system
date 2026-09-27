@@ -39,6 +39,17 @@ export function DoctorConsultationPage() {
   const [calling, setCalling] = useState(false), [orderingTest, setOrderingTest] = useState(false), [requestingBlood, setRequestingBlood] = useState(false)
   const [error, setError] = useState(''), [success, setSuccess] = useState('')
 
+  // Draft clinical data belongs to one appointment, never the next queue entry.
+  useEffect(() => {
+    setDiagnosis(''); setSymptoms(''); setNotes(''); setDischarge('')
+    setRecommendation(''); setFollowUpDate(''); setReminder(true)
+    setMedicineName(''); setDosage(''); setFrequency(''); setDuration(''); setPrescriptionInstructions('')
+    setAllergySubstance(''); setAllergyReaction(''); setAllergySeverity('MODERATE')
+    setProcedureId(''); setDiagnosticNote(''); setDiagnosticPriority('ROUTINE')
+    setBloodGroup('O_POSITIVE'); setBloodComponent('PACKED_RED_CELLS')
+    setBloodUnits(1); setBloodUrgency('URGENT'); setBloodReason('')
+  }, [appointmentId])
+
   const loadAppointments = useCallback(async () => {
     const data = await getDoctorAppointments()
     setAppointments(data)

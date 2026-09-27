@@ -84,9 +84,19 @@ class MedicalRecordIntegrationTest {
 
         var appointment = appointments.book(patient.user().id(), "record-appointment-1",
                 new BookingRequest(doctor.id(), today, PaymentMethod.CASH));
+        assertThatThrownBy(() -> checkIns.checkIn(patient.user().id(), List.of("PATIENT"),
+                appointment.id(), CheckInChannel.MOBILE_WEB))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("confirmed appointment");
         payments.confirmCash(appointment.id());
         checkIns.checkIn(patient.user().id(), List.of("PATIENT"), appointment.id(), CheckInChannel.MOBILE_WEB);
+        var nextAppointment = appointments.book(anotherPatient.user().id(), "record-appointment-2",
+                new BookingRequest(doctor.id(), today, PaymentMethod.CASH));
+        payments.confirmCash(nextAppointment.id());
+        checkIns.checkIn(anotherPatient.user().id(), List.of("PATIENT"), nextAppointment.id(),
+                CheckInChannel.MOBILE_WEB);
         queues.serveNext(doctor.id(), today);
+        assertThatThrownBy(() -> queues.serveNext(doctor.id(), today))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("Finalize");
 
         var visit = records.recordVisit(doctorAccount.user().id(), new VisitRecordRequest(appointment.id(),
                 "Fever and sore throat for two days", "Viral upper respiratory infection",
@@ -101,6 +111,11 @@ class MedicalRecordIntegrationTest {
                 .containsExactly("Paracetamol");
         assertThat(appointments.mine(patient.user().id())).singleElement()
                 .satisfies(item -> assertThat(item.status()).isEqualTo(AppointmentStatus.COMPLETED));
+        assertThat(queues.serveNext(doctor.id(), today).currentlyServingPosition())
+                .isEqualTo(nextAppointment.queuePosition());
+        assertThat(queues.patientSnapshot(anotherPatient.user().id(), nextAppointment.id()).status())
+                .isEqualTo(AppointmentStatus.IN_CONSULTATION);
+        assertThat(records.mine(anotherPatient.user().id()).visits()).isEmpty();
         assertThat(notifications.mine(patient.user().id())).extracting(item -> item.type())
                 .contains(NotificationType.VISIT_COMPLETED);
         var followUp = followUps.mine(patient.user().id()).get(0);
