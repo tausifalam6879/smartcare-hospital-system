@@ -105,4 +105,20 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:5173"));
     }
+
+    @Test
+    void forgedPublicRoleDoesNotCreateAdminAndAnonymousCannotIssueInvitations() throws Exception {
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(Map.of("mobileNumber", "+919000008001", "name", "Public User",
+                                "password", "unique-test-password", "roles", java.util.List.of("SUPER_ADMIN"), "accountType", "DOCTOR"))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.user.roles.length()").value(1))
+                .andExpect(jsonPath("$.user.roles[0]").value("PATIENT"));
+        mvc.perform(post("/api/v1/auth/staff-invitations").contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(post("/api/v1/auth/register-staff").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(Map.of("invitationCode", "fake", "accountType", "HOSPITAL_ADMIN",
+                                "patient", Map.of("mobileNumber", "+919000008002", "name", "Fake Staff", "password", "unique-test-password")))))
+                .andExpect(status().isForbidden());
+    }
 }

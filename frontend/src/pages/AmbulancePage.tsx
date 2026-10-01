@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { messageFromError } from '../services/api'
+import { api, messageFromError } from '../services/api'
 import { recommendAvailableAmbulance } from '../services/ambulanceRecommendation'
 import {
   acknowledgeAmbulance, advanceAmbulanceRequest, assignAmbulance, cancelAmbulanceRequest,
@@ -72,7 +72,7 @@ export function AmbulancePage() {
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    getNavigationHospitals().then((data) => {
+    (isDispatcher ? api.get<HospitalSummary[]>('/api/v1/hospitals/assigned').then(r => r.data) : getNavigationHospitals()).then((data) => {
       setHospitals(data)
       setHospitalId(data[0]?.id ?? '')
     }).catch((requestError) => setError(messageFromError(requestError)))

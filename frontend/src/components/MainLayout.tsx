@@ -39,15 +39,17 @@ export function MainLayout() {
   const admin = roles.some(role => ['HOSPITAL_ADMIN', 'SUPER_ADMIN'].includes(role))
   const desk = roles.some(role => ['RECEPTIONIST', 'CASHIER'].includes(role))
   const workspace = doctor ? '/doctor/consultations' : admin || desk ? '/operations' : staff ? '/staff/tasks' : '/dashboard'
-  const links = doctor ? [
+  const workspaceLinks = doctor ? [
     { to: '/doctor/consultations', label: 'Consultations', hi: 'परामर्श', icon: Stethoscope },
     { to: '/operations', label: 'Day operations', hi: 'आज का कार्य', icon: ClipboardList }, patientLinks[5],
   ] : staff ? [
+    ...(roles.includes('SUPER_ADMIN') ? [{ to: '/staff/access', label: 'Staff invitations', hi: 'स्टाफ invitations', icon: ClipboardList }] : []),
     ...(admin || desk ? [{ to: '/operations', label: 'Operations overview', hi: 'संचालन', icon: Home }] : []),
     ...(!desk ? [{ to: '/staff/tasks', label: 'My tasks', hi: 'मेरे कार्य', icon: ClipboardList }] : []),
     ...(admin || roles.includes('AMBULANCE_DISPATCHER') ? [patientLinks[9]] : []),
     ...(roles.some(role => ['LAB_TECHNICIAN', 'BLOOD_BANK_STAFF'].includes(role)) ? [{ to: '/blood-group-analysis', label: 'Slide review', hi: 'स्लाइड जाँच', icon: FlaskConical }] : []), patientLinks[5],
   ] : patientLinks
+  const links = [...workspaceLinks, ...(session ? [{ to: '/account', label: 'Account & security', hi: 'खाता और सुरक्षा', icon: FileHeart }] : [])]
   const results = search.trim() ? links.filter(link => `${link.label} ${link.hi}`.toLowerCase().includes(search.toLowerCase())) : []
   useEffect(() => { window.scrollTo(0, 0); setDrawer(false); setSearch('') }, [pathname])
   useEffect(() => {
@@ -78,7 +80,7 @@ export function MainLayout() {
         <div className="relative min-w-0 flex-1 max-w-xl"><label className="flex h-11 items-center gap-3 rounded-xl border border-blue-100 bg-white/80 px-4"><Search className="size-5 shrink-0 text-blue-500" /><input value={search} onChange={event => setSearch(event.target.value)} aria-label="Search services" placeholder={text('Search appointments, doctors, services…', 'अपॉइंटमेंट, डॉक्टर, सेवाएँ खोजें…')} className="min-w-0 w-full bg-transparent text-sm outline-none" /></label>{search && <div className="absolute inset-x-0 top-13 z-50 rounded-xl border border-blue-100 bg-white p-2 shadow-xl">{results.length ? results.map(link => <NavLink className="block rounded-lg px-3 py-3 text-sm hover:bg-blue-50" key={link.to} to={link.to}>{language === 'hi' ? link.hi : link.label}</NavLink>) : <p className="px-3 py-3 text-sm text-slate-500">{text('No matching services', 'कोई सेवा नहीं मिली')}</p>}</div>}</div>
         <button onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} aria-label="Switch language" className="flex items-center gap-1 rounded-xl px-2 py-2 text-xs font-bold text-blue-800"><Languages className="size-4" />{language === 'en' ? 'हिं' : 'EN'}</button>
         {patient && <NavLink to="/notifications" aria-label={`${unread} unread notifications`} className="relative p-2 text-blue-800"><Bell className="size-5" />{unread > 0 && <span className="absolute right-0 top-0 size-2 rounded-full bg-rose-500" />}</NavLink>}
-        {session ? <><NavLink to={workspace} className="flex items-center gap-3"><IdentityAvatar name={session.user.displayName} size="sm" /><span className="hidden xl:block"><strong className="block text-sm text-blue-950">{session.user.displayName}</strong><span className="text-xs text-slate-500">{roleLabel}</span></span></NavLink><button aria-label="Sign out" onClick={() => { logout(); navigate('/login', { replace: true }) }} className="p-2 text-slate-500 hover:text-rose-600"><LogOut className="size-4" /></button></> : <NavLink to="/login" className="flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white"><LogIn className="size-4" /><span className="hidden sm:inline">{text('Sign in', 'साइन इन')}</span></NavLink>}
+        {session ? <><NavLink to={workspace} className="flex items-center gap-3"><IdentityAvatar imageUrl={session.user.photo} name={session.user.displayName} size="sm" /><span className="hidden xl:block"><strong className="block text-sm text-blue-950">{session.user.displayName}</strong><span className="text-xs text-slate-500">{roleLabel}</span></span></NavLink><button aria-label="Sign out" onClick={() => { logout(); navigate('/login', { replace: true }) }} className="p-2 text-slate-500 hover:text-rose-600"><LogOut className="size-4" /></button></> : <NavLink to="/login" className="flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white"><LogIn className="size-4" /><span className="hidden sm:inline">{text('Sign in', 'साइन इन')}</span></NavLink>}
       </header>
       {isStaticDemo && <p className="mx-5 rounded-xl bg-amber-50 p-3 text-xs text-amber-900">Public portfolio prototype · Sample data</p>}
       <main className="care-page"><Outlet /></main>

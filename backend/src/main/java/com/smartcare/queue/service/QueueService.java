@@ -18,6 +18,7 @@ import com.smartcare.queue.web.QueueDtos.PatientQueueResponse;
 import com.smartcare.queue.web.QueueDtos.PublicQueueResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,8 @@ import java.util.UUID;
 
 @Service
 public class QueueService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
 
     private static final EnumSet<AppointmentStatus> LIVE_STATUSES = EnumSet.of(
             AppointmentStatus.CONFIRMED, AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_CONSULTATION);
@@ -78,6 +81,15 @@ public class QueueService {
     public PublicQueueResponse serveNext(UUID doctorId, LocalDate date) {
         Doctor doctor = doctors.findByIdForUpdate(doctorId)
                 .orElseThrow(() -> new NotFoundException("Doctor was not found."));
+        var actor = SecurityContextHolder.getContext().getAuthentication();
+        boolean deskOrAdmin = actor.getAuthorities().stream().anyMatch(authority ->
+                List.of("ROLE_RECEPTIONIST", "ROLE_HOSPITAL_ADMIN", "ROLE_SUPER_ADMIN")
+                        .contains(authority.getAuthority()));
+        if (!deskOrAdmin && (doctor.getLinkedUser() == null
+                || !doctor.getLinkedUser().getId().toString().equals(actor.getName()) || !doctor.isActive())) {
+            throw new AccessDeniedException("You can call patients only from your own active doctor queue.");
+        }
+        hospitalAccess.requireCurrent(doctor.getHospital().getId());
         Appointment current = appointments.findFirstByDoctorIdAndServiceDateAndStatusOrderByQueuePositionAsc(
                 doctorId, date, AppointmentStatus.IN_CONSULTATION).orElse(null);
         Instant now = clock.instant();

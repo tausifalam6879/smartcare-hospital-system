@@ -66,6 +66,8 @@ import java.util.UUID;
 
 @Service
 public class BloodBankService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private static final Set<Role> REQUEST_CREATOR_ROLES = Set.of(
             Role.DOCTOR, Role.BLOOD_BANK_STAFF, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private static final Set<Role> BLOOD_STAFF_ROLES = Set.of(
@@ -117,6 +119,7 @@ public class BloodBankService {
 
     @Transactional
     public BloodBankResponse createBank(BloodBankRequest request) {
+        hospitalAccess.requireCurrent(request.hospitalId());
         Hospital hospital = requireHospital(request.hospitalId());
         String code = request.code().trim().toUpperCase(Locale.ROOT);
         if (bloodBanks.existsByHospitalIdAndCodeIgnoreCase(hospital.getId(), code)) {
@@ -133,6 +136,7 @@ public class BloodBankService {
     public InventoryResponse verifyInventory(UUID staffUserId, InventoryRequest request) {
         UserAccount verifier = requireBloodStaff(staffUserId);
         BloodBank bank = requireBank(request.bloodBankId());
+        hospitalAccess.require(staffUserId, bank.getHospital().getId());
         Instant now = clock.instant();
         String batchReference = request.batchReference().trim().toUpperCase(Locale.ROOT);
         BloodInventoryBatch batch = inventory.findByBankAndBatchForUpdate(bank.getId(), batchReference)
@@ -155,6 +159,7 @@ public class BloodBankService {
     @Transactional
     public List<InventoryResponse> inventory(UUID staffUserId, UUID hospitalId,
                                              BloodGroup bloodGroup, BloodComponent component) {
+        hospitalAccess.require(staffUserId, hospitalId);
         requireBloodStaff(staffUserId);
         requireHospital(hospitalId);
         audit.record("BLOOD_INVENTORY_VIEWED", "HOSPITAL", hospitalId, hospitalId);
@@ -196,6 +201,7 @@ public class BloodBankService {
 
     @Transactional
     public BloodRequestResponse createRequest(UUID actorUserId, CreateBloodRequest request) {
+        hospitalAccess.require(actorUserId, request.hospitalId());
         UserAccount actor = requireRequestCreator(actorUserId);
         BloodRequest existing = requests.findByCreatedByIdAndIdempotencyKey(actorUserId,
                 request.idempotencyKey().trim()).orElse(null);
@@ -220,6 +226,7 @@ public class BloodBankService {
     public BloodRequestResponse searchAgain(UUID staffUserId, UUID requestId) {
         requireBloodStaff(staffUserId);
         BloodRequest request = requireRequestForUpdate(requestId);
+        hospitalAccess.require(staffUserId, request.getHospital().getId());
         if (request.getStatus() != BloodRequestStatus.UNAVAILABLE
                 && request.getStatus() != BloodRequestStatus.PARTIALLY_RESERVED
                 && request.getStatus() != BloodRequestStatus.SEARCHING) {
@@ -236,6 +243,7 @@ public class BloodBankService {
     public BloodRequestResponse fulfil(UUID staffUserId, UUID requestId) {
         requireBloodStaff(staffUserId);
         BloodRequest request = requireRequestForUpdate(requestId);
+        hospitalAccess.require(staffUserId, request.getHospital().getId());
         Instant now = clock.instant();
         List<BloodAllocation> active = allocations.findAllByRequestIdAndStatus(
                 requestId, BloodAllocationStatus.RESERVED);
@@ -256,6 +264,7 @@ public class BloodBankService {
     public BloodRequestResponse cancel(UUID actorUserId, UUID requestId, CancelBloodRequest body) {
         UserAccount actor = requireRequestCreator(actorUserId);
         BloodRequest request = requireRequestForUpdate(requestId);
+        hospitalAccess.require(actorUserId, request.getHospital().getId());
         boolean staff = hasAnyRole(actor, BLOOD_STAFF_ROLES);
         if (!staff && !request.getCreatedBy().getId().equals(actorUserId)) {
             throw new AccessDeniedException("Only the creating clinician or blood-bank staff can cancel this request.");
@@ -284,6 +293,7 @@ public class BloodBankService {
 
     @Transactional
     public List<BloodRequestResponse> worklist(UUID staffUserId, UUID hospitalId, BloodRequestStatus status) {
+        hospitalAccess.require(staffUserId, hospitalId);
         requireBloodStaff(staffUserId);
         requireHospital(hospitalId);
         audit.record("BLOOD_REQUEST_WORKLIST_VIEWED", "HOSPITAL", hospitalId, hospitalId);
@@ -322,6 +332,13 @@ public class BloodBankService {
     @Transactional
     public DonorResponse verifyDonor(UUID staffUserId, UUID donorId, DonorVerificationRequest request) {
         UserAccount staff = requireBloodStaff(staffUserId);
+        // Donor consent is network-wide, but a detached/revoked staff account
+        // must not retain global verification authority merely from its role.
+        if (!staff.getRoles().contains(Role.SUPER_ADMIN)) {
+            var assignedHospital = staff.getHospitalIds().stream().findFirst()
+                    .orElseThrow(() -> new AccessDeniedException("An active hospital assignment is required to verify donors."));
+            hospitalAccess.require(staffUserId, assignedHospital);
+        }
         DonorOptIn donor = donors.findById(donorId)
                 .orElseThrow(() -> new NotFoundException("Donor consent was not found."));
         transition(() -> donor.verify(request.verifiedBloodGroup(), request.eligibilityStatus(),
@@ -335,6 +352,7 @@ public class BloodBankService {
         requireBloodStaff(staffUserId);
         BloodRequest request = requests.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Blood request was not found."));
+        hospitalAccess.require(staffUserId, request.getHospital().getId());
         if (request.getStatus() != BloodRequestStatus.UNAVAILABLE
                 && request.getStatus() != BloodRequestStatus.PARTIALLY_RESERVED) {
             throw new ConflictException("Donor matching is available only after verified inventory is insufficient.");

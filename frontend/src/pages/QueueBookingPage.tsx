@@ -129,6 +129,7 @@ export function QueueBookingPage() {
   const [serviceDate, setServiceDate] = useState(tomorrow)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH')
   const [availability, setAvailability] = useState<Availability | null>(null)
+  const [capacityRevision, setCapacityRevision] = useState(0)
   const [availabilityState, setAvailabilityState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const [availabilityError, setAvailabilityError] = useState('')
   const [result, setResult] = useState<Appointment | null>(null)
@@ -278,7 +279,7 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
         setAvailabilityState('error')
       })
     return () => { active = false }
-  }, [doctorId, selectedReferenceFacility, serviceDate])
+  }, [doctorId, selectedReferenceFacility, serviceDate, capacityRevision])
 
   const visibleDoctors = useMemo(() => {
     if (!selectedReferenceFacility && !hospitalId) return []
@@ -414,6 +415,7 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
     try {
       const appointment = await createAppointment(doctorId, serviceDate, paymentMethod)
       setResult(appointment)
+      setCapacityRevision((revision) => revision + 1)
       if (appointment.paymentMethod === 'ONLINE' && appointment.status === 'RESERVED_PENDING_PAYMENT') {
         setPayment(await createPaymentIntent(appointment.id))
         setPaymentFlow('review')
@@ -432,7 +434,7 @@ const [waitTimePrediction, setWaitTimePrediction] = useState<WaitTimePrediction 
     try {
       setResult(await cancelAppointment(result.id))
       setPayment((current) => current ? { ...current, status: current.status === 'PENDING' ? 'CANCELLED' : current.status } : null)
-      if (doctorId && serviceDate) setAvailability(await getAvailability(doctorId, serviceDate))
+      setCapacityRevision((revision) => revision + 1)
     } catch (requestError) {
       setError(messageFromError(requestError))
     } finally {

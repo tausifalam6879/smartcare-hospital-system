@@ -39,6 +39,8 @@ import java.util.UUID;
 
 @Service
 public class BloodGroupImageAnalysisService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private static final Set<Role> REVIEW_ROLES = Set.of(Role.LAB_TECHNICIAN, Role.BLOOD_BANK_STAFF,
             Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private static final Set<Role> OBSERVATION_ROLES = Set.of(Role.LAB_TECHNICIAN, Role.BLOOD_BANK_STAFF);
@@ -115,6 +117,7 @@ public class BloodGroupImageAnalysisService {
 
     @Transactional(readOnly = true)
     public List<AnalysisResponse> worklist(UUID userId, UUID hospitalId, BloodGroupAnalysisStatus status) {
+        hospitalAccess.require(userId, hospitalId);
         requireRole(userId, REVIEW_ROLES);
         if (!hospitals.existsById(hospitalId)) throw new NotFoundException("Hospital was not found.");
         List<BloodGroupImageAnalysis> rows = status == null
@@ -130,6 +133,7 @@ public class BloodGroupImageAnalysisService {
         boolean owner = analysis.getPatient().getUser().getId().equals(userId);
         boolean reviewer = actor.getRoles().stream().anyMatch(REVIEW_ROLES::contains);
         if (!owner && !reviewer) throw new AccessDeniedException("This image belongs to another patient.");
+        if (!owner) hospitalAccess.require(userId, analysis.getHospital().getId());
         audit.record("BLOOD_GROUP_IMAGE_VIEWED", "BLOOD_GROUP_IMAGE_ANALYSIS", analysisId,
                 analysis.getHospital().getId());
         return new DownloadedImage(analysis.getOriginalFilename(), analysis.getContentType(),
@@ -140,6 +144,7 @@ public class BloodGroupImageAnalysisService {
     public AnalysisResponse recordObservations(UUID userId, UUID analysisId, RecordObservations input) {
         UserAccount actor = requireRole(userId, OBSERVATION_ROLES);
         BloodGroupImageAnalysis analysis = requireAnalysisForUpdate(analysisId);
+        hospitalAccess.require(userId, analysis.getHospital().getId());
         transition(() -> analysis.recordObservations(input.antiAReactive(), input.antiBReactive(),
                 input.antiDReactive(), actor, input.note(), clock.instant()));
         audit.record("BLOOD_GROUP_OBSERVATIONS_RECORDED", "BLOOD_GROUP_IMAGE_ANALYSIS", analysisId,
@@ -153,6 +158,7 @@ public class BloodGroupImageAnalysisService {
     public AnalysisResponse verify(UUID userId, UUID analysisId, VerifyAnalysis input) {
         UserAccount actor = requireRole(userId, REVIEW_ROLES);
         BloodGroupImageAnalysis analysis = requireAnalysisForUpdate(analysisId);
+        hospitalAccess.require(userId, analysis.getHospital().getId());
         transition(() -> analysis.verify(input.confirmedGroup(), actor, clock.instant()));
         audit.record("BLOOD_GROUP_ANALYSIS_VERIFIED", "BLOOD_GROUP_IMAGE_ANALYSIS", analysisId,
                 analysis.getHospital().getId());
@@ -166,6 +172,7 @@ public class BloodGroupImageAnalysisService {
     public AnalysisResponse reject(UUID userId, UUID analysisId, RejectAnalysis input) {
         UserAccount actor = requireRole(userId, REVIEW_ROLES);
         BloodGroupImageAnalysis analysis = requireAnalysisForUpdate(analysisId);
+        hospitalAccess.require(userId, analysis.getHospital().getId());
         transition(() -> analysis.reject(actor, input.reason(), clock.instant()));
         audit.record("BLOOD_GROUP_ANALYSIS_REJECTED", "BLOOD_GROUP_IMAGE_ANALYSIS", analysisId,
                 analysis.getHospital().getId());

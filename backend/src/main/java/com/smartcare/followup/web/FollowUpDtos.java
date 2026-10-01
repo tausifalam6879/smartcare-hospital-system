@@ -15,5 +15,6 @@ public final class FollowUpDtos {
     public record FollowUpResponse(UUID id, UUID clinicalVisitId, LocalDate visitDate, LocalDate followUpDate,
                                    String hospitalName, String doctorName, String specialization,
                                    String instructions, boolean medicationReminderEnabled,
-                                   FollowUpStatus status, boolean overdue, Instant patientResponseAt) {}
+                                   FollowUpStatus status, boolean overdue, Instant patientResponseAt,
+                                   boolean canClose) {}
 }

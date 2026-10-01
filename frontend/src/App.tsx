@@ -16,6 +16,9 @@ import { NotificationsPage } from './pages/NotificationsPage'
 import { NavigationPage } from './pages/NavigationPage'
 import { QueueBookingPage } from './pages/QueueBookingPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { StaffAccessPage } from './pages/StaffAccessPage'
+import { AccountPage } from './pages/AccountPage'
+import { RecoverAccountPage } from './pages/RecoverAccountPage'
 import { OperationsPage } from './pages/OperationsPage'
 import { BloodGroupAnalysisPage } from './pages/BloodGroupAnalysisPage'
 import { HospitalDirectoryPage } from './pages/HospitalDirectoryPage'
@@ -79,6 +82,9 @@ export function App() {
         <Route path="navigate/:checkpointCode" element={<NavigationPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="recover" element={<RecoverAccountPage />} />
+        <Route path="account" element={<Protected page={<AccountPage />} />} />
+        <Route path="staff/access" element={<RoleProtected roles={['SUPER_ADMIN']} page={<StaffAccessPage />} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

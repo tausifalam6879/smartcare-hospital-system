@@ -89,7 +89,9 @@ public class CareFollowUpService {
         return new FollowUpResponse(item.getId(), item.getClinicalVisit().getId(),
                 item.getClinicalVisit().getVisitDate(), item.getFollowUpDate(), item.getHospital().getName(),
                 item.getDoctor().getName(), item.getDoctor().getSpecialization(), item.getInstructions(),
-                item.isMedicationReminderEnabled(), item.getStatus(), overdue, item.getPatientResponseAt());
+                item.isMedicationReminderEnabled(), item.getStatus(), overdue, item.getPatientResponseAt(),
+                !HospitalDate.today(clock, item.getHospital()).isBefore(item.getFollowUpDate())
+                        && item.getStatus() != FollowUpStatus.COMPLETED && item.getStatus() != FollowUpStatus.MISSED);
     }
 
     private Patient requirePatient(UUID userId) {

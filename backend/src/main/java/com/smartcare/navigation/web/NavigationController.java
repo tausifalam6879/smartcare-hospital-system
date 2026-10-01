@@ -28,6 +28,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/navigation")
 public class NavigationController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private final NavigationService service;
 
     public NavigationController(NavigationService service) {
@@ -65,6 +67,7 @@ public class NavigationController {
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public LocationResponse createLocation(@PathVariable UUID hospitalId,
                                            @Valid @RequestBody LocationRequest request) {
+        hospitalAccess.requireCurrent(hospitalId);
         return service.createLocation(hospitalId, request);
     }
 
@@ -72,6 +75,7 @@ public class NavigationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public void createPath(@PathVariable UUID hospitalId, @Valid @RequestBody PathRequest request) {
+        hospitalAccess.requireCurrent(hospitalId);
         service.createPath(hospitalId, request);
     }
 
@@ -80,6 +84,7 @@ public class NavigationController {
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     public CheckpointResponse createCheckpoint(@PathVariable UUID hospitalId,
                                                @Valid @RequestBody CheckpointRequest request) {
+        hospitalAccess.requireCurrent(hospitalId);
         return service.createCheckpoint(hospitalId, request);
     }
 }

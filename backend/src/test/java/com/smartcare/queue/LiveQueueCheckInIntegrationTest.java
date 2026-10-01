@@ -43,6 +43,7 @@ class LiveQueueCheckInIntegrationTest {
     @Autowired QueueService queues;
     @Autowired NotificationService notifications;
     @Autowired AuthService auth;
+    @Autowired com.smartcare.auth.repository.UserAccountRepository scopeUsers;
     @Autowired HospitalService hospitals;
     @Autowired DoctorService doctors;
 
@@ -52,6 +53,7 @@ class LiveQueueCheckInIntegrationTest {
         LocalDate visitDate = LocalDate.now();
         var hospital = hospitals.create(new HospitalRequest("SC-LIVE-1", "Live Queue Test Hospital",
                 "4 Queue Road", "Delhi", "Delhi", "110001", "+911112345688", "Asia/Kolkata", true));
+        com.smartcare.StaffTestIdentity.signIn(scopeUsers, hospital.id(), com.smartcare.auth.domain.Role.CASHIER, com.smartcare.auth.domain.Role.RECEPTIONIST, com.smartcare.auth.domain.Role.HOSPITAL_ADMIN);
         var department = hospitals.createDepartment(hospital.id(),
                 new DepartmentRequest("OPD", "General OPD", "Live queue test department"));
         var doctor = doctors.create(new DoctorRequest(hospital.id(), department.id(), "Dr. Queue Test",

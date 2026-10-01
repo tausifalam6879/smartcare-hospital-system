@@ -18,6 +18,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.security.AuthAttemptLimiter attempts;
 
     private final AuthService service;
 
@@ -27,7 +29,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+    AuthResponse register(@Valid @RequestBody RegisterRequest request, jakarta.servlet.http.HttpServletRequest http) {
+        attempts.check("signup-ip:" + http.getRemoteAddr());
         return service.register(request);
     }
 

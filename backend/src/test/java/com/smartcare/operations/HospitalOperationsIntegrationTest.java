@@ -72,6 +72,7 @@ class HospitalOperationsIntegrationTest {
         AuthResponse otherPatient = patient("82", "operations.other");
         AuthResponse admin = patient("83", "operations.admin");
         users.findById(admin.user().id()).orElseThrow().grantRole(Role.HOSPITAL_ADMIN);
+        users.findById(admin.user().id()).orElseThrow().assignHospital(hospital.id());
 
         var booked = appointments.book(patient.user().id(), "ops-booking",
                 new BookingRequest(doctor.id(), originalDate, PaymentMethod.CASH));
@@ -112,6 +113,20 @@ class HospitalOperationsIntegrationTest {
         assertThat(notifications.findAll()).extracting(item -> item.getType()).contains(
                 NotificationType.DOCTOR_UNAVAILABLE, NotificationType.APPOINTMENT_RECOVERY_REQUIRED,
                 NotificationType.APPOINTMENT_RESCHEDULED, NotificationType.DOCTOR_DELAYED);
+
+        // Explicit membership must not bypass deactivation of a clinician's profile.
+        var clinician = patient("84", "operations.clinician");
+        doctors.linkAccount(doctor.id(), new com.smartcare.doctor.web.DoctorDtos.LinkAccountRequest(clinician.user().id()));
+        users.findById(clinician.user().id()).orElseThrow().assignHospital(hospital.id());
+        assertThat(operations.dashboard(clinician.user().id(), hospital.id(), targetDate).totalAppointments()).isEqualTo(1);
+        doctors.update(doctor.id(), new DoctorRequest(hospital.id(), department.id(), "Dr. Flow Control",
+                "Internal Medicine", "SC-OPS-DOC-1", new BigDecimal("700.00"), 15, 5,
+                "Block O", "2nd Floor", "OPD 11", false));
+        assertThatThrownBy(() -> operations.dashboard(clinician.user().id(), hospital.id(), targetDate))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> operations.updateDoctorStatus(clinician.user().id(), new UpdateDoctorDayStatus(
+                doctor.id(), targetDate, DoctorDayStatus.ON_TIME, "Test-only status")))
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     private AuthResponse patient(String digits, String label) {

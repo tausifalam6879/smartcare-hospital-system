@@ -54,6 +54,8 @@ class BloodGroupImageAnalysisIntegrationTest {
         AuthResponse verifier = account("94", "blood.image.verifier");
         users.findById(observer.user().id()).orElseThrow().grantRole(Role.LAB_TECHNICIAN);
         users.findById(verifier.user().id()).orElseThrow().grantRole(Role.BLOOD_BANK_STAFF);
+        users.findById(verifier.user().id()).orElseThrow().assignHospital(hospital.id());
+        users.findById(observer.user().id()).orElseThrow().assignHospital(hospital.id());
 
         var image = new MockMultipartFile("file", "slide.png", "image/png", png());
         assertThatThrownBy(() -> analyses.submit(patient.user().id(), hospital.id(), false, image))

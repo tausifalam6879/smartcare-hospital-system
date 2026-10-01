@@ -34,6 +34,8 @@ import java.util.UUID;
 
 @Service
 public class CheckInService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
 
     private static final Set<String> STAFF_ROLES = Set.of("DOCTOR", "RECEPTIONIST", "HOSPITAL_ADMIN", "SUPER_ADMIN");
     private final CheckInRepository checkIns;
@@ -103,6 +105,14 @@ public class CheckInService {
         boolean staff = roles != null && roles.stream().anyMatch(STAFF_ROLES::contains);
         Patient actorPatient = patients.findByUserId(actorUserId).orElse(null);
         boolean owner = actorPatient != null && appointment.getPatient().getId().equals(actorPatient.getId());
+        if (staff && !owner) hospitalAccess.require(actorUserId, appointment.getHospital().getId());
+        boolean doctorOnly = staff && roles.contains("DOCTOR") && roles.stream().noneMatch(role ->
+                role.equals("RECEPTIONIST") || role.equals("HOSPITAL_ADMIN") || role.equals("SUPER_ADMIN"));
+        if (doctorOnly && !owner && (!appointment.getDoctor().isActive()
+                || appointment.getDoctor().getLinkedUser() == null
+                || !appointment.getDoctor().getLinkedUser().getId().equals(actorUserId))) {
+            throw new AccessDeniedException("Doctors can access check-in only for their own patients.");
+        }
         if (!staff && !owner) throw new AccessDeniedException("You cannot check in this appointment.");
         if (validateChannel && !staff && channel != CheckInChannel.MOBILE_WEB && channel != CheckInChannel.QR_CODE) {
             throw new AccessDeniedException("Reception and kiosk check-in must be verified by hospital staff.");

@@ -26,6 +26,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/doctors")
 public class DoctorController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
 
     private final DoctorService service;
 
@@ -52,12 +54,14 @@ public class DoctorController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     DoctorResponse create(@Valid @RequestBody DoctorRequest request) {
+        hospitalAccess.requireCurrent(request.hospitalId());
         return service.create(request);
     }
 
     @PutMapping("/{doctorId}")
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     DoctorResponse update(@PathVariable UUID doctorId, @Valid @RequestBody DoctorRequest request) {
+        hospitalAccess.requireCurrent(service.get(doctorId).hospitalId());
         return service.update(doctorId, request);
     }
 
@@ -65,6 +69,7 @@ public class DoctorController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     ScheduleResponse addSchedule(@PathVariable UUID doctorId, @Valid @RequestBody ScheduleRequest request) {
+        hospitalAccess.requireCurrent(service.get(doctorId).hospitalId());
         return service.addSchedule(doctorId, request);
     }
 
@@ -72,12 +77,13 @@ public class DoctorController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     void removeSchedule(@PathVariable UUID doctorId, @PathVariable UUID scheduleId) {
+        hospitalAccess.requireCurrent(service.get(doctorId).hospitalId());
         service.removeSchedule(doctorId, scheduleId);
     }
 
     @PostMapping("/{doctorId}/account-link")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     void linkAccount(@PathVariable UUID doctorId, @Valid @RequestBody LinkAccountRequest request) {
         service.linkAccount(doctorId, request);
     }

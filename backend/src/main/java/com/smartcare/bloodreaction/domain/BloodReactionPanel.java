@@ -19,6 +19,10 @@ import java.time.Instant;
 @Entity
 @Table(name = "blood_reaction_panels")
 public class BloodReactionPanel extends AuditableEntity {
+    @Column(name="hospital_id")
+    private java.util.UUID hospitalId;
+    public java.util.UUID getHospitalId() { return hospitalId; }
+    public void assignHospital(java.util.UUID id) { hospitalId = java.util.Objects.requireNonNull(id); }
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;

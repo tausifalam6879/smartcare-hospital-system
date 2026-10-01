@@ -6,7 +6,6 @@ import { api, messageFromError } from '../services/api'
 import { getAmbulanceWorklist, type AmbulanceRequest } from '../services/ambulances'
 import { getVerifiedDonorMatches, type BloodRequest, type DonorMatch } from '../services/bloodBank'
 import { verifyDiagnosticResult, type DiagnosticOrder, type DiagnosticResultFlag } from '../services/diagnostics'
-import { getNavigationHospitals } from '../services/navigation'
 import { localDateString } from '../utils/appointmentLifecycle'
 
 const operationalRoles = ['AMBULANCE_DISPATCHER', 'BLOOD_BANK_STAFF', 'LAB_TECHNICIAN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']
@@ -48,7 +47,7 @@ export function StaffTaskInboxPage() {
   }, [isOperational, seesAmbulance, seesBlood, seesLab])
 
   useEffect(() => {
-    getNavigationHospitals().then((hospitals) => {
+    api.get<{ id: string; name: string }[]>('/api/v1/hospitals/assigned').then(({ data: hospitals }) => {
       setHospitals(hospitals)
       const id = hospitals[0]?.id ?? ''
       setHospitalId(id)

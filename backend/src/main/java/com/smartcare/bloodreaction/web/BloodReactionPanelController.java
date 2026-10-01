@@ -31,8 +31,8 @@ public class BloodReactionPanelController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('PATIENT')")
     public PanelResponse submit(@AuthenticationPrincipal Jwt jwt, @RequestPart MultipartFile antiAFile,
-                                @RequestPart MultipartFile antiBFile, @RequestPart MultipartFile antiDFile) {
-        return service.submit(UUID.fromString(jwt.getSubject()), antiAFile, antiBFile, antiDFile);
+                                @RequestPart MultipartFile antiBFile, @RequestPart MultipartFile antiDFile, @RequestParam UUID hospitalId) {
+        return service.submit(UUID.fromString(jwt.getSubject()), hospitalId, antiAFile, antiBFile, antiDFile);
     }
     @GetMapping("/mine")
     @PreAuthorize("hasRole('PATIENT')")

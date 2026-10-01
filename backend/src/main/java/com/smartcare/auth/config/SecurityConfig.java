@@ -40,8 +40,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/actuator/health/**",
-                                "/api/v1/payments/webhooks/**").permitAll()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/register-staff", "/api/v1/auth/login", "/actuator/health/**",
+                                "/api/v1/auth/recover", "/api/v1/payments/webhooks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/hospitals/**", "/api/v1/doctors/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/appointments/availability").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/diagnostics/procedures",
@@ -79,8 +79,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder(SecretKey key) {
-        return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
+    JwtDecoder jwtDecoder(SecretKey key, JwtProperties properties, com.smartcare.auth.repository.UserAccountRepository users) {
+        var decoder = NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
+        org.springframework.security.oauth2.core.OAuth2TokenValidator<org.springframework.security.oauth2.jwt.Jwt> accountValidator = jwt -> {
+            try {
+                var account = users.findById(java.util.UUID.fromString(jwt.getSubject())).orElseThrow();
+                Number version = jwt.getClaim("sessionVersion");
+                if (account.getStatus() == com.smartcare.auth.domain.AccountStatus.ACTIVE
+                        && version != null && version.longValue() == account.getSessionVersion()
+                        && new java.util.HashSet<>(jwt.getClaimAsStringList("roles")).equals(
+                        account.getRoles().stream().map(Enum::name).collect(java.util.stream.Collectors.toSet())))
+                    return org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.success();
+            } catch (RuntimeException ignored) { }
+            return org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.failure(
+                    new org.springframework.security.oauth2.core.OAuth2Error("invalid_token", "Session expired or revoked. Sign in again.", null));
+        };
+        decoder.setJwtValidator(new org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator<>(
+                org.springframework.security.oauth2.jwt.JwtValidators.createDefaultWithIssuer(properties.issuer()), accountValidator));
+        return decoder;
     }
 
     @Bean

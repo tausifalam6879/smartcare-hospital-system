@@ -61,7 +61,10 @@ public final class AppointmentDtos {
             Instant checkedInAt,
             Instant consultationStartedAt,
             Instant completedAt,
-            Instant createdAt
+            Instant createdAt,
+            String patientName,
+            String patientGender,
+            String patientPhoto
     ) {
     }
 }

@@ -54,4 +54,7 @@ public class Patient extends AuditableEntity {
     public UserAccount getUser() {
         return user;
     }
+
+    public String getGender() { return gender; }
+    public void setGender(String value) { gender = value; }
 }

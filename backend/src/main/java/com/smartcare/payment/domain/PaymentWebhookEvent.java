@@ -56,5 +56,6 @@ public class PaymentWebhookEvent extends AuditableEntity {
     }
 
     public Payment getPayment() { return payment; }
+    public String getPayloadSha256() { return payloadSha256; }
     public String getProviderEventId() { return providerEventId; }
 }

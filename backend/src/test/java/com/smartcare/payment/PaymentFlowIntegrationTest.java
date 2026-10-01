@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.smartcare.common.error.ConflictException;
+import org.springframework.security.access.AccessDeniedException;
 
 @SpringBootTest
 @Transactional
@@ -44,6 +47,7 @@ class PaymentFlowIntegrationTest {
     @Autowired PaymentService payments;
     @Autowired AppointmentService appointments;
     @Autowired AuthService auth;
+    @Autowired com.smartcare.auth.repository.UserAccountRepository scopeUsers;
     @Autowired HospitalService hospitals;
     @Autowired DoctorService doctors;
     @Autowired PaymentProperties paymentProperties;
@@ -101,10 +105,57 @@ class PaymentFlowIntegrationTest {
         assertThat(confirmation.payment().receiptNumber()).startsWith("RVQ-CASH-");
     }
 
+    @Test
+    void retryKeyCannotReturnPaymentForAnotherAppointment() {
+        Fixture fixture = fixture("ONLINE");
+        var first = appointments.book(fixture.patient().user().id(), "first",
+                new BookingRequest(fixture.doctorId(), fixture.visitDate(), PaymentMethod.ONLINE));
+        payments.createIntent(fixture.patient().user().id(), first.id(), "shared-key");
+        var second = appointments.book(fixture.patient().user().id(), "second",
+                new BookingRequest(fixture.doctorId(), fixture.visitDate().plusWeeks(1), PaymentMethod.ONLINE));
+        assertThatThrownBy(() -> payments.createIntent(fixture.patient().user().id(), second.id(), "shared-key"))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("different appointment");
+        assertThat(payments.mine(fixture.patient().user().id())).hasSize(1);
+    }
+
+    @Test
+    void changedWebhookReplayIsRejectedAndInvalidSignatureCannotConfirmPayment() throws Exception {
+        Fixture fixture = fixture("ONLINE");
+        var appointment = appointments.book(fixture.patient().user().id(), "replay-booking",
+                new BookingRequest(fixture.doctorId(), fixture.visitDate(), PaymentMethod.ONLINE));
+        var intent = payments.createIntent(fixture.patient().user().id(), appointment.id(), "replay-intent");
+        String body = objectMapper.writeValueAsString(Map.of("paymentId", intent.id(), "type", "SUCCEEDED",
+                "providerTransactionId", "TX-REPLAY", "occurredAt", Instant.now().toString()));
+        assertThatThrownBy(() -> payments.processWebhook("development", "replay-event", "00", body))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThat(payments.mine(fixture.patient().user().id()).get(0).status()).isEqualTo(PaymentStatus.PENDING);
+        payments.processWebhook("development", "replay-event", sign(body), body);
+        String changed = body.replace("TX-REPLAY", "TX-CHANGED");
+        String changedSignature = sign(changed);
+        assertThatThrownBy(() -> payments.processWebhook("development", "replay-event", changedSignature, changed))
+                .isInstanceOf(ConflictException.class).hasMessageContaining("different payload");
+    }
+
+    @Test
+    void lateSuccessAfterCancellationRequestsRefundWithoutReopeningAppointment() throws Exception {
+        Fixture fixture = fixture("ONLINE");
+        var appointment = appointments.book(fixture.patient().user().id(), "late-booking",
+                new BookingRequest(fixture.doctorId(), fixture.visitDate(), PaymentMethod.ONLINE));
+        var intent = payments.createIntent(fixture.patient().user().id(), appointment.id(), "late-intent");
+        payments.cancelAndRefund(fixture.patient().user().id(), appointment.id(), "Cancelled before payment");
+        String body = objectMapper.writeValueAsString(Map.of("paymentId", intent.id(), "type", "SUCCEEDED",
+                "providerTransactionId", "TX-LATE", "occurredAt", Instant.now().toString()));
+        var result = payments.processWebhook("development", "late-event", sign(body), body);
+        assertThat(result.status()).isEqualTo(PaymentStatus.REFUND_PENDING);
+        assertThat(result.refundStatus()).isEqualTo(RefundStatus.REQUESTED);
+        assertThat(appointments.mine(fixture.patient().user().id()).get(0).status()).isEqualTo(AppointmentStatus.CANCELLED);
+    }
+
     private Fixture fixture(String suffix) {
         var hospital = hospitals.create(new HospitalRequest("SC-PAY-" + suffix,
                 "Payment Test Hospital " + suffix, "3 Test Road", "Delhi", "Delhi", "110001",
                 "+911112345679", "Asia/Kolkata", true));
+        com.smartcare.StaffTestIdentity.signIn(scopeUsers, hospital.id(), com.smartcare.auth.domain.Role.CASHIER, com.smartcare.auth.domain.Role.RECEPTIONIST, com.smartcare.auth.domain.Role.HOSPITAL_ADMIN);
         var department = hospitals.createDepartment(hospital.id(),
                 new DepartmentRequest("MED", "General Medicine", "Test department"));
         var doctor = doctors.create(new DoctorRequest(hospital.id(), department.id(), "Dr. Payment " + suffix,

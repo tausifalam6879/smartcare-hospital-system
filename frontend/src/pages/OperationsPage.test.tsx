@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { LanguageProvider } from '../context/LanguageContext'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { confirmCashAppointment, getMyRecoveryCases, getOperationsDashboard } from '../services/operations'
@@ -12,7 +13,7 @@ vi.mock('../context/AuthContext', () => ({
 
 vi.mock('../services/api', () => ({
   api: { get: vi.fn((url: string) => Promise.resolve({
-    data: url === '/api/v1/hospitals'
+    data: url === '/api/v1/hospitals/assigned'
       ? [{ id: 'hospital-1', name: 'City General Hospital', city: 'Delhi' }]
       : { content: [] },
   })) },
@@ -26,7 +27,17 @@ vi.mock('../services/operations', () => ({
 }))
 
 describe('OperationsPage', () => {
-  afterEach(cleanup)
+  afterEach(() => { cleanup(); localStorage.removeItem('smartcare-language') })
+
+  it('applies native date input events to the operations query and translates the header', async () => {
+    authState.roles = ['CASHIER']
+    localStorage.setItem('smartcare-language', 'hi')
+    render(<LanguageProvider><MemoryRouter><OperationsPage /></MemoryRouter></LanguageProvider>)
+    expect(await screen.findByRole('heading', { name: 'देखभाल का सुव्यवस्थित संचालन' })).toBeInTheDocument()
+    await screen.findByRole('option', { name: 'City General Hospital' })
+    fireEvent.input(screen.getByLabelText('सेवा की तारीख'), { target: { value: '2026-09-30' } })
+    await waitFor(() => expect(getOperationsDashboard).toHaveBeenCalledWith('hospital-1', '2026-09-30'))
+  })
 
   it('lets a cashier confirm cash without offering clinical or check-in controls', async () => {
     authState.roles = ['CASHIER']

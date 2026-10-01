@@ -10,6 +10,7 @@ type UserSummary = {
   email?: string
   patientNumber?: string
   roles: string[]
+  photo?: string
 }
 
 export type AuthSession = {
@@ -27,13 +28,16 @@ export type RegisterInput = {
   dateOfBirth?: string
   emergencyContact?: string
   preferredLanguage: string
+  accountType?: string
+  invitationCode?: string
 }
 
 type AuthContextValue = {
   session: AuthSession | null
-  login: (credential: string, password: string) => Promise<void>
+  login: (credential: string, password: string, accountType?: string) => Promise<void>
   register: (input: RegisterInput) => Promise<void>
   logout: () => void
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -107,25 +111,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     session,
-    async login(credential, password) {
+    async login(credential, password, accountType) {
       if (isStaticDemo) {
+        if (accountType && accountType !== 'AUTO' && accountType !== 'PATIENT') throw new Error('Staff login requires the running hospital backend.')
         persist(demoSession('Demo Patient', credential))
         return
       }
-      const response = await api.post<AuthSession>('/api/v1/auth/login', { credential, password })
+      const response = await api.post<AuthSession>('/api/v1/auth/login', { credential, password, accountType })
       persist(response.data)
     },
     async register(input) {
+      const staff = input.accountType && input.accountType !== 'PATIENT'
       if (isStaticDemo) {
+        if (staff) throw new Error('Staff registration requires the running hospital backend; it is unavailable in the static demo.')
         persist(demoSession(input.name.trim() || 'Demo Patient', input.email || input.mobileNumber))
         return
       }
-      const response = await api.post<AuthSession>('/api/v1/auth/register', input)
+      const { invitationCode, accountType, ...patient } = input
+      const response = await api.post<AuthSession>(staff ? '/api/v1/auth/register-staff' : '/api/v1/auth/register',
+        staff ? { invitationCode, accountType, patient } : patient)
       persist(response.data)
     },
     logout() {
       clearAuthSession()
       setSession(null)
+    },
+    async refreshProfile() {
+      if (!session || isStaticDemo) return
+      const { data } = await api.get<{ displayName: string; photo?: string }>('/api/v1/account')
+      persist({ ...session, user: { ...session.user, displayName: data.displayName, photo: data.photo } })
     },
   }), [session])
 

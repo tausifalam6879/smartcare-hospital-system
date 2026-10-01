@@ -46,6 +46,8 @@ import java.util.UUID;
 
 @Service
 public class AmbulanceService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private static final Set<Role> DISPATCH_ROLES = Set.of(
             Role.AMBULANCE_DISPATCHER, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private static final Set<Role> OPERATIONAL_REQUEST_ROLES = Set.of(
@@ -97,6 +99,7 @@ public class AmbulanceService {
 
     @Transactional(readOnly = true)
     public List<AmbulanceResponse> fleet(UUID userId, UUID hospitalId) {
+        hospitalAccess.require(userId, hospitalId);
         requireDispatcher(userId);
         requireHospital(hospitalId);
         audit.record("AMBULANCE_FLEET_VIEWED", "HOSPITAL", hospitalId, hospitalId);
@@ -106,6 +109,7 @@ public class AmbulanceService {
 
     @Transactional
     public AmbulanceResponse createAmbulance(UUID userId, CreateAmbulance input) {
+        hospitalAccess.require(userId, input.hospitalId());
         requireAdmin(userId);
         Hospital hospital = requireHospital(input.hospitalId());
         String registration = normalizeUpper(input.registrationNumber());
@@ -126,6 +130,7 @@ public class AmbulanceService {
     public AmbulanceResponse updateLocation(UUID userId, UUID ambulanceId, UpdateAmbulanceLocation input) {
         requireDispatcher(userId);
         Ambulance ambulance = lockAmbulance(ambulanceId);
+        hospitalAccess.require(userId, ambulance.getHospital().getId());
         ambulance.updateLocation(input.currentArea().trim(), input.latitude(), input.longitude(), clock.instant());
         audit.record("AMBULANCE_LOCATION_UPDATED", "AMBULANCE", ambulance.getId(),
                 ambulance.getHospital().getId());
@@ -137,6 +142,7 @@ public class AmbulanceService {
                                                 UpdateAmbulanceAvailability input) {
         requireDispatcher(userId);
         Ambulance ambulance = lockAmbulance(ambulanceId);
+        hospitalAccess.require(userId, ambulance.getHospital().getId());
         if (input.status() != AmbulanceStatus.AVAILABLE && input.status() != AmbulanceStatus.OUT_OF_SERVICE) {
             throw new IllegalArgumentException("Only AVAILABLE or OUT_OF_SERVICE is accepted here.");
         }
@@ -160,6 +166,7 @@ public class AmbulanceService {
         boolean dispatcherOrStaff = hasAnyRole(requester, OPERATIONAL_REQUEST_ROLES);
         Patient patient;
         if (dispatcherOrStaff) {
+            hospitalAccess.require(userId, hospital.getId());
             patient = blankToNull(input.patientNumber()) == null ? null
                     : patients.findByPatientNumberIgnoreCase(input.patientNumber().trim())
                     .orElseThrow(() -> new NotFoundException("Patient was not found."));
@@ -201,6 +208,7 @@ public class AmbulanceService {
 
     @Transactional(readOnly = true)
     public List<AmbulanceRequestResponse> worklist(UUID userId, UUID hospitalId, AmbulanceRequestStatus status) {
+        hospitalAccess.require(userId, hospitalId);
         requireDispatcher(userId);
         requireHospital(hospitalId);
         audit.record("AMBULANCE_WORKLIST_VIEWED", "HOSPITAL", hospitalId, hospitalId);
@@ -214,6 +222,7 @@ public class AmbulanceService {
     public AmbulanceRequestResponse assign(UUID userId, UUID requestId, AssignAmbulance input) {
         UserAccount dispatcher = requireDispatcher(userId);
         AmbulanceRequest request = lockRequest(requestId);
+        hospitalAccess.require(userId, request.getHospital().getId());
         Ambulance ambulance = lockAmbulance(input.ambulanceId());
         if (!request.getHospital().getId().equals(ambulance.getHospital().getId())) {
             throw new ConflictException("The ambulance belongs to a different hospital.");
@@ -236,6 +245,7 @@ public class AmbulanceService {
     public AmbulanceRequestResponse acknowledge(UUID userId, UUID requestId) {
         UserAccount dispatcher = requireDispatcher(userId);
         AmbulanceRequest request = lockRequest(requestId);
+        hospitalAccess.require(userId, request.getHospital().getId());
         Instant now = clock.instant();
         transition(() -> request.acknowledge(now));
         event(request, dispatcher, AmbulanceRequestStatus.ASSIGNED, AmbulanceRequestStatus.ACKNOWLEDGED,
@@ -252,6 +262,7 @@ public class AmbulanceService {
                                                  UpdateAmbulanceRequestStatus input) {
         UserAccount dispatcher = requireDispatcher(userId);
         AmbulanceRequest request = lockRequest(requestId);
+        hospitalAccess.require(userId, request.getHospital().getId());
         if (request.getAmbulance() == null) throw new ConflictException("No ambulance is assigned.");
         Ambulance ambulance = lockAmbulance(request.getAmbulance().getId());
         AmbulanceRequestStatus from = request.getStatus();
@@ -272,6 +283,7 @@ public class AmbulanceService {
         UserAccount actor = requireUser(userId);
         AmbulanceRequest request = lockRequest(requestId);
         boolean dispatcher = hasAnyRole(actor, DISPATCH_ROLES);
+        if (dispatcher) hospitalAccess.require(userId, request.getHospital().getId());
         boolean owner = request.getPatient() != null && request.getPatient().getUser().getId().equals(userId);
         boolean requester = request.getRequestedBy().getId().equals(userId);
         if (!dispatcher && !owner && !requester) throw new AccessDeniedException("This request does not belong to you.");

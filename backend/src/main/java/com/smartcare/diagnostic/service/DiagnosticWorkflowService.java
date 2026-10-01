@@ -54,6 +54,8 @@ import java.util.UUID;
 
 @Service
 public class DiagnosticWorkflowService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private static final Set<Role> DIAGNOSTIC_STAFF_ROLES = Set.of(
             Role.LAB_TECHNICIAN, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private static final Set<DiagnosticOrderStatus> OPEN_WORKLIST_STATUSES = Set.of(
@@ -121,6 +123,7 @@ public class DiagnosticWorkflowService {
 
     @Transactional
     public ProcedureResponse createProcedure(ProcedureRequest request) {
+        hospitalAccess.requireCurrent(request.hospitalId());
         Hospital hospital = requireHospital(request.hospitalId());
         String code = request.code().trim().toUpperCase(Locale.ROOT);
         if (procedures.existsByHospitalIdAndCodeIgnoreCase(hospital.getId(), code)) {
@@ -222,6 +225,7 @@ public class DiagnosticWorkflowService {
 
     @Transactional
     public List<OrderResponse> worklist(UUID staffUserId, UUID hospitalId, LocalDate serviceDate) {
+        hospitalAccess.require(staffUserId, hospitalId);
         requireDiagnosticStaff(staffUserId);
         requireHospital(hospitalId);
         audit.record("DIAGNOSTIC_WORKLIST_VIEWED", "HOSPITAL", hospitalId, hospitalId);
@@ -234,6 +238,7 @@ public class DiagnosticWorkflowService {
     public OrderResponse collect(UUID staffUserId, UUID orderId) {
         requireDiagnosticStaff(staffUserId);
         DiagnosticOrder order = requireOrderForUpdate(orderId);
+        hospitalAccess.require(staffUserId, order.getProcedure().getHospital().getId());
         if (order.getScheduledDate() != null && HospitalDate.today(clock, order.getProcedure().getHospital()).isBefore(order.getScheduledDate())) {
             throw new ConflictException("This diagnostic service is scheduled for a future date.");
         }
@@ -247,6 +252,7 @@ public class DiagnosticWorkflowService {
     public OrderResponse start(UUID staffUserId, UUID orderId) {
         requireDiagnosticStaff(staffUserId);
         DiagnosticOrder order = requireOrderForUpdate(orderId);
+        hospitalAccess.require(staffUserId, order.getProcedure().getHospital().getId());
         transition(() -> order.startProcessing(clock.instant()));
         audit.record("DIAGNOSTIC_PROCESSING_STARTED", "DIAGNOSTIC_ORDER", order.getId(),
                 order.getProcedure().getHospital().getId());
@@ -257,6 +263,7 @@ public class DiagnosticWorkflowService {
     public OrderResponse verifyResult(UUID staffUserId, UUID orderId, VerifyResultRequest request) {
         UserAccount verifier = requireDiagnosticStaff(staffUserId);
         DiagnosticOrder order = requireOrderForUpdate(orderId);
+        hospitalAccess.require(staffUserId, order.getProcedure().getHospital().getId());
         if (results.findByOrderId(orderId).isPresent()) {
             throw new ConflictException("A verified result already exists for this diagnostic order.");
         }

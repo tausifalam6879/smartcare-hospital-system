@@ -103,7 +103,15 @@ public class AppointmentService {
         Patient patient = requirePatient(userId);
         String normalizedKey = idempotencyKey.trim();
         var previous = appointments.findByPatientIdAndIdempotencyKey(patient.getId(), normalizedKey);
-        if (previous.isPresent()) return toResponse(previous.get());
+        if (previous.isPresent()) {
+            Appointment existing = previous.get();
+            if (!existing.getDoctor().getId().equals(request.doctorId())
+                    || !existing.getServiceDate().equals(request.serviceDate())
+                    || existing.getPaymentMethod() != request.paymentMethod()) {
+                throw new ConflictException("Booking retry key belongs to different booking details.");
+            }
+            return toResponse(existing);
+        }
 
         Doctor doctor = doctors.findByIdForUpdate(request.doctorId())
                 .orElseThrow(() -> new NotFoundException("Doctor was not found."));
@@ -148,7 +156,7 @@ public class AppointmentService {
         Doctor doctor = doctors.findByLinkedUserId(userId).filter(Doctor::isActive)
                 .orElseThrow(() -> new AccessDeniedException("A linked active doctor profile is required."));
         return appointments.findAllByDoctorIdOrderByServiceDateDescCreatedAtDesc(doctor.getId()).stream()
-                .map(this::toResponse).toList();
+                .map(item -> toResponse(item, true)).toList();
     }
 
     @Transactional(readOnly = true)
@@ -408,6 +416,10 @@ public class AppointmentService {
     }
 
     private AppointmentResponse toResponse(Appointment appointment) {
+        return toResponse(appointment, false);
+    }
+
+    private AppointmentResponse toResponse(Appointment appointment, boolean includeClinicalIdentity) {
         Doctor doctor = appointment.getDoctor();
         int estimated = appointment.getQueuePosition() == null ? 0
                 : Math.max(0, appointment.getQueuePosition() - 1) * doctor.getExpectedConsultationMinutes();
@@ -418,7 +430,10 @@ public class AppointmentService {
                 appointment.getStatus(), appointment.getPaymentMethod(), appointment.getAmount(),
                 appointment.getReservationExpiresAt(), appointment.getCashDeadlineAt(), estimated,
                 doctor.getBuilding(), doctor.getFloorLabel(), doctor.getRoomNumber(), appointment.getCheckedInAt(),
-                appointment.getConsultationStartedAt(), appointment.getCompletedAt(), appointment.getCreatedAt());
+                appointment.getConsultationStartedAt(), appointment.getCompletedAt(), appointment.getCreatedAt(),
+                includeClinicalIdentity ? appointment.getPatient().getUser().getDisplayName() : null,
+                includeClinicalIdentity ? appointment.getPatient().getGender() : null,
+                includeClinicalIdentity ? appointment.getPatient().getUser().getProfilePhoto() : null);
     }
 
     private void notifyConfirmed(Appointment appointment, String source) {

@@ -23,6 +23,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/hospitals")
 public class HospitalController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.repository.UserAccountRepository users;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.doctor.repository.DoctorRepository doctors;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
 
     private final HospitalService service;
 
@@ -34,6 +40,16 @@ public class HospitalController {
     List<HospitalResponse> list() {
         return service.listActive();
     }
+    @GetMapping("/assigned")
+    @PreAuthorize("isAuthenticated()")
+    List<HospitalResponse> assigned(@org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+        var id = UUID.fromString(jwt.getSubject());
+        var account = users.findById(id).orElseThrow();
+        if (account.getRoles().contains(com.smartcare.auth.domain.Role.SUPER_ADMIN)) return service.listActive();
+        var ids = new java.util.HashSet<>(account.getHospitalIds());
+        doctors.findByLinkedUserId(id).filter(d -> d.isActive()).ifPresent(d -> ids.add(d.getHospital().getId()));
+        return service.listActive().stream().filter(h -> ids.contains(h.id())).toList();
+    }
 
     @GetMapping("/{hospitalId}")
     HospitalResponse get(@PathVariable UUID hospitalId) {
@@ -42,7 +58,7 @@ public class HospitalController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     HospitalResponse create(@Valid @RequestBody HospitalRequest request) {
         return service.create(request);
     }
@@ -50,6 +66,7 @@ public class HospitalController {
     @PutMapping("/{hospitalId}")
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     HospitalResponse update(@PathVariable UUID hospitalId, @Valid @RequestBody HospitalRequest request) {
+        hospitalAccess.requireCurrent(hospitalId);
         return service.update(hospitalId, request);
     }
 
@@ -63,6 +80,7 @@ public class HospitalController {
     @PreAuthorize("hasAnyRole('HOSPITAL_ADMIN','SUPER_ADMIN')")
     DepartmentResponse createDepartment(@PathVariable UUID hospitalId,
                                         @Valid @RequestBody DepartmentRequest request) {
+        hospitalAccess.requireCurrent(hospitalId);
         return service.createDepartment(hospitalId, request);
     }
 }

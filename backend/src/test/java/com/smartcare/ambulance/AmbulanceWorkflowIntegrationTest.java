@@ -57,6 +57,8 @@ class AmbulanceWorkflowIntegrationTest {
         AuthResponse admin = patient("74", "ambulance.admin");
         users.findById(dispatcher.user().id()).orElseThrow().grantRole(Role.AMBULANCE_DISPATCHER);
         users.findById(admin.user().id()).orElseThrow().grantRole(Role.HOSPITAL_ADMIN);
+        users.findById(admin.user().id()).orElseThrow().assignHospital(hospital.id());
+        users.findById(dispatcher.user().id()).orElseThrow().assignHospital(hospital.id());
 
         var vehicle = ambulanceService.createAmbulance(admin.user().id(), new CreateAmbulance(
                 hospital.id(), "DL-TEST-AMB-01", "TEST ALPHA", "Test crew", "+919300009999",
@@ -81,6 +83,16 @@ class AmbulanceWorkflowIntegrationTest {
         assertThatThrownBy(() -> ambulanceService.cancel(other.user().id(), created.id(),
                 new CancelAmbulanceRequest("Not my request"))).isInstanceOf(AccessDeniedException.class);
 
+        var foreignHospital = hospitalService.create(new HospitalRequest("SC-AMB-FOREIGN", "Other Ambulance Hospital",
+                "Test Road", "Delhi", "Delhi", "110001", "+911140404089", "Asia/Kolkata", true));
+        var foreignDispatcher = com.smartcare.StaffTestIdentity.signIn(users, foreignHospital.id(), Role.AMBULANCE_DISPATCHER);
+        assertThatThrownBy(() -> ambulanceService.assign(foreignDispatcher.getId(), created.id(), new AssignAmbulance(vehicle.id()))).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> ambulanceService.acknowledge(foreignDispatcher.getId(), created.id())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> ambulanceService.updateStatus(foreignDispatcher.getId(), created.id(), new UpdateAmbulanceRequestStatus(AmbulanceRequestStatus.EN_ROUTE_TO_PATIENT, "Forbidden"))).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> ambulanceService.cancel(foreignDispatcher.getId(), created.id(), new CancelAmbulanceRequest("Forbidden"))).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> ambulanceService.updateLocation(foreignDispatcher.getId(), vehicle.id(), new UpdateAmbulanceLocation("Forbidden", null, null))).isInstanceOf(AccessDeniedException.class);
+        assertThat(ambulanceService.mine(owner.user().id()).get(0).status()).isEqualTo(AmbulanceRequestStatus.REQUESTED);
+        assertThat(ambulanceService.availability(hospital.id()).availableVehicles()).isEqualTo(1);
         var assigned = ambulanceService.assign(dispatcher.user().id(), created.id(),
                 new AssignAmbulance(vehicle.id()));
         assertThat(assigned.status()).isEqualTo(AmbulanceRequestStatus.ASSIGNED);

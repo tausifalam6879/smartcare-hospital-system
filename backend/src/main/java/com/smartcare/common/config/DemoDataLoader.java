@@ -151,8 +151,9 @@ public class DemoDataLoader implements ApplicationRunner {
     }
 
     private void demoStaff(String mobile, String displayName, String password, Role... roles) {
-        users.findByCredential(mobile).orElseGet(() -> users.save(new UserAccount(mobile, null,
+        UserAccount account = users.findByCredential(mobile).orElseGet(() -> users.save(new UserAccount(mobile, null,
                 passwordEncoder.encode(password), displayName, "en", Set.of(roles))));
+        hospitals.findByCodeIgnoreCase("SC-DEMO").ifPresent(h -> account.assignHospital(h.getId()));
     }
 
     private void seedCareDirectory(Hospital hospital) {

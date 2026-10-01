@@ -22,6 +22,8 @@ import java.util.Set;
 
 @Service
 public class AuthService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.security.AuthAttemptLimiter attempts;
 
     private final UserAccountRepository users;
     private final PatientRegistration patients;
@@ -61,19 +63,30 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
+        String attemptKey = "login:" + request.credential().trim().toLowerCase(Locale.ROOT);
+        attempts.check(attemptKey);
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.credential().trim(), request.password()));
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         UserAccount account = users.findById(principal.id()).orElseThrow();
+        if (request.accountType() != null && !request.accountType().equals("AUTO")) {
+            Set<Role> required = request.accountType().equals("PATIENT") ? Set.of(Role.PATIENT)
+                    : request.accountType().equals("SUPER_ADMIN") ? Set.of(Role.SUPER_ADMIN)
+                    : StaffAccessService.rolesFor(request.accountType());
+            if (!account.getRoles().containsAll(required)) {
+                throw new org.springframework.security.authentication.BadCredentialsException("This account is not authorized for the selected workspace.");
+            }
+        }
+        attempts.clear(attemptKey);
         return response(account, null);
     }
 
-    private AuthResponse response(UserAccount account, String patientNumber) {
+    AuthResponse response(UserAccount account, String patientNumber) {
         TokenService.IssuedToken token = tokenService.issue(account);
         List<String> roles = account.getRoles().stream().map(Enum::name).sorted().toList();
         return new AuthResponse(token.value(), "Bearer", token.expiresAt(),
                 new AuthResponse.UserSummary(account.getId(), account.getDisplayName(), account.getMobileNumber(),
-                        account.getEmail(), patientNumber, roles));
+                        account.getEmail(), patientNumber, roles, account.getProfilePhoto()));
     }
 
     private static String normalizeEmail(String value) {

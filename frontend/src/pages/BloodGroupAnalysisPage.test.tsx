@@ -70,6 +70,6 @@ describe('BloodGroupAnalysisPage', () => {
     fireEvent.submit(screen.getByRole('button', { name: /Analyze reaction panel locally/i }).closest('form') as HTMLFormElement)
 
     expect((await screen.findAllByText('A+')).length).toBeGreaterThan(0)
-    expect(saveAboPanel).toHaveBeenCalledWith({ antiAFile, antiBFile, antiDFile })
+    expect(saveAboPanel).toHaveBeenCalledWith({ hospitalId: 'hospital-1', antiAFile, antiBFile, antiDFile })
   })
 })

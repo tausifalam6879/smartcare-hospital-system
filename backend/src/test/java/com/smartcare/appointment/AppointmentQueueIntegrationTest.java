@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.smartcare.common.error.ConflictException;
 
 @SpringBootTest
 @Transactional
@@ -54,6 +56,14 @@ class AppointmentQueueIntegrationTest {
         assertThat(first.status()).isEqualTo(AppointmentStatus.RESERVED_PENDING_PAYMENT);
         assertThat(first.queuePosition()).isEqualTo(1);
         assertThat(repeated.id()).isEqualTo(first.id());
+        for (BookingRequest changed : java.util.List.of(
+                new BookingRequest(doctor.id(), visitDate, PaymentMethod.CASH),
+                new BookingRequest(doctor.id(), visitDate.plusWeeks(1), PaymentMethod.ONLINE),
+                new BookingRequest(java.util.UUID.randomUUID(), visitDate, PaymentMethod.ONLINE))) {
+            assertThatThrownBy(() -> appointments.book(firstPatient.user().id(), "same-request", changed))
+                    .isInstanceOf(ConflictException.class).hasMessageContaining("different booking details");
+        }
+        assertThat(appointments.mine(firstPatient.user().id())).hasSize(1);
 
         var second = appointments.book(secondPatient.user().id(), "second-request",
                 new BookingRequest(doctor.id(), visitDate, PaymentMethod.CASH));

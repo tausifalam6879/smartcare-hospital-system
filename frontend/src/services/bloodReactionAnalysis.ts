@@ -69,8 +69,9 @@ export async function analyzeAboPanel(input: {
   return response.json() as Promise<BloodGroupPanelResult>
 }
 
-export async function saveAboPanel(input: { antiAFile: File; antiBFile: File; antiDFile: File }) {
+export async function saveAboPanel(input: { hospitalId: string; antiAFile: File; antiBFile: File; antiDFile: File }) {
   const body = new FormData()
+  body.append('hospitalId', input.hospitalId)
   body.append('antiAFile', input.antiAFile)
   body.append('antiBFile', input.antiBFile)
   body.append('antiDFile', input.antiDFile)

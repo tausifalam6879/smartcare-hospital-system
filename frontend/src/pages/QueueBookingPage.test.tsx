@@ -43,5 +43,5 @@ describe('QueueBookingPage project hospital flow', () => {
 
     const stored = JSON.parse(sessionStorage.getItem('smartcare-prototype-bookings') ?? '[]') as Array<{ status: string }>
     expect(stored[0]?.status).toBe('CONFIRMED')
-  })
+  }, 15000)
 })

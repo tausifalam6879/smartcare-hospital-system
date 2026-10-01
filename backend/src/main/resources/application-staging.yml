@@ -1,0 +1,24 @@
+# Opt in with SPRING_PROFILES_ACTIVE=staging. No development credential fallback.
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+smartcare:
+  jwt:
+    issuer: ${SMARTCARE_JWT_ISSUER}
+    secret: ${SMARTCARE_JWT_SECRET}
+  cors:
+    allowed-origins: ${SMARTCARE_CORS_ORIGINS}
+  payment:
+    webhook-secret: ${SMARTCARE_PAYMENT_WEBHOOK_SECRET}
+  documents:
+    storage-path: ${SMARTCARE_DOCUMENT_STORAGE_PATH}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

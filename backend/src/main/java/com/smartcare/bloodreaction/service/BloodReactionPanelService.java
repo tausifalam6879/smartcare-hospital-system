@@ -27,6 +27,10 @@ import java.time.Instant;
 
 @Service
 public class BloodReactionPanelService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.hospital.repository.HospitalRepository hospitals;
     private static final Set<Role> REVIEW_ROLES = Set.of(Role.LAB_TECHNICIAN, Role.BLOOD_BANK_STAFF, Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private final BloodReactionPanelRepository panels;
     private final PatientRepository patients;
@@ -43,7 +47,8 @@ public class BloodReactionPanelService {
     }
 
     @Transactional
-    public PanelResponse submit(UUID userId, MultipartFile antiAFile, MultipartFile antiBFile, MultipartFile antiDFile) {
+    public PanelResponse submit(UUID userId, UUID hospitalId, MultipartFile antiAFile, MultipartFile antiBFile, MultipartFile antiDFile) {
+        if (!hospitals.findById(hospitalId).filter(h -> h.isActive()).isPresent()) throw new NotFoundException("Active hospital was not found.");
         Patient patient = patients.findByUserId(userId)
                 .orElseThrow(() -> new AccessDeniedException("A patient profile is required."));
         UserAccount user = users.findById(userId)
@@ -73,7 +78,8 @@ public class BloodReactionPanelService {
                     inference.antiA().modelName(), inference.antiA().modelVersion(), group,
                     manualReview ? BloodReactionPanelStatus.MANUAL_REVIEW_REQUIRED : BloodReactionPanelStatus.PENDING_CLINICIAN_VERIFICATION,
                     inference.explanation()));
-            audit.record("BLOOD_REACTION_PANEL_SUBMITTED", "BLOOD_REACTION_PANEL", panel.getId(), null);
+            panel.assignHospital(hospitalId);
+            audit.record("BLOOD_REACTION_PANEL_SUBMITTED", "BLOOD_REACTION_PANEL", panel.getId(), hospitalId);
             return toResponse(panel);
         } catch (RuntimeException exception) {
             storage.delete(storedA.storageKey()); storage.delete(storedB.storageKey()); storage.delete(storedD.storageKey());
@@ -90,15 +96,19 @@ public class BloodReactionPanelService {
 
     @Transactional(readOnly = true)
     public List<PanelResponse> worklist(UUID userId, BloodReactionPanelStatus status) {
-        requireReviewer(userId);
+        UserAccount reviewer = requireReviewer(userId);
         List<BloodReactionPanel> rows = status == null ? panels.findAllByOrderByCreatedAtDesc() : panels.findAllByStatusOrderByCreatedAtAsc(status);
-        return rows.stream().map(BloodReactionPanelService::toResponse).toList();
+        return rows.stream().filter(p -> reviewer.getRoles().contains(Role.SUPER_ADMIN)
+                || (p.getHospitalId() != null && reviewer.getHospitalIds().contains(p.getHospitalId())))
+                .map(BloodReactionPanelService::toResponse).toList();
     }
 
     @Transactional
     public PanelResponse verify(UUID userId, UUID panelId, BloodGroup confirmedGroup, String note) {
+        if (confirmedGroup == null) throw new IllegalArgumentException("An independently confirmed group is required.");
         UserAccount reviewer = requireReviewer(userId);
         BloodReactionPanel panel = panels.findById(panelId).orElseThrow(() -> new NotFoundException("Reaction panel was not found."));
+        hospitalAccess.require(userId, panel.getHospitalId());
         try { panel.verify(reviewer, confirmedGroup, note == null ? "" : note.trim(), Instant.now()); }
         catch (IllegalStateException exception) { throw new IllegalArgumentException(exception.getMessage()); }
         audit.record("BLOOD_REACTION_PANEL_VERIFIED", "BLOOD_REACTION_PANEL", panelId, null);
@@ -110,6 +120,7 @@ public class BloodReactionPanelService {
         UserAccount reviewer = requireReviewer(userId);
         if (reason == null || reason.isBlank()) throw new IllegalArgumentException("A rejection reason is required.");
         BloodReactionPanel panel = panels.findById(panelId).orElseThrow(() -> new NotFoundException("Reaction panel was not found."));
+        hospitalAccess.require(userId, panel.getHospitalId());
         try { panel.reject(reviewer, reason.trim(), Instant.now()); }
         catch (IllegalStateException exception) { throw new IllegalArgumentException(exception.getMessage()); }
         audit.record("BLOOD_REACTION_PANEL_REJECTED", "BLOOD_REACTION_PANEL", panelId, null);

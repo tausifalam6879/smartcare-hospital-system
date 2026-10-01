@@ -16,7 +16,8 @@ public record AuthResponse(
             String mobileNumber,
             String email,
             String patientNumber,
-            List<String> roles
+            List<String> roles,
+            String photo
     ) {
     }
 }

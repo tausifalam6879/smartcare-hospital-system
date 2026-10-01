@@ -72,6 +72,8 @@ class BloodBankWorkflowIntegrationTest {
         AuthResponse donorAccount = patient("65", "blood.donor");
         doctors.linkAccount(doctor.id(), new LinkAccountRequest(doctorAccount.user().id()));
         users.findById(staffAccount.user().id()).orElseThrow().grantRole(Role.BLOOD_BANK_STAFF);
+        users.findById(staffAccount.user().id()).orElseThrow().assignHospital(hospital.id());
+        com.smartcare.StaffTestIdentity.signIn(users, hospital.id(), Role.HOSPITAL_ADMIN);
 
         var bank = bloodBank.createBank(new BloodBankRequest(hospital.id(), "SC-BB-01",
                 "City General Hospital Blood Centre", "Emergency Block, Ground Floor", "+911140404099",
@@ -110,9 +112,26 @@ class BloodBankWorkflowIntegrationTest {
         var donor = bloodBank.consent(donorAccount.user().id(), new DonorConsentRequest("MOBILE"));
         bloodBank.verifyDonor(staffAccount.user().id(), donor.id(),
                 new DonorVerificationRequest(BloodGroup.O_NEGATIVE, DonorEligibilityStatus.ELIGIBLE));
+        var verifyingStaff = users.findById(staffAccount.user().id()).orElseThrow();
+        verifyingStaff.removeHospital(hospital.id());
+        assertThatThrownBy(() -> bloodBank.verifyDonor(verifyingStaff.getId(), donor.id(),
+                new DonorVerificationRequest(BloodGroup.O_NEGATIVE, DonorEligibilityStatus.ELIGIBLE)))
+                .isInstanceOf(AccessDeniedException.class).hasMessageContaining("hospital assignment");
+        verifyingStaff.assignHospital(hospital.id());
         assertThat(bloodBank.donorMatches(staffAccount.user().id(), second.id())).singleElement()
                 .satisfies(match -> assertThat(match.mobileNumber()).isEqualTo(donorAccount.user().mobileNumber()));
 
+        var foreignHospital = hospitals.create(new HospitalRequest("SC-BLOOD-FOREIGN", "Other Blood Hospital",
+                "Test Road", "Delhi", "Delhi", "110001", "+911112345698", "Asia/Kolkata", true));
+        var foreignStaff = com.smartcare.StaffTestIdentity.signIn(users, foreignHospital.id(), Role.BLOOD_BANK_STAFF);
+        assertThatThrownBy(() -> bloodBank.verifyInventory(foreignStaff.getId(), new InventoryRequest(bank.id(),
+                BloodGroup.O_NEGATIVE, BloodComponent.PACKED_RED_CELLS, "FORBIDDEN", LocalDate.now().plusDays(21), 99, InventoryVerificationStatus.VERIFIED)))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> bloodBank.searchAgain(foreignStaff.getId(), second.id())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> bloodBank.fulfil(foreignStaff.getId(), first.id())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> bloodBank.cancel(foreignStaff.getId(), second.id(), new CancelBloodRequest("Forbidden"))).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> bloodBank.donorMatches(foreignStaff.getId(), second.id())).isInstanceOf(AccessDeniedException.class);
+        assertThat(bloodBank.mine(patientOne.user().id()).get(0).status()).isEqualTo(BloodRequestStatus.RESERVED);
         bloodBank.cancel(doctorAccount.user().id(), second.id(), new CancelBloodRequest("Alternative arranged"));
         var fulfilled = bloodBank.fulfil(staffAccount.user().id(), first.id());
         assertThat(fulfilled.status()).isEqualTo(BloodRequestStatus.FULFILLED);

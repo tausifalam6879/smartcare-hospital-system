@@ -55,6 +55,8 @@ import java.util.UUID;
 
 @Service
 public class HospitalOperationsService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
     private static final Set<Role> VIEW_ROLES = Set.of(Role.DOCTOR, Role.RECEPTIONIST, Role.CASHIER,
             Role.HOSPITAL_ADMIN, Role.SUPER_ADMIN);
     private static final Set<Role> CONTROL_ROLES = Set.of(Role.DOCTOR, Role.RECEPTIONIST,
@@ -208,12 +210,13 @@ public class HospitalOperationsService {
     @Transactional(readOnly = true)
     public OperationsDashboardResponse dashboard(UUID userId, UUID hospitalId, LocalDate date) {
         UserAccount actor = requireRole(userId, VIEW_ROLES);
+        hospitalAccess.require(userId, hospitalId);
         Hospital hospital = hospitals.findById(hospitalId)
                 .orElseThrow(() -> new NotFoundException("Hospital was not found."));
         Doctor scopedDoctor = actor.getRoles().contains(Role.DOCTOR)
                 && actor.getRoles().stream().noneMatch(role -> role == Role.HOSPITAL_ADMIN || role == Role.SUPER_ADMIN
                 || role == Role.RECEPTIONIST || role == Role.CASHIER)
-                ? doctors.findByLinkedUserId(userId)
+                ? doctors.findByLinkedUserId(userId).filter(Doctor::isActive)
                 .orElseThrow(() -> new AccessDeniedException("A linked doctor account is required.")) : null;
         if (scopedDoctor != null && !scopedDoctor.getHospital().getId().equals(hospitalId)) {
             throw new AccessDeniedException("Doctor is linked to another hospital.");
@@ -259,10 +262,11 @@ public class HospitalOperationsService {
     }
 
     private void authorizeDoctorScope(UserAccount actor, Doctor doctor) {
+        hospitalAccess.require(actor.getId(), doctor.getHospital().getId());
         if (actor.getRoles().contains(Role.DOCTOR)
                 && actor.getRoles().stream().noneMatch(role -> role == Role.HOSPITAL_ADMIN
                 || role == Role.SUPER_ADMIN || role == Role.RECEPTIONIST)) {
-            Doctor linked = doctors.findByLinkedUserId(actor.getId())
+            Doctor linked = doctors.findByLinkedUserId(actor.getId()).filter(Doctor::isActive)
                     .orElseThrow(() -> new AccessDeniedException("A linked doctor account is required."));
             if (!linked.getId().equals(doctor.getId())) {
                 throw new AccessDeniedException("Doctors can update only their own operating status.");

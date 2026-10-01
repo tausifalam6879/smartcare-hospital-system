@@ -82,6 +82,7 @@ class DiagnosticWorkflowIntegrationTest {
         doctors.addSchedule(doctor.id(), new ScheduleRequest(today.getDayOfWeek(),
                 LocalTime.of(0, 1), LocalTime.of(23, 59), 15, 10));
 
+        com.smartcare.StaffTestIdentity.signIn(users, hospital.id(), Role.HOSPITAL_ADMIN, Role.CASHIER, Role.RECEPTIONIST);
         var cbc = diagnostics.createProcedure(new ProcedureRequest(hospital.id(), "CBC", "Complete Blood Count",
                 DiagnosticModality.LAB, "No fasting required. Bring your order.", 6, 1, 10,
                 new BigDecimal("450.00"), "Diagnostics Block", "Ground Floor", "Lab 2"));
@@ -93,6 +94,7 @@ class DiagnosticWorkflowIntegrationTest {
         doctors.linkAccount(doctor.id(), new LinkAccountRequest(doctorAccount.user().id()));
         var labUser = users.findById(labAccount.user().id()).orElseThrow();
         labUser.grantRole(Role.LAB_TECHNICIAN);
+        labUser.assignHospital(hospital.id());
 
         var firstAppointment = appointments.book(owner.user().id(), "diagnostic-appointment-1",
                 new BookingRequest(doctor.id(), today, PaymentMethod.CASH));
@@ -128,6 +130,16 @@ class DiagnosticWorkflowIntegrationTest {
                 new com.smartcare.diagnostic.web.DiagnosticDtos.CancelOrderRequest(null)))
                 .isInstanceOf(AccessDeniedException.class);
 
+        var foreignHospital = hospitals.create(new HospitalRequest("SC-DIAG-FOREIGN", "Other Diagnostic Hospital",
+                "Test Road", "Delhi", "Delhi", "110001", "+911112345689", "Asia/Kolkata", true));
+        var foreignLab = com.smartcare.StaffTestIdentity.signIn(users, foreignHospital.id(), Role.LAB_TECHNICIAN);
+        assertThatThrownBy(() -> diagnostics.collect(foreignLab.getId(), firstOrder.id())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> diagnostics.start(foreignLab.getId(), firstOrder.id())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> diagnostics.verifyResult(foreignLab.getId(), firstOrder.id(),
+                new VerifyResultRequest("QA", "QA", "QA", DiagnosticResultFlag.NORMAL, List.of())))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThat(diagnostics.mine(owner.user().id()).get(0).status()).isEqualTo(DiagnosticOrderStatus.SCHEDULED);
+        assertThat(diagnostics.mine(owner.user().id()).get(0).result()).isNull();
         diagnostics.collect(labAccount.user().id(), firstOrder.id());
         diagnostics.start(labAccount.user().id(), firstOrder.id());
         assertThat(diagnostics.worklist(labAccount.user().id(), hospital.id(), today.plusDays(1)))

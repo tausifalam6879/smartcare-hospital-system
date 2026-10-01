@@ -35,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +51,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 @Transactional
 class MedicalRecordIntegrationTest {
+
+    @Autowired org.springframework.test.web.servlet.MockMvc mvc;
 
     @Autowired MedicalRecordService records;
     @Autowired HospitalService hospitals;
@@ -59,16 +65,18 @@ class MedicalRecordIntegrationTest {
     @Autowired CheckInService checkIns;
     @Autowired QueueService queues;
     @Autowired AuthService auth;
+    @Autowired com.smartcare.auth.repository.UserAccountRepository scopeUsers;
     @Autowired AuditLogRepository auditLogs;
     @Autowired CareFollowUpService followUps;
     @Autowired NotificationService notifications;
 
     @Test
     @WithMockUser(roles = {"HOSPITAL_ADMIN", "CASHIER", "RECEPTIONIST"})
-    void finalizedVisitAndPrivateDocumentRemainPatientIsolatedAndAudited() {
+    void finalizedVisitAndPrivateDocumentRemainPatientIsolatedAndAudited() throws Exception {
         LocalDate today = LocalDate.now();
         var hospital = hospitals.create(new HospitalRequest("SC-RECORD-1", "Record Test Hospital",
                 "9 Privacy Road", "Delhi", "Delhi", "110001", "+911112345699", "Asia/Kolkata", true));
+        com.smartcare.StaffTestIdentity.signIn(scopeUsers, hospital.id(), com.smartcare.auth.domain.Role.CASHIER, com.smartcare.auth.domain.Role.RECEPTIONIST, com.smartcare.auth.domain.Role.HOSPITAL_ADMIN);
         var department = hospitals.createDepartment(hospital.id(),
                 new DepartmentRequest("MED", "Medicine", "Clinical record test"));
         var doctor = doctors.create(new DoctorRequest(hospital.id(), department.id(), "Dr. Record Test",
@@ -84,6 +92,16 @@ class MedicalRecordIntegrationTest {
 
         var appointment = appointments.book(patient.user().id(), "record-appointment-1",
                 new BookingRequest(doctor.id(), today, PaymentMethod.CASH));
+        assertThat(appointment.patientName()).isNull();
+        assertThatThrownBy(() -> records.forAppointment(doctorAccount.user().id(), appointment.id()))
+                .isInstanceOf(AccessDeniedException.class).hasMessageContaining("attended appointment");
+        assertThat(appointments.doctorMine(doctorAccount.user().id())).singleElement()
+                .satisfies(item -> assertThat(item.patientName()).isEqualTo(patient.user().displayName()));
+        assertThatThrownBy(() -> appointments.doctorMine(anotherPatient.user().id()))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> checkIns.checkIn(anotherPatient.user().id(), List.of("DOCTOR"),
+                appointment.id(), CheckInChannel.RECEPTION_DESK))
+                .isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> checkIns.checkIn(patient.user().id(), List.of("PATIENT"),
                 appointment.id(), CheckInChannel.MOBILE_WEB))
                 .isInstanceOf(ConflictException.class).hasMessageContaining("confirmed appointment");
@@ -94,7 +112,19 @@ class MedicalRecordIntegrationTest {
         payments.confirmCash(nextAppointment.id());
         checkIns.checkIn(anotherPatient.user().id(), List.of("PATIENT"), nextAppointment.id(),
                 CheckInChannel.MOBILE_WEB);
-        queues.serveNext(doctor.id(), today);
+        var originalAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                    anotherPatient.user().id().toString(), null, List.of(new SimpleGrantedAuthority("ROLE_DOCTOR"))));
+            assertThatThrownBy(() -> queues.serveNext(doctor.id(), today))
+                    .isInstanceOf(AccessDeniedException.class).hasMessageContaining("own active doctor queue");
+            assertThat(queues.publicSnapshot(doctor.id(), today).currentlyServingPosition()).isNull();
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                    doctorAccount.user().id().toString(), null, List.of(new SimpleGrantedAuthority("ROLE_DOCTOR"))));
+            queues.serveNext(doctor.id(), today);
+        } finally {
+            SecurityContextHolder.getContext().setAuthentication(originalAuthentication);
+        }
         assertThatThrownBy(() -> queues.serveNext(doctor.id(), today))
                 .isInstanceOf(ConflictException.class).hasMessageContaining("Finalize");
 
@@ -119,6 +149,7 @@ class MedicalRecordIntegrationTest {
         assertThat(notifications.mine(patient.user().id())).extracting(item -> item.type())
                 .contains(NotificationType.VISIT_COMPLETED);
         var followUp = followUps.mine(patient.user().id()).get(0);
+        assertThat(followUp.canClose()).isFalse();
         assertThat(followUp.followUpDate()).isEqualTo(today.plusDays(5));
         assertThat(followUp.medicationReminderEnabled()).isTrue();
         assertThat(followUps.updateStatus(patient.user().id(), followUp.id(), FollowUpStatus.CONFIRMED).status())
@@ -133,6 +164,7 @@ class MedicalRecordIntegrationTest {
                 "Outside CBC report", new MockMultipartFile("file", "cbc-report.pdf", "application/pdf", pdf));
         assertThat(uploaded.contentPath()).doesNotContain("private-documents");
         assertThat(records.download(patient.user().id(), uploaded.id()).content()).isEqualTo(pdf);
+        assertThat(records.download(doctorAccount.user().id(), uploaded.id()).content()).isEqualTo(pdf);
 
         var ownRecord = records.mine(patient.user().id());
         assertThat(ownRecord.visits()).hasSize(1);
@@ -140,6 +172,50 @@ class MedicalRecordIntegrationTest {
         assertThat(ownRecord.documents()).extracting(item -> item.originalFilename()).containsExactly("cbc-report.pdf");
         assertThat(records.forAppointment(doctorAccount.user().id(), appointment.id()).patientNumber())
                 .isEqualTo(ownRecord.patientNumber());
+
+        // Exercise the actual JWT/filter/controller boundary as well as service isolation.
+        var doctorToken = auth.login(new com.smartcare.auth.web.LoginRequest(
+                "record.doctor@example.com", "safe-test-password")).accessToken();
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        "/api/v1/medical-records/documents/{id}/content", uploaded.id())
+                        .header("Authorization", "Bearer " + doctorToken))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().bytes(pdf));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        "/api/v1/medical-records/documents/{id}/content", uploaded.id())
+                        .header("Authorization", "Bearer " + anotherPatient.accessToken()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+
+        var cancelledPatient = patient("44", "record.cancelled");
+        var cancelledVisit = appointments.book(cancelledPatient.user().id(), "record-cancelled",
+                new BookingRequest(doctor.id(), today, PaymentMethod.CASH));
+        appointments.cancel(cancelledPatient.user().id(), cancelledVisit.id(), "QA cancelled before attendance");
+        var privateFile = records.upload(cancelledPatient.user().id(), hospital.id(), DocumentType.OTHER, today,
+                "QA private report", new MockMultipartFile("file", "private.pdf", "application/pdf", pdf));
+        assertThatThrownBy(() -> records.forAppointment(doctorAccount.user().id(), cancelledVisit.id()))
+                .isInstanceOf(AccessDeniedException.class);
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        "/api/v1/medical-records/documents/{id}/content", privateFile.id())
+                        .header("Authorization", "Bearer " + doctorToken))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        assertThat(records.download(cancelledPatient.user().id(), privateFile.id()).content()).isEqualTo(pdf);
+
+        doctors.update(doctor.id(), new DoctorRequest(hospital.id(), department.id(), "Dr. Record Test",
+                "Internal Medicine", "SC-RECORD-REG-1", new BigDecimal("650.00"), 15, 10,
+                "Care Block", "1st Floor", "OPD 10", false));
+        assertThatThrownBy(() -> records.download(doctorAccount.user().id(), uploaded.id()))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> records.forAppointment(doctorAccount.user().id(), appointment.id()))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThat(records.download(patient.user().id(), uploaded.id()).content()).isEqualTo(pdf);
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        "/api/v1/medical-records/documents/{id}/content", uploaded.id())
+                        .header("Authorization", "Bearer " + doctorToken))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        "/api/v1/medical-records/documents/{id}/content", uploaded.id())
+                        .header("Authorization", "Bearer " + patient.accessToken()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
 
         assertThatThrownBy(() -> records.download(anotherPatient.user().id(), uploaded.id()))
                 .isInstanceOf(AccessDeniedException.class);

@@ -1,5 +1,41 @@
-import { describe, expect, it } from 'vitest'
-import { messageFromError } from './api'
+import { afterEach, describe, expect, it } from 'vitest'
+import { AxiosError } from 'axios'
+import { api, messageFromError } from './api'
+import { clearAuthSession, readAuthSession, writeAuthSession } from './authStorage'
+
+describe('session request isolation', () => {
+  afterEach(clearAuthSession)
+
+  it.each(['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/register-staff', '/api/v1/auth/recover'])(
+    'does not attach stale credentials to %s', async (url) => {
+      writeAuthSession(JSON.stringify({ accessToken: 'old-token' }))
+      await api.post(url, {}, { adapter: async (config) => {
+        expect(config.headers.Authorization).toBeUndefined()
+        return { config, data: {}, status: 200, statusText: 'OK', headers: {} }
+      } })
+    },
+  )
+
+  it('preserves a new session when an old request fails late', async () => {
+    writeAuthSession(JSON.stringify({ accessToken: 'old-token' }))
+    await expect(api.get('/api/v1/account', { adapter: async (config) => {
+      expect(config.headers.Authorization).toBe('Bearer old-token')
+      writeAuthSession(JSON.stringify({ accessToken: 'new-token' }))
+      throw new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined,
+        { config, data: {}, status: 401, statusText: 'Unauthorized', headers: {} })
+    } })).rejects.toThrow('Unauthorized')
+    expect(JSON.parse(readAuthSession()!).accessToken).toBe('new-token')
+  })
+
+  it('clears the current session when its own token is rejected', async () => {
+    writeAuthSession(JSON.stringify({ accessToken: 'current-token' }))
+    await expect(api.get('/api/v1/account', { adapter: async (config) => {
+      throw new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined,
+        { config, data: {}, status: 401, statusText: 'Unauthorized', headers: {} })
+    } })).rejects.toThrow('Unauthorized')
+    expect(readAuthSession()).toBeNull()
+  })
+})
 
 function axiosError(data: unknown) {
   return {

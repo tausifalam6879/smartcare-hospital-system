@@ -58,7 +58,7 @@ function reactionText(result: BloodGroupPanelResult['antiA']) {
   return `${finding} · ${(result.agglutinationProbability * 100).toFixed(1)}% probability · ${(result.confidence * 100).toFixed(1)}% confidence`
 }
 
-function LocalPanelAnalyzer() {
+function LocalPanelAnalyzer({ hospitalId }: { hospitalId: string }) {
   const [antiAFile, setAntiAFile] = useState<File | null>(null)
   const [antiBFile, setAntiBFile] = useState<File | null>(null)
   const [antiDFile, setAntiDFile] = useState<File | null>(null)
@@ -69,10 +69,10 @@ function LocalPanelAnalyzer() {
 
   async function analyze(event: FormEvent) {
     event.preventDefault()
-    if (!antiAFile || !antiBFile || !antiDFile) return
+    if (!antiAFile || !antiBFile || !antiDFile || !hospitalId) return
     setBusy(true); setError(''); setResult(null); setSavedPanel(null)
     try {
-      const saved = await saveAboPanel({ antiAFile, antiBFile, antiDFile })
+      const saved = await saveAboPanel({ hospitalId, antiAFile, antiBFile, antiDFile })
       setSavedPanel(saved)
       const manualReviewRequired = saved.status === 'MANUAL_REVIEW_REQUIRED'
       const reaction = (probability: number, confidence: number) => ({
@@ -153,7 +153,7 @@ function PatientView() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="max-w-3xl"><p className="text-xs font-extrabold uppercase tracking-[.2em] text-violet-700">Experimental decision support</p><h1 className="mt-2 text-4xl font-black tracking-tight text-ink-950">Blood-slide image review, with humans in control</h1><p className="mt-3 leading-7 text-slate-600">Upload a clear Anti-A, Anti-B and Anti-D slide image for an authorized review workflow. The image alone is never treated as a validated blood-group test.</p></div>
-      <LocalPanelAnalyzer />
+      <LocalPanelAnalyzer hospitalId={hospitalId} />
       {savedPanels.length > 0 && <section className="mt-6 rounded-3xl border border-violet-200 bg-white p-6"><p className="text-xs font-extrabold uppercase tracking-[.18em] text-violet-700">Private reaction-panel audit history</p><h2 className="mt-1 text-xl font-black text-ink-950">Saved AI-assisted panels</h2><div className="mt-4 space-y-3">{savedPanels.map((panel) => <article key={panel.id} className="rounded-2xl bg-slate-50 p-4"><div className="flex flex-wrap justify-between gap-2"><strong>{panel.suggestedGroup ? groupLabels[panel.suggestedGroup as BloodGroup] : 'No group conclusion'}</strong><span className="text-xs font-extrabold text-violet-700">{panel.status.replaceAll('_', ' ')}</span></div><p className="mt-2 text-xs text-slate-600">{panel.explanation}</p><p className="mt-2 text-[11px] text-slate-500">{dateTime(panel.createdAt)} · {panel.status === 'CLINICIAN_VERIFIED' ? 'authorized review recorded' : panel.status === 'REJECTED' ? 'review rejected — replacement may be needed' : 'clinician verification required'}</p></article>)}</div></section>}
       <div className="mt-8 grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
         <form onSubmit={submit} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -265,7 +265,7 @@ function StaffView({ canObserve }: { canObserve: boolean }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => { api.get<Hospital[]>('/api/v1/hospitals').then(({ data }) => { setHospitals(data); setHospitalId(data[0]?.id ?? '') }).catch((requestError) => setError(messageFromError(requestError))) }, [])
+  useEffect(() => { api.get<Hospital[]>('/api/v1/hospitals/assigned').then(({ data }) => { setHospitals(data); setHospitalId(data[0]?.id ?? '') }).catch((requestError) => setError(messageFromError(requestError))) }, [])
   useEffect(() => {
     if (!hospitalId) return
     setLoading(true); setError('')

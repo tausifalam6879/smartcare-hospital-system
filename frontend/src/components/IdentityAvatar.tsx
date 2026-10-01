@@ -1,11 +1,12 @@
 import { UserRound } from 'lucide-react'
+import { useState } from 'react'
 
 type VerifiedGender = 'MALE' | 'FEMALE' | 'OTHER' | 'UNDISCLOSED'
 
 type IdentityAvatarProps = {
-  name?: string
+  name?: string | null
   imageUrl?: string
-  gender?: VerifiedGender
+  gender?: string | null
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -23,7 +24,7 @@ const genderTones: Record<VerifiedGender, string> = {
   UNDISCLOSED: 'from-slate-100 to-blue-100 text-slate-700',
 }
 
-function initials(name?: string) {
+function initials(name?: string | null) {
   const clean = name?.replace(/^(Dr|Mr|Mrs|Ms)\.\s*/i, '').trim()
   if (!clean) return ''
   return clean.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
@@ -31,11 +32,14 @@ function initials(name?: string) {
 
 /** Uses gender styling only when a verified value is supplied; names are never used to infer gender. */
 export function IdentityAvatar({ name, imageUrl, gender = 'UNDISCLOSED', size = 'md', className = '' }: IdentityAvatarProps) {
+  const normalizedGender = (gender ?? 'UNDISCLOSED').trim().toUpperCase()
+  const tone = genderTones[normalizedGender as VerifiedGender] ?? genderTones.UNDISCLOSED
+  const [failedImage, setFailedImage] = useState<string>()
   const fallback = initials(name)
   const shared = `${sizes[size]} shrink-0 overflow-hidden rounded-full ring-2 ring-white shadow-sm ${className}`
-  if (imageUrl) return <img src={imageUrl} alt={name ? `${name} profile` : 'Profile'} className={`${shared} object-cover`} />
+  if (imageUrl && imageUrl !== failedImage) return <img src={imageUrl} alt={name ? `${name} profile` : 'Profile'} onError={() => setFailedImage(imageUrl)} className={`${shared} object-cover`} />
   return (
-    <span aria-label={name ? `${name} avatar` : 'Private profile avatar'} className={`${shared} grid place-items-center bg-gradient-to-br font-black ${genderTones[gender]}`}>
+    <span aria-label={name ? `${name} avatar` : 'Private profile avatar'} className={`${shared} grid place-items-center bg-gradient-to-br font-black ${tone}`}>
       {fallback || <UserRound className="size-1/2" />}
     </span>
   )

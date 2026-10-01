@@ -46,9 +46,15 @@ function validationMessage(errors: ApiErrorBody['errors']) {
   return messages.length ? messages.join(' ') : undefined
 }
 
+const publicAuthPaths = new Set([
+  '/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/register-staff', '/api/v1/auth/recover',
+])
+
 api.interceptors.request.use((config) => {
   const raw = readAuthSession()
-  if (raw) {
+  if (publicAuthPaths.has(config.url?.split('?')[0] ?? '')) {
+    config.headers.delete('Authorization')
+  } else if (raw) {
     try {
       const session = JSON.parse(raw) as { accessToken?: string }
       if (session.accessToken) config.headers.Authorization = `Bearer ${session.accessToken}`
@@ -63,9 +69,20 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && readAuthSession()) {
-      clearAuthSession()
-      window.dispatchEvent(new Event(authExpiredEvent))
+    if (error.response?.status === 401) {
+      const raw = readAuthSession()
+      if (raw) {
+        try {
+          const session = JSON.parse(raw) as { accessToken?: string }
+          // A delayed failure from an old session must not sign out a newer login.
+          if (session.accessToken && error.config?.headers?.Authorization === `Bearer ${session.accessToken}`) {
+            clearAuthSession()
+            window.dispatchEvent(new Event(authExpiredEvent))
+          }
+        } catch {
+          clearAuthSession()
+        }
+      }
     }
     return Promise.reject(error)
   },

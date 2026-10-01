@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getDiagnosticProcedures, getMyDiagnosticOrders } from '../services/diagnostics'
+import { getDiagnosticProcedures, getMyDiagnosticOrders, scheduleDiagnosticOrder } from '../services/diagnostics'
 import { getNavigationHospitals } from '../services/navigation'
 import { DiagnosticsPage } from './DiagnosticsPage'
 
@@ -46,5 +46,15 @@ describe('DiagnosticsPage', () => {
     expect(screen.getByText(/Verified by Lab Technician/i)).toBeInTheDocument()
     expect(screen.getByText(/does not diagnose from these values/i)).toBeInTheDocument()
     expect(screen.getByText(/clinician must create the order/i)).toBeInTheDocument()
+  })
+
+  it('reserves the displayed native date rather than the default tomorrow', async () => {
+    const orders = await getMyDiagnosticOrders()
+    vi.mocked(getMyDiagnosticOrders).mockResolvedValue([{ ...orders[0], status: 'ORDERED', result: undefined }])
+    render(<MemoryRouter><DiagnosticsPage /></MemoryRouter>)
+    const date = await screen.findByLabelText('Choose service date') as HTMLInputElement
+    date.value = '2099-10-05'
+    fireEvent.click(screen.getByRole('button', { name: 'Reserve capacity' }))
+    await waitFor(() => expect(scheduleDiagnosticOrder).toHaveBeenCalledWith('order-1', '2099-10-05'))
   })
 })

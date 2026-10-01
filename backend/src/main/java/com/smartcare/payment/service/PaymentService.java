@@ -38,6 +38,8 @@ import java.util.UUID;
 
 @Service
 public class PaymentService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.smartcare.auth.service.HospitalAccess hospitalAccess;
 
     private final PaymentRepository payments;
     private final RefundRepository refunds;
@@ -75,7 +77,12 @@ public class PaymentService {
         Appointment appointment = appointments.ownedOnlineReservation(userId, appointmentId);
         Payment existing = payments.findByPatientIdAndIdempotencyKey(appointment.getPatient().getId(), key)
                 .orElse(null);
-        if (existing != null) return toResponse(existing);
+        if (existing != null) {
+            if (!existing.getAppointment().getId().equals(appointmentId)) {
+                throw new ConflictException("Payment retry key belongs to a different appointment.");
+            }
+            return toResponse(existing);
+        }
         existing = payments.findByAppointmentId(appointmentId).orElse(null);
         if (existing != null) return toResponse(existing);
 
@@ -109,7 +116,12 @@ public class PaymentService {
         }
         PaymentWebhookEvent previous = webhookEvents.findByProviderAndProviderEventId(provider, providerEventId.trim())
                 .orElse(null);
-        if (previous != null) return toResponse(previous.getPayment());
+        if (previous != null) {
+            if (!previous.getPayloadSha256().equals(signatures.payloadHash(rawBody))) {
+                throw new ConflictException("Payment event ID was already used with a different payload.");
+            }
+            return toResponse(previous.getPayment());
+        }
 
         WebhookRequest webhook = parseWebhook(rawBody);
         if (webhook.paymentId() == null || webhook.type() == null || webhook.occurredAt() == null) {
@@ -153,6 +165,7 @@ public class PaymentService {
             throw new ConflictException("A payment already exists for this appointment.");
         }
         Appointment appointment = appointments.appointmentForPayment(appointmentId);
+        hospitalAccess.requireCurrent(appointment.getHospital().getId());
         AppointmentResponse appointmentResponse = appointments.confirmCash(appointmentId);
         String receipt = "RVQ-CASH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
         Payment payment = payments.save(Payment.confirmedCash(appointment, "cash:" + appointmentId, receipt,

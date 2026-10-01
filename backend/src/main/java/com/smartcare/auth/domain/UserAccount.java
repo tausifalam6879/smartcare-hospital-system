@@ -38,6 +38,26 @@ public class UserAccount extends AuditableEntity {
     @Column(nullable = false, length = 20)
     private AccountStatus status;
 
+    @Column(name = "session_version", nullable = false)
+    private long sessionVersion;
+    @Column(name = "profile_photo", columnDefinition = "text")
+    private String profilePhoto;
+    public long getSessionVersion() { return sessionVersion; }
+    public void revokeSessions() { sessionVersion++; }
+    public void changePassword(String hash) { passwordHash = hash; revokeSessions(); }
+    public String getProfilePhoto() { return profilePhoto; }
+    public void setProfilePhoto(String photo) { profilePhoto = photo; }
+    public void setDisplayName(String name) { displayName = name; }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "staff_hospitals", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "hospital_id", nullable = false)
+    private Set<java.util.UUID> hospitalIds = new java.util.HashSet<>();
+
+    public Set<java.util.UUID> getHospitalIds() { return Collections.unmodifiableSet(hospitalIds); }
+    public void assignHospital(java.util.UUID hospitalId) { hospitalIds.add(java.util.Objects.requireNonNull(hospitalId)); }
+    public void removeHospital(java.util.UUID hospitalId) { hospitalIds.remove(hospitalId); }
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

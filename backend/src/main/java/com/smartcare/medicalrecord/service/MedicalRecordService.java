@@ -110,6 +110,10 @@ public class MedicalRecordService {
         Doctor doctor = requireLinkedDoctor(doctorUserId);
         Appointment appointment = requireAppointment(appointmentId);
         requireAssignedDoctor(doctor, appointment);
+        if (!java.util.Set.of(AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_CONSULTATION,
+                AppointmentStatus.COMPLETED).contains(appointment.getStatus())) {
+            throw new AccessDeniedException("Patient record access requires an attended appointment.");
+        }
         audit.record("PATIENT_RECORD_VIEWED_BY_DOCTOR", "PATIENT", appointment.getPatient().getId(),
                 appointment.getHospital().getId());
         return response(appointment.getPatient());
@@ -202,7 +206,9 @@ public class MedicalRecordService {
         boolean patientOwns = patients.findByUserId(userId)
                 .map(patient -> patient.getId().equals(document.getPatient().getId())).orElse(false);
         boolean authorizedDoctor = doctors.findByLinkedUserId(userId)
-                .map(doctor -> appointments.existsByPatientIdAndDoctorId(document.getPatient().getId(), doctor.getId()))
+                .filter(Doctor::isActive)
+                .map(doctor -> appointments.existsByPatientIdAndDoctorIdAndStatusIn(document.getPatient().getId(), doctor.getId(),
+                        java.util.Set.of(AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_CONSULTATION, AppointmentStatus.COMPLETED)))
                 .orElse(false);
         if (!patientOwns && !authorizedDoctor) throw new AccessDeniedException("Medical document access is denied.");
         audit.record("MEDICAL_DOCUMENT_DOWNLOADED", "MEDICAL_DOCUMENT", document.getId(),
