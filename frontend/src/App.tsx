@@ -17,6 +17,7 @@ import { NavigationPage } from './pages/NavigationPage'
 import { QueueBookingPage } from './pages/QueueBookingPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { StaffAccessPage } from './pages/StaffAccessPage'
+import { HospitalSetupPage } from './pages/HospitalSetupPage'
 import { AccountPage } from './pages/AccountPage'
 import { RecoverAccountPage } from './pages/RecoverAccountPage'
 import { OperationsPage } from './pages/OperationsPage'
@@ -85,6 +86,7 @@ export function App() {
         <Route path="recover" element={<RecoverAccountPage />} />
         <Route path="account" element={<Protected page={<AccountPage />} />} />
         <Route path="staff/access" element={<RoleProtected roles={['SUPER_ADMIN']} page={<StaffAccessPage />} />} />
+        <Route path="admin/setup" element={<RoleProtected roles={['SUPER_ADMIN']} page={<HospitalSetupPage />} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

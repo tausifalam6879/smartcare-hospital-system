@@ -2,13 +2,14 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { afterEach, expect, it, vi } from 'vitest'
 import { StaffAccessPage } from './StaffAccessPage'
 import { api } from '../services/api'
+import { MemoryRouter } from 'react-router-dom'
 vi.mock('../services/api', () => ({ api: { get: vi.fn(), post: vi.fn(), delete: vi.fn() }, messageFromError: () => 'Request failed' }))
 afterEach(() => { cleanup(); vi.clearAllMocks() })
 it('issues an invitation for the selected mobile and role and can revoke it', async () => {
   vi.mocked(api.get).mockResolvedValue({ data: [{ id: 'hospital', name: 'Verified Hospital' }] })
   vi.mocked(api.post).mockResolvedValue({ data: { id: 'invitation', invitationCode: 'private-one-time-code', expiresAt: '2026-10-01T10:00:00Z' } })
   vi.mocked(api.delete).mockResolvedValue({})
-  render(<StaffAccessPage />)
+  render(<MemoryRouter><StaffAccessPage /></MemoryRouter>)
   await screen.findAllByRole('option', { name: 'Verified Hospital' })
   fireEvent.change(screen.getByLabelText('Account / workspace'), { target: { value: 'OFFICE_CLERK' } })
   fireEvent.change(screen.getByLabelText('Hospital'), { target: { value: 'hospital' } })
