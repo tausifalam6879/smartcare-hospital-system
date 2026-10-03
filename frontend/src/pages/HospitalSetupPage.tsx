@@ -14,10 +14,17 @@ function Fields({ fields }: { fields: Field[] }) {
 export function HospitalSetupPage() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]), [hospitalId, setHospitalId] = useState('')
   const [doctors, setDoctors] = useState<Doctor[]>([]), [busy, setBusy] = useState(false)
+  const [departments, setDepartments] = useState<Hospital['departments']>([])
   const [error, setError] = useState(''), [success, setSuccess] = useState('')
-  const hospital = hospitals.find(h => h.id === hospitalId)
+  const selectedHospital = hospitals.find(h => h.id === hospitalId)
+  const hospital = selectedHospital ? { ...selectedHospital, departments } : undefined
   async function refresh() { setHospitals((await api.get<Hospital[]>('/api/v1/hospitals')).data) }
   async function refreshDoctors() { setDoctors((await api.get<{ content: Doctor[] }>('/api/v1/doctors', { params: { hospitalId, size: 100 } })).data.content) }
+  useEffect(() => {
+    let active = true; setDepartments([])
+    if (hospitalId) api.get<Hospital['departments']>(`/api/v1/hospitals/${hospitalId}/departments`).then(({ data }) => { if (active) setDepartments(data) }).catch(e => { if (active) setError(messageFromError(e)) })
+    return () => { active = false }
+  }, [hospitalId])
   useEffect(() => { let active = true; api.get<Hospital[]>('/api/v1/hospitals').then(({ data }) => { if (active) setHospitals(data) }).catch(e => { if (active) setError(messageFromError(e)) }); return () => { active = false } }, [])
   useEffect(() => { let active = true; setDoctors([]); if (hospitalId) api.get<{ content: Doctor[] }>('/api/v1/doctors', { params: { hospitalId, size: 100 } }).then(({ data }) => { if (active) setDoctors(data.content) }).catch(e => { if (active) setError(messageFromError(e)) }); return () => { active = false } }, [hospitalId])
   async function save(e: FormEvent<HTMLFormElement>, kind: string) {
@@ -25,7 +32,7 @@ export function HospitalSetupPage() {
     setBusy(true); setError(''); setSuccess('')
     try {
       if (kind === 'hospital') { const result = await api.post<Hospital>('/api/v1/hospitals', { ...data, active: true }); await refresh(); setHospitalId(result.data.id) }
-      if (kind === 'department') { await api.post(`/api/v1/hospitals/${hospitalId}/departments`, data); await refresh() }
+      if (kind === 'department') { await api.post(`/api/v1/hospitals/${hospitalId}/departments`, data); setDepartments((await api.get<Hospital['departments']>(`/api/v1/hospitals/${hospitalId}/departments`)).data) }
       if (kind === 'doctor') { await api.post('/api/v1/doctors', { ...data, hospitalId, consultationFee: Number(data.consultationFee), expectedConsultationMinutes: Number(data.expectedConsultationMinutes), dailyMaxCapacity: Number(data.dailyMaxCapacity), active: true }); await refreshDoctors() }
       if (kind === 'schedule') {
         if (String(data.startTime) >= String(data.endTime)) { setError('End time must be after start time.'); return }
