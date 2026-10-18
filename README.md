@@ -15,7 +15,7 @@ The frontend and backend run on Google Cloud Run in Mumbai (`asia-south1`), with
 - **Hospital services:** indoor route guidance, diagnostics, blood-bank availability and ambulance request/dispatch workflows.
 - **Care assistant:** patient-scoped record search with source references; optional ML wait estimates.
 
-Patients can register directly. Doctor and staff registration requires an administrator-issued invitation code; the backend checks privileged access.
+Patients can register directly. Staff first request access from Login; the system administrator reviews the request and privately shares an approved one-time invitation. New staff create an account, while existing users confirm their current password to activate approved staff access. Administrators can review invitation status and revoke lost codes. See the [staff access guide](docs/STAFF-ACCESS.md).
 
 ## System Design
 

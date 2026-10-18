@@ -28,6 +28,8 @@ class StaffAccessIntegrationTest {
     @Autowired HospitalService hospitals;
     @Autowired UserAccountRepository users;
     @Autowired StaffInvitationRepository invitations;
+    @Autowired StaffAccessRequestService requests;
+    @Autowired StaffAccessRequestRepository requestRepository;
     @Autowired com.smartcare.doctor.service.DoctorService doctors;
     @Autowired com.smartcare.doctor.repository.DoctorRepository doctorRepository;
     private UUID hospital() {
@@ -91,7 +93,81 @@ class StaffAccessIntegrationTest {
         var enrolled = staff.enroll(new StaffRegistration(invite.invitationCode(), "DOCTOR", registration("+919000007006")));
         assertThat(enrolled.user().roles()).contains("DOCTOR").doesNotContain("HOSPITAL_ADMIN", "SUPER_ADMIN");
         assertThat(doctorRepository.findByLinkedUserId(enrolled.user().id()).orElseThrow().getId()).isEqualTo(doctor.id());
+        assertThat(staff.invitableDoctors(hospitalId)).isEmpty();
         assertThatThrownBy(() -> staff.issue(new IssueInvitation("+919000007007", "DOCTOR", hospitalId, doctor.id())))
                 .isInstanceOf(com.smartcare.common.error.ConflictException.class);
+    }
+    @Test @WithMockUser(roles="SUPER_ADMIN")
+    void requestReviewInvitationActivationAndPasswordLoginFormOneConnectedFlow() {
+        UUID hospitalId = hospital();
+        var input = new RequestStaffAccess("Test Clerk", "+919000007020", "clerk@example.test", "OFFICE_CLERK", hospitalId, "Desk reference");
+        requests.submit(input);
+        requests.submit(input);
+        var pending = requests.pending(hospitalId, 0);
+        assertThat(pending.totalElements()).isEqualTo(1);
+        assertThat(users.existsByMobileNumber(input.mobileNumber())).isFalse();
+        UUID requestId = pending.content().get(0).id();
+        var invitation = staff.issue(new IssueInvitation(input.mobileNumber(), "OFFICE_CLERK", hospitalId, null, requestId));
+        assertThat(requestRepository.findById(requestId).orElseThrow().getStatus()).isEqualTo("APPROVED");
+        assertThat(requests.pending(hospitalId, 0).content()).isEmpty();
+        var summary = staff.invitations(hospitalId, 0).content().get(0);
+        assertThat(summary.status()).isEqualTo("ACTIVE");
+        assertThat(summary.mobileNumber()).isEqualTo(input.mobileNumber());
+        assertThat(summary.toString()).doesNotContain(invitation.invitationCode());
+        staff.enroll(new StaffRegistration(invitation.invitationCode(), "OFFICE_CLERK", registration(input.mobileNumber())));
+        assertThat(staff.invitations(hospitalId, 0).content().get(0).status()).isEqualTo("ACCEPTED");
+        assertThat(auth.login(new LoginRequest(input.mobileNumber(), "unique-test-password", "OFFICE_CLERK")).user().roles())
+                .contains("RECEPTIONIST", "CASHIER");
+    }
+    @Test @WithMockUser(roles="SUPER_ADMIN")
+    void activeInvitationsMustBeRevokedBeforeReplacementAndConsumedInvitationsCannotBeRevoked() {
+        UUID hospitalId = hospital();
+        var first = staff.issue(new IssueInvitation("+919000007021", "CASHIER", hospitalId, null));
+        assertThatThrownBy(() -> staff.issue(new IssueInvitation("+919000007021", "CASHIER", hospitalId, null)))
+                .isInstanceOf(com.smartcare.common.error.ConflictException.class);
+        staff.revoke(first.id());
+        var replacement = staff.issue(new IssueInvitation("+919000007021", "CASHIER", hospitalId, null));
+        assertThat(replacement.invitationCode()).isNotEqualTo(first.invitationCode());
+        assertThatThrownBy(() -> staff.enroll(new StaffRegistration(first.invitationCode(), "CASHIER", registration("+919000007021"))))
+                .isInstanceOf(AccessDeniedException.class);
+        staff.enroll(new StaffRegistration(replacement.invitationCode(), "CASHIER", registration("+919000007021")));
+        assertThatThrownBy(() -> staff.revoke(replacement.id())).isInstanceOf(com.smartcare.common.error.ConflictException.class);
+    }
+    @Test @WithMockUser(roles="SUPER_ADMIN")
+    void requestCannotBeApprovedForAnotherRoleAndRejectedRequestsGrantNoAccess() {
+        UUID hospitalId = hospital();
+        requests.submit(new RequestStaffAccess("Test Staff", "+919000007022", null, "CASHIER", hospitalId, "Desk"));
+        UUID requestId = requests.pending(hospitalId, 0).content().get(0).id();
+        assertThatThrownBy(() -> staff.issue(new IssueInvitation("+919000007022", "HOSPITAL_ADMIN", hospitalId, null, requestId)))
+                .isInstanceOf(com.smartcare.common.error.ConflictException.class);
+        requests.reject(requestId);
+        assertThat(requestRepository.findById(requestId).orElseThrow().getStatus()).isEqualTo("REJECTED");
+        assertThat(users.existsByMobileNumber("+919000007022")).isFalse();
+        assertThatThrownBy(() -> staff.issue(new IssueInvitation("+919000007022", "CASHIER", hospitalId, null, requestId)))
+                .isInstanceOf(com.smartcare.common.error.ConflictException.class);
+    }
+    @Test @WithMockUser(roles="PATIENT")
+    void patientCannotReadRequestsOrInvitationsOrRejectRequests() {
+        UUID id = UUID.randomUUID();
+        assertThatThrownBy(() -> staff.invitations(id, 0)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> staff.invitableDoctors(id)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> requests.pending(id, 0)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> requests.reject(id)).isInstanceOf(AccessDeniedException.class);
+    }
+    @Test @WithMockUser(roles="SUPER_ADMIN")
+    void existingPatientNeedsTheCurrentPasswordAndKeepsTheirAccountAndPatientProfile() {
+        UUID hospitalId = hospital();
+        var patient = auth.register(registration("+919000007023"));
+        var invitation = staff.issue(new IssueInvitation(patient.user().mobileNumber(), "OFFICE_CLERK", hospitalId, null));
+        assertThatThrownBy(() -> staff.activateExisting(new ExistingStaffActivation(invitation.invitationCode(),
+                "OFFICE_CLERK", patient.user().mobileNumber(), "wrong-password"))).isInstanceOf(BadCredentialsException.class);
+        assertThat(users.findById(patient.user().id()).orElseThrow().getRoles()).containsExactly(com.smartcare.auth.domain.Role.PATIENT);
+        assertThat(invitations.findById(invitation.id()).orElseThrow().usable(Instant.now())).isTrue();
+        var activated = staff.activateExisting(new ExistingStaffActivation(invitation.invitationCode(),
+                "OFFICE_CLERK", patient.user().mobileNumber(), "unique-test-password"));
+        assertThat(activated.user().id()).isEqualTo(patient.user().id());
+        assertThat(activated.user().roles()).contains("PATIENT", "RECEPTIONIST", "CASHIER");
+        assertThat(auth.login(new LoginRequest(patient.user().mobileNumber(), "unique-test-password", "OFFICE_CLERK")).user().id())
+                .isEqualTo(patient.user().id());
     }
 }

@@ -28,6 +28,54 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired com.smartcare.hospital.service.HospitalService hospitals;
+
+    @Test
+    @org.springframework.security.test.context.support.WithMockUser(roles="SUPER_ADMIN")
+    void publicRequestHasNoPrivilegesAndAdministratorCanReviewThenActivateStaff() throws Exception {
+        var hospital = hospitals.create(new com.smartcare.hospital.web.HospitalDtos.HospitalRequest(
+                "REQUEST-HTTP", "Request Test Hospital", "Test street", "Delhi", "Delhi", "110001", "+919000008000", "Asia/Kolkata", true));
+        var input = Map.of("name", "Test Clerk", "mobileNumber", "+919000008001", "accountType", "OFFICE_CLERK",
+                "hospitalId", hospital.id(), "message", "Desk staff reference");
+        mvc.perform(post("/api/v1/auth/staff-access-requests")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous())
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(input)))
+                .andExpect(status().isAccepted());
+        mvc.perform(get("/api/v1/auth/staff-access-requests").param("hospitalId", hospital.id().toString())
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous()))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/v1/auth/staff-access-requests").param("hospitalId", hospital.id().toString())
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("patient").roles("PATIENT")))
+                .andExpect(status().isForbidden());
+        String pendingJson = mvc.perform(get("/api/v1/auth/staff-access-requests").param("hospitalId", hospital.id().toString())
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("admin").roles("SUPER_ADMIN")))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String requestId = objectMapper.readTree(pendingJson).get("content").get(0).get("id").asText();
+        String issuedJson = mvc.perform(post("/api/v1/auth/staff-invitations")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("admin").roles("SUPER_ADMIN"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(Map.of("mobileNumber", "+919000008001", "accountType", "OFFICE_CLERK",
+                                "hospitalId", hospital.id(), "requestId", requestId))))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.invitationCode").isNotEmpty())
+                .andReturn().getResponse().getContentAsString();
+        String code = objectMapper.readTree(issuedJson).get("invitationCode").asText();
+        mvc.perform(get("/api/v1/auth/staff-invitations").param("hospitalId", hospital.id().toString())
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("admin").roles("SUPER_ADMIN")))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.content[0].status").value("ACTIVE"))
+                .andExpect(jsonPath("$.content[0].invitationCode").doesNotExist())
+                .andExpect(jsonPath("$.content[0].tokenHash").doesNotExist());
+        mvc.perform(post("/api/v1/auth/register-staff")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous())
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(Map.of(
+                                "invitationCode", code, "accountType", "OFFICE_CLERK", "patient", Map.of(
+                                        "name", "Test Clerk", "mobileNumber", "+919000008001", "password", "test-clerk-password", "preferredLanguage", "en")))))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.user.roles", org.hamcrest.Matchers.hasItems("RECEPTIONIST", "CASHIER")));
+        mvc.perform(post("/api/v1/auth/login")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous())
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(Map.of(
+                                "credential", "+919000008001", "password", "test-clerk-password", "accountType", "OFFICE_CLERK"))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.accessToken").isNotEmpty());
+    }
 
     @Test
     void patientCanRegisterLoginAndUseIssuedJwt() throws Exception {

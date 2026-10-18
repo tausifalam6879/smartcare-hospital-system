@@ -48,11 +48,13 @@ function validationMessage(errors: ApiErrorBody['errors']) {
 
 const publicAuthPaths = new Set([
   '/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/register-staff', '/api/v1/auth/recover',
+  '/api/v1/auth/activate-staff',
 ])
 
 api.interceptors.request.use((config) => {
   const raw = readAuthSession()
-  if (publicAuthPaths.has(config.url?.split('?')[0] ?? '')) {
+  const path = config.url?.split('?')[0] ?? ''
+  if (publicAuthPaths.has(path) || (path === '/api/v1/auth/staff-access-requests' && config.method === 'post')) {
     config.headers.delete('Authorization')
   } else if (raw) {
     try {

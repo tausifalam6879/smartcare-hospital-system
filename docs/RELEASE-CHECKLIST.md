@@ -1,5 +1,7 @@
 # SmartCare release gates
 
+Latest local access-flow fixes and test evidence: [18 October verification](VERIFICATION-2026-10-18.md). That report separates local implementation from the still-required matching cloud deployment and visual checks. Older entries below describe earlier batches.
+
 > Current status: see `VERIFICATION-2026-09-30.md` and `VERIFICATION-2026-09-29.md`. The dated entries below are historical: hospital membership, profile-photo support and local restore drills have since been implemented/verified to the extent described in those reports. Their older "still required" statements are not the current implementation status. Remaining release gates are listed in the 30 September report.
 
 Do not interpret a green build as production approval.

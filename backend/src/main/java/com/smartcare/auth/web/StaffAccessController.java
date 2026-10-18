@@ -16,6 +16,15 @@ public class StaffAccessController {
     public StaffAccessController(StaffAccessService service) { this.service = service; }
     @GetMapping("/staff")
     public java.util.List<StaffAccessService.StaffAccount> directory() { return service.directory(); }
+    @GetMapping("/staff-invitations")
+    public com.smartcare.common.web.PageResponse<InvitationSummary> invitations(
+            @RequestParam UUID hospitalId, @RequestParam(defaultValue = "0") int page) {
+        return service.invitations(hospitalId, page);
+    }
+    @GetMapping("/staff-invitations/doctors")
+    public java.util.List<InvitableDoctor> doctors(@RequestParam UUID hospitalId) {
+        return service.invitableDoctors(hospitalId);
+    }
     @PostMapping("/staff-invitations") @ResponseStatus(HttpStatus.CREATED)
     public InvitationIssued issue(@Valid @RequestBody IssueInvitation input) { return service.issue(input); }
     @DeleteMapping("/staff-invitations/{id}") @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -28,5 +37,10 @@ public class StaffAccessController {
     public AuthResponse enroll(@Valid @RequestBody StaffRegistration input, jakarta.servlet.http.HttpServletRequest http) {
         attempts.check("staff-signup-ip:" + http.getRemoteAddr());
         return service.enroll(input);
+    }
+    @PostMapping("/activate-staff")
+    public AuthResponse activateExisting(@Valid @RequestBody ExistingStaffActivation input, jakarta.servlet.http.HttpServletRequest http) {
+        attempts.check("staff-activation-ip:" + http.getRemoteAddr());
+        return service.activateExisting(input);
     }
 }

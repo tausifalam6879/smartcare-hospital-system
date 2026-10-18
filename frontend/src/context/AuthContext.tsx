@@ -30,6 +30,7 @@ export type RegisterInput = {
   preferredLanguage: string
   accountType?: string
   invitationCode?: string
+  existingAccount?: boolean
 }
 
 type AuthContextValue = {
@@ -127,9 +128,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         persist(demoSession(input.name.trim() || 'Demo Patient', input.email || input.mobileNumber))
         return
       }
-      const { invitationCode, accountType, ...patient } = input
-      const response = await api.post<AuthSession>(staff ? '/api/v1/auth/register-staff' : '/api/v1/auth/register',
-        staff ? { invitationCode, accountType, patient } : patient)
+      const { invitationCode, accountType, existingAccount, ...patient } = input
+      const response = await api.post<AuthSession>(staff && existingAccount ? '/api/v1/auth/activate-staff' : staff ? '/api/v1/auth/register-staff' : '/api/v1/auth/register',
+        staff && existingAccount ? { invitationCode, accountType, mobileNumber: input.mobileNumber, password: input.password }
+          : staff ? { invitationCode, accountType, patient } : patient)
       persist(response.data)
     },
     logout() {

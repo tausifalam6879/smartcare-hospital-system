@@ -65,6 +65,7 @@ export function LoginPage() {
         <button disabled={loading} className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-care-600 px-5 font-extrabold text-white hover:bg-care-700 disabled:opacity-60">{loading && <LoaderCircle className="size-5 animate-spin" />} {text('Sign in', 'लॉगिन करें')}</button>
       </form>
       <Link to="/recover" className="mt-4 block text-center text-sm font-semibold text-blue-700">{text('Forgot password?', 'पासवर्ड भूल गए?')}</Link>
+      <p className="mt-4 text-center text-sm"><Link to="/staff/request-access" className="font-bold text-blue-700">{text('Staff without an invitation? Request access', 'स्टाफ invitation नहीं है? एक्सेस अनुरोध करें')}</Link></p>
       <p className="mt-6 text-center text-sm text-slate-600">{text('New to SmartCare?', 'SmartCare पर नए हैं?')} <Link to="/register" className="font-extrabold text-care-700 hover:underline">{text('Create an account', 'अकाउंट बनाएँ')}</Link></p>
     </AuthShell>
   )

@@ -25,6 +25,12 @@ public class StaffInvitation extends AuditableEntity {
     public String getAccountType() { return accountType; }
     public UUID getHospitalId() { return hospitalId; }
     public UUID getDoctorId() { return doctorId; }
+    public Instant getExpiresAt() { return expiresAt; }
+    public String status(Instant now) {
+        if (consumedAt != null) return "ACCEPTED";
+        if (revokedAt != null) return "REVOKED";
+        return expiresAt.isAfter(now) ? "ACTIVE" : "EXPIRED";
+    }
     public boolean usable(Instant now) { return consumedAt == null && revokedAt == null && expiresAt.isAfter(now); }
     public void consume(Instant now) { consumedAt = now; }
     public void revoke(Instant now) { revokedAt = now; }

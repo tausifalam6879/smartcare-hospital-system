@@ -44,7 +44,7 @@ export function MainLayout() {
     { to: '/operations', label: 'Day operations', hi: 'आज का कार्य', icon: ClipboardList }, patientLinks[5],
   ] : staff ? [
     ...(roles.includes('SUPER_ADMIN') ? [{ to: '/admin/setup', label: 'Hospital setup', hi: 'अस्पताल सेटअप', icon: Building2 }] : []),
-    ...(roles.includes('SUPER_ADMIN') ? [{ to: '/staff/access', label: 'Staff invitations', hi: 'स्टाफ invitations', icon: ClipboardList }] : []),
+    ...(roles.includes('SUPER_ADMIN') ? [{ to: '/staff/access', label: 'Staff access', hi: 'स्टाफ एक्सेस', icon: ClipboardList }] : []),
     ...(admin || desk ? [{ to: '/operations', label: 'Operations overview', hi: 'संचालन', icon: Home }] : []),
     ...(!desk ? [{ to: '/staff/tasks', label: 'My tasks', hi: 'मेरे कार्य', icon: ClipboardList }] : []),
     ...(admin || roles.includes('AMBULANCE_DISPATCHER') ? [patientLinks[9]] : []),

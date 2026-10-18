@@ -40,7 +40,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/register-staff", "/api/v1/auth/login", "/actuator/health/**",
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/staff-access-requests").permitAll()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/register-staff", "/api/v1/auth/activate-staff", "/api/v1/auth/login", "/actuator/health/**",
                                 "/api/v1/auth/recover", "/api/v1/payments/webhooks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/hospitals/**", "/api/v1/doctors/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/appointments/availability").permitAll()

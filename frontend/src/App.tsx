@@ -17,6 +17,7 @@ import { NavigationPage } from './pages/NavigationPage'
 import { QueueBookingPage } from './pages/QueueBookingPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { StaffAccessPage } from './pages/StaffAccessPage'
+import { StaffAccessRequestPage } from './pages/StaffAccessRequestPage'
 import { HospitalSetupPage } from './pages/HospitalSetupPage'
 import { AccountPage } from './pages/AccountPage'
 import { RecoverAccountPage } from './pages/RecoverAccountPage'
@@ -83,6 +84,7 @@ export function App() {
         <Route path="navigate/:checkpointCode" element={<NavigationPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="staff/request-access" element={<StaffAccessRequestPage />} />
         <Route path="recover" element={<RecoverAccountPage />} />
         <Route path="account" element={<Protected page={<AccountPage />} />} />
         <Route path="staff/access" element={<RoleProtected roles={['SUPER_ADMIN']} page={<StaffAccessPage />} />} />

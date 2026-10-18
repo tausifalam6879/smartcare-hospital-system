@@ -6,7 +6,7 @@ import { clearAuthSession, readAuthSession, writeAuthSession } from './authStora
 describe('session request isolation', () => {
   afterEach(clearAuthSession)
 
-  it.each(['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/register-staff', '/api/v1/auth/recover'])(
+  it.each(['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/register-staff', '/api/v1/auth/activate-staff', '/api/v1/auth/recover', '/api/v1/auth/staff-access-requests'])(
     'does not attach stale credentials to %s', async (url) => {
       writeAuthSession(JSON.stringify({ accessToken: 'old-token' }))
       await api.post(url, {}, { adapter: async (config) => {
@@ -15,6 +15,13 @@ describe('session request isolation', () => {
       } })
     },
   )
+  it('keeps administrator authentication for the staff request inbox', async () => {
+    writeAuthSession(JSON.stringify({ accessToken: 'admin-token' }))
+    await api.get('/api/v1/auth/staff-access-requests', { adapter: async config => {
+      expect(config.headers.Authorization).toBe('Bearer admin-token')
+      return { config, data: {}, status: 200, statusText: 'OK', headers: {} }
+    } })
+  })
 
   it('preserves a new session when an old request fails late', async () => {
     writeAuthSession(JSON.stringify({ accessToken: 'old-token' }))
