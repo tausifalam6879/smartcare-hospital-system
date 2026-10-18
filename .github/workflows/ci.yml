@@ -9,6 +9,15 @@ permissions:
   contents: read
 
 jobs:
+  deployment-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check release and resume safety without Cloud credentials
+        run: |
+          bash -n infra/deploy-staging.sh
+          bash infra/test-deploy-staging.sh
+
   ml-service:
     runs-on: ubuntu-latest
     defaults:
